@@ -65,39 +65,43 @@ const verify = (req,res) =>{
     return res.status(200).json({success: true, user: req.user})
 } 
 
-const getUsers = async (req, res) => {
-    try {
-        const users = await User.find({}).select('-password');
-        return res.status(200).json({ success: true, users });
-    } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
-    }
-};
+// const getUsers = async (req, res) => {
+//     try {
+//         const users = await User.find({}).select('-password');
+//         return res.status(200).json({ success: true, users });
+//     } catch (error) {
+//         return res.status(500).json({ success: false, error: error.message });
+//     }
+// };
 
 
-const getSongs = async (req, res) => {
-    try {
-        const songs = await Song.find({});
-        return res.status(200).json({ success: true, songs });
-    } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
-    }
-};
+// const getSongs = async (req, res) => {
+//     try {
+//         const songs = await Song.find({});
+//         return res.status(200).json({ success: true, songs });
+//     } catch (error) {
+//         return res.status(500).json({ success: false, error: error.message });
+//     }
+// };
 
 
-const toggleUserStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { isActive } = req.body; // Expecting isActive to be passed in the request body
-        const user = await User.findByIdAndUpdate(id, { isActive }, { new: true });
-        if (!user) {
-            return res.status(404).json({ success: false, error: 'User not found' });
-        }
-        return res.status(200).json({ success: true, user });
-    } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
-    }
-};
+// const toggleUserStatus = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { isActive } = req.body;
 
-module.exports= { login, verify, getUsers, toggleUserStatus, getSongs };
+//         const user = await User.findByIdAndUpdate(id, { isActive }, { new: true });
+//         if (!user) {
+//             return res.status(404).json({ success: false, error: 'User not found' });
+//         }
+
+//         return res.status(200).json({ success: true, user });
+//     } catch (error) {
+//         return res.status(500).json({ success: false, error: error.message });
+//     }
+// };
+
+
+
+module.exports= { login, verify};
 

@@ -9,11 +9,14 @@ const DeleteUserForm = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/auth/users", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
+                const response = await axios.get("http://localhost:3000/api/users/role/User", 
+                //     {
+                //     headers: {
+                //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+                //     },
+                // }
+                );
+                console.log(response.data);
                 if (response.data.success) {
                     setUsers(response.data.users);
                 }
@@ -27,13 +30,13 @@ const DeleteUserForm = () => {
     const handleToggleStatus = async (userId, isActive) => {
         try {
             const response = await axios.put(
-                `http://localhost:3000/api/auth/users/${userId}`,
+                `http://localhost:3000/api/users/toggle/${userId}`,
                 { isActive },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }
+                // {
+                //     headers: {
+                //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+                //     },
+                // }
             );
             if (response.data.success) {
                 setUsers(users.map(u => u._id === userId ? { ...u, isActive } : u));
@@ -65,7 +68,7 @@ const DeleteUserForm = () => {
                         <tbody>
                             {users.map((user) => (
                                 <tr key={user._id} className="hover:bg-gray-50">
-                                    <td className="border px-4 py-2">{user.name}</td>
+                                    <td className="border px-4 py-2">{user.username}</td>
                                     <td className="border px-4 py-2">{user.email}</td>
                                     <td className="border px-4 py-2">{user.role}</td>
                                     <td className="border px-4 py-2">

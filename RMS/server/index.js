@@ -39,7 +39,7 @@ app.use(express.json());
 app.use('/api/auth', createAuthRouter); // Ensure you call the function
 app.use('/api/collaborations', collaborationRoutes);
 app.use('/api/notifications', notificationRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/royalty', royaltyRoutes);
 app.use('/api/transactions', transactionRoutes);
 
