@@ -6,7 +6,7 @@ const saltRounds = 12; // 2^12 = 4096 rounds
 
 const login = async (req, res) => {
 
-    console.log("this is auhtController error")
+    // console.log("this is auhtController error")
     try {
         const { email, password } = req.body;
 
@@ -45,7 +45,8 @@ const login = async (req, res) => {
                 email:user.email,
                 role: user.role,
                 isActive:user.isActive,
-                isFirstLogin:user.isFirstLogin
+                isFirstLogin:user.isFirstLogin,
+                password:user.password
             },
         });
     } catch (error) {
@@ -62,6 +63,7 @@ const login = async (req, res) => {
 // }
 
 const verify = (req,res) =>{
+    // console.log("authcontroller",req.user);
     return res.status(200).json({success: true, user: req.user})
 } 
 

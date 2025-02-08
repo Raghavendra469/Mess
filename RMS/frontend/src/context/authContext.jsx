@@ -17,8 +17,9 @@ export const AuthProvider = ({ children }) => { // Renamed to PascalCase
                     }
                 })
                 if(response.data.success){
+                    console.log("password",response.data.user.password);
                     setUser(response.data.user)
-                    // console.log(user);
+                    // console.log(response.data.user);
                 }
             }
             else{
