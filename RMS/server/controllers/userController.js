@@ -2,14 +2,27 @@ const userService = require('../services/userService');
 const User =require('../models/userModel.js');
 // const User = require('../models/userModel');
 
+// const createUser = async (req, res) => {
+//   try {
+//     // console.log(req.body)
+//     const user = await userService.createUser(req.body);
+//     console.log(user);
+//     // res.status(201).json(user);
+//     return res.status(201).json({ ok: true, user });
+    
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+
 const createUser = async (req, res) => {
   try {
-    // console.log(req.body)
+    // console.log(`req.body.role: ${req.body.role}`);
     const user = await userService.createUser(req.body);
-    res.status(201).json(user);
-    
+    return res.status(201).json({ ok: true, user });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // console.error("Error creating user:", error);
+    return res.status(500).json({ error: error.message });
   }
 };
 

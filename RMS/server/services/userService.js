@@ -4,36 +4,77 @@ const Artist = require('../models/artistModel');
 // const{v4:uuidv4}=require('uuid');
 const mongoose=require('mongoose');
 
-const createUser = async (userData) => {
-    // console.log("userData in service",userData)
+// const createUser = async (userData) => {
+//     // console.log("userData in service",userData)
     
-  const { username, password_hash, role, ...rest } = userData;
-  console.log(rest,"rest in service")
-  console.log(role,"role in service")
-  console.log(username,"username in service")
-  console.log(password_hash,"password in service")
+//   const { username, password,email, role, ...rest } = userData;
+//   console.log(rest,"rest in service")
+//   console.log(role,"role in service")
+//   console.log(username,"username in service")
+//   console.log(password,"password in service")
+//   const session = await User.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const user = new User({ username, password,email, role });
+//     console.log(user,"user")
+//     // console.log(session,"session in service")
+//     await user.save({ session });
+
+//     if (role === 'Manager') {
+//       const manager = new Manager({
+//         managerId: user._id,
+//         fullName:rest.fullName,
+//         email: rest.email,
+//         mobileNo: rest.mobileNo,
+//         address: rest.address,
+        
+//       });
+//       await manager.save({ session });
+//     } else if (role === 'Artist') {
+//       const artist = new Artist({
+//         artistId: user._id,
+//         ...rest,
+//       });
+//       await artist.save({ session });
+//     }
+
+//     await session.commitTransaction();
+//     session.endSession();
+//     // return user;
+//     return "created successfully"
+//   } catch (error) {
+//     await session.abortTransaction();
+//     session.endSession();
+//     throw error;
+//   }
+// };
+
+const createUser = async (userData) => {
+  const { username, password, email, role, ...rest } = userData;
+  // console.log(username);
+  // console.log(password);
+  // console.log(email);
+  // console.log(role);
+  // console.log(rest);
   const session = await User.startSession();
   session.startTransaction();
 
   try {
-    const user = new User({ username, password_hash, role });
-    console.log(user,"user")
-    // console.log(session,"session in service")
+    const user = new User({ username, password, email, role });
     await user.save({ session });
 
     if (role === 'Manager') {
       const manager = new Manager({
         managerId: user._id,
-        fullName:rest.fullName,
-        email: rest.email,
-        mobileNo: rest.mobileNo,
-        address: rest.address,
-        
+        email:email,
+        ...rest,
       });
       await manager.save({ session });
     } else if (role === 'Artist') {
       const artist = new Artist({
         artistId: user._id,
+        email:email,
         ...rest,
       });
       await artist.save({ session });
@@ -41,8 +82,7 @@ const createUser = async (userData) => {
 
     await session.commitTransaction();
     session.endSession();
-    // return user;
-    return "created successfully"
+    return user;
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
