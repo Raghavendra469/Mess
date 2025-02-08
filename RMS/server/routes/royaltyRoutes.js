@@ -1,34 +1,11 @@
-/*const express = require('express');
-const router = express.Router();
-const royaltyController = require('../controllers/royaltyController');
-
-router.post('/calculate', royaltyController.calculateRoyalty);
-router.get('/:artistId', royaltyController.getRoyaltyByArtist);
-router.get('/report/:artistId', royaltyController.exportRoyaltyReport);
-
-module.exports = router;
-
-
 const express = require('express');
 const router = express.Router();
-const royaltyController = require('../controllers/royaltyController');
+const { createRoyaltyController, getRoyaltyByIdController } = require('../controllers/royaltyController');
 
-router.post('/calculate', royaltyController.calculateRoyalty);
-router.get('/:songId', royaltyController.getRoyaltyBySongId);
-router.get('/report/:songId', royaltyController.exportRoyaltyReport);
+// POST route to create royalty
+router.post('/royalties', createRoyaltyController);
 
-module.exports = router;*/
-
-const express = require('express');
-const router = express.Router();
-const RoyaltyController = require('../controllers/royaltyController');
-
-router.post('/calculate', RoyaltyController.calculateRoyalty);
-router.get('/:royaltyId', RoyaltyController.getRoyaltyByRoyaltyId);
-router.get('/export/:royaltyId', RoyaltyController.exportRoyaltyReport);
+// GET route to fetch royalty details by royaltyId
+router.get('/royalties/:royaltyId', getRoyaltyByIdController);
 
 module.exports = router;
-
-
-
-

@@ -16,6 +16,8 @@ const notificationRoutes = require('./routes/notificationRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
 const royaltyRoutes = require('./routes/royaltyRoutes.js');
 const transactionRoutes = require('./routes/transactionRoutes.js');
+const songRoutes = require('./routes/songRoutes.js');
+
 
 // Connect to the database
 // console.log(connectToDatabase,"connectToAdtabase")
@@ -24,6 +26,7 @@ const connectToDatabase = ()=>{
     try{
         
         mongoose.connect(process.env.MONGODB_URL)
+        console.log("Connnected to MongoDB");
         
     }
     catch(error){
@@ -42,6 +45,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/royalty', royaltyRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/songs', songRoutes);
 
 app.post('/api/auth/forgot-password', async (req, res) => {
     const { email } = req.body;

@@ -1,5 +1,5 @@
 const Transaction = require('../models/transaction');
-const Royalty = require('../models/Royalty');
+const Royalty = require('../models/royaltyModel');
 
 exports.createTransaction = async (data) => {
   const transaction = new Transaction(data);

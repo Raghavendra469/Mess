@@ -1,6 +1,6 @@
 const jwt =require('jsonwebtoken');
 const User =require('../models/userModel.js');
-const Song =require('../models/SongModel.js');
+const Song =require('../models/songModel.js');
 const bcrypt =require('bcrypt');
 const saltRounds = 12; // 2^12 = 4096 rounds
 

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('../models/Royalty'); // Import Royalty model
+require('../models/royaltyModel'); // Import Royalty model
 require('../models/userModel');    // Import User model
 
 const TransactionSchema = new mongoose.Schema({
