@@ -5,8 +5,8 @@ Content-Type: application/json
 {
   "artistId": "67a75d5f7c0154c68fa43050",
   "artistName": "Guru Pruthvi",
-  "songName": "fear song",
-  "title": "fear song"
+  "songName": "halamati habibo",
+  "title": "halamati habibo"
 }
 
 
@@ -30,4 +30,6 @@ Content-Type: application/json
 }
 
 ###delete a song
-DELETE http://localhost:3000/api/songs/melody-of-the-night
+DELETE http://localhost:3000/api/songs/halamati-habibo
+
+###

@@ -7,6 +7,7 @@ const ManagerSchema = new mongoose.Schema({
   mobileNo: { type: String },
   address: { type: String },
   managedArtists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }], // List of artist IDs
+  managerShare:{type:Number},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

@@ -5,16 +5,20 @@ const mongoose = require('mongoose');
 const songService = require('../services/songService');
 const royaltyController = require('../controllers/royaltyController');
 const Artist= require('../models/artistModel');
+const Song = require('../models/songModel');
+const Royalty = require('../models/royaltyModel');
 
 exports.uploadSong = async (req, res) => {
   try {
     if (!req.body.artistName || !req.body.songName) {
       return res.status(400).json({ message: "Missing required fields: artistName, songName" });
     }
+    console.log(req.body.artistName, "artistname")
 
     // Generate artistId and songId
     const artistId = req.body.artistName.toLowerCase().replace(/\s+/g, '-');
     const songId = req.body.songName.toLowerCase().replace(/\s+/g, '-');
+    const royaltyId= req.body.artistName.toLowerCase().replace(/\s+/g, '-');
 
     // Create song data
     const songData = {
@@ -31,10 +35,11 @@ exports.uploadSong = async (req, res) => {
     // Call the createRoyaltyController to create the linked royalty entry
     const royaltyReq = {
       body: {
-        royaltyId: artistId,  // Royalty ID based on artistId format
+        royaltyId: royaltyId,  // Royalty ID based on artistId format
         artistId: song.artistId,  // Reference to the artist's ObjectId
         songId: song._id, 
-        songName:song.songName // Reference to the song's ObjectId
+        songName:song.songName, // Reference to the song's ObjectId
+        artistName: song.artistName // Reference to the artist's
       }
     };
 
@@ -112,10 +117,46 @@ exports.updateSong = async (req, res) => {
 
 exports.deleteSong = async (req, res) => {
   try {
-    const deleted = await songService.removeSong(req.params.songId);
-    if (!deleted) return res.status(404).json({ message: 'Song not found' });
-    res.json({ message: 'Song deleted successfully' });
+    const { songId } = req.params;
+
+    if (!songId) {
+      return res.status(400).json({ message: "Missing required field: songId" });
+    }
+
+    // Find the song to get related artistId before deletion
+    const song = await Song.findOne({ songId:songId });
+
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
+    }
+
+    const artist = await Artist.findOne({ _id: song.artistId });
+
+    if (!artist) {
+      return res.status(404).json({ message: "Associated artist not found" });
+    }
+
+    // Delete song from Songs collection
+    await Song.deleteOne({ songId });
+
+    // Remove song reference from the Artist's songs array
+    await Artist.findOneAndUpdate(
+      { _id: artist._id },
+      { $pull: { songs: song._id } },
+      { new: true }
+    );
+
+    // Delete the corresponding royalty entry
+    const royaltyDeleteResult = await Royalty.deleteOne({ songId: song._id });
+
+    res.status(200).json({
+      message: "Song and associated data deleted successfully",
+      deletedSong: songId,
+      royaltyDeleted: royaltyDeleteResult.deletedCount > 0,
+      artistSongDeleted:artist._id // Ensure royalty was actually deleted
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error deleting song:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };

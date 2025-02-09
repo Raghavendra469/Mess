@@ -52,10 +52,10 @@ const updateArtistFullRoyalty = async (artistId) => {
 // ✅ Create Royalty and update artist fullRoyalty
 const createRoyaltyController = async (req, res) => {
   try {
-    const { artistId, songId } = req.body;
+    const { artistId, songId,artistName } = req.body;
 
     // const royaltyId=req.body.songName.toLowerCase().replace(/\s+/g, '-');
-    const royaltyId = `${artistId}-${req.body.songName.toLowerCase().replace(/\s+/g, '-')}`;
+    const royaltyId = `${artistName}-${req.body.songName.toLowerCase().replace(/\s+/g, '-')}`;
 
     // Create Royalty
     const newRoyalty = await createRoyalty({ royaltyId, artistId, songId });
