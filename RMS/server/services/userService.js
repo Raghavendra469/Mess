@@ -58,7 +58,7 @@ const createUser = async (userData) => {
   // console.log(password);
   // console.log(email);
   // console.log(role);
-  // console.log(rest);
+  console.log(rest);
   const session = await User.startSession();
   session.startTransaction();
 
@@ -73,6 +73,7 @@ const createUser = async (userData) => {
     if (role === 'Manager') {
       const manager = new Manager({
         managerId: user._id,
+        username:username,
         email:email,
         ...rest,
       });
@@ -80,6 +81,7 @@ const createUser = async (userData) => {
     } else if (role === 'Artist') {
       const artist = new Artist({
         artistId: user._id,
+        username:username,
         email:email,
         ...rest,
       });

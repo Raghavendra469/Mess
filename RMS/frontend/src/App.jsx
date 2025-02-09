@@ -14,7 +14,8 @@ import AdminSummary from "./components/dashboard/AdminSummary"
 import ArtistSummary from "./components/dashboard/ArtistSummary"
 import SongListPage from "./components/dashboard/artistPages/SongListPage";
 import AddSongForm from "./components/dashboard/artistPages/AddSongForm";
-import ResetPassword from "./pages/ResetPassword";
+import ResetPassword from "./pages/ResetPassword"; 
+import UpdateArtistProfileForm from "./components/dashboard/artistPages/updateArtistProfileForm"
 
 function App() {
 
@@ -55,7 +56,7 @@ function App() {
           <Route path="collabration" element={<DeleteUserForm />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
           <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
-          <Route path="view-profile" element={<ViewAdminForm />} />{/* Artist Data Updation */}
+          <Route path="view-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}
         </Route>
         
 

@@ -16,8 +16,12 @@ const notificationRoutes = require('./routes/notificationRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
 const royaltyRoutes = require('./routes/royaltyRoutes.js');
 const transactionRoutes = require('./routes/transactionRoutes.js');
+<<<<<<< HEAD
 const songRoutes = require('./routes/songRoutes.js');
 
+=======
+// const songRoutes = require('./routes/songRoutes.js');
+>>>>>>> 5a66f81035558263ebd8c6a5011364547cb2a03e
 
 // Connect to the database
 // console.log(connectToDatabase,"connectToAdtabase")
@@ -45,7 +49,11 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/royalty', royaltyRoutes);
 app.use('/api/transactions', transactionRoutes);
+<<<<<<< HEAD
 app.use('/api/songs', songRoutes);
+=======
+// app.use('/api/songs', songRoutes);
+>>>>>>> 5a66f81035558263ebd8c6a5011364547cb2a03e
 
 app.post('/api/auth/forgot-password', async (req, res) => {
     const { email } = req.body;

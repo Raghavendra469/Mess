@@ -77,5 +77,6 @@ const updateArtistRoyalty = async (artistId) => {
   console.log(`✅ Updated fullRoyalty for artist ${artistId}: ${newRoyalty}`);
 };
 
-module.exports = mongoose.model('Song', songSchema, 'Song');
+// module.exports = mongoose.model('Song', songSchema, 'Song');
 
+module.exports =  mongoose.models.Song || mongoose.model('Song', SongSchema,'Song');
