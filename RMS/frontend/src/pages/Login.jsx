@@ -7,7 +7,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const { login } = useAuth(); // Ensure this works
+    const { user, login } = useAuth(); // Ensure this works
     const navigate = useNavigate();
 
     
@@ -37,21 +37,26 @@ const Login = () => {
             });
             if (response.data.success) {
                 login(response.data.user); // Call `login` from context
+                // console.log(response.data.user);
                 localStorage.setItem("token", response.data.token);
                 console.log()
-                if (response.data.user.role === "Admin" && !response.data.user.isFirstLogin) {
+                if (response.data.user.role === "Admin") {
                     //  console.log("Entering login",response.data.user);
                     navigate("/admin-dashboard");
-                } else if (response.data.user.role === "Manager" && !response.data.user.isFirstLogin) {
+                } else if (response.data.user.role === "Manager") {
                     navigate("/manager-dashboard");
-                } else if (response.data.user.role === "Artist" && !response.data.user.isFirstLogin){
+                } else if (response.data.user.role === "Artist"){
                     // console.log("Entering login",response.data.user);
                     navigate("/artist-dashboard");
                 }
-                else if (response.data.user.isFirstLogin){
-                    // console.log("Entering login",response.data.user);
-                    navigate("/forgot-password");
-                }
+                // else if (response.data.loginStatus.status==='first time login'){
+                //     // console.log("Entering login",response.data.user);
+                //     navigate("/forgot-password");
+                // }
+            }
+            else if (response.data.loginStatus.status = "first time login"){
+                // console.log("Entering login",response.data.user);
+                navigate("/forgot-password");
             }
         } catch (error) {
             if (error.response && !error.response.data.success) {

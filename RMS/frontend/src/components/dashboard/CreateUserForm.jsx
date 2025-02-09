@@ -7,7 +7,7 @@ const CreateUserForm = () => {
     fullName: "",
     email: "",
     password: "",
-    phno: "",
+    mobileNo: "",
     role: "Artist",
     address: "",
   });
@@ -38,7 +38,7 @@ const CreateUserForm = () => {
           fullName: "",
           email: "",
           password: "",
-          phno: "",
+          mobileNo: "",
           role: "Artist",
           address: "",
         });
@@ -120,13 +120,13 @@ const CreateUserForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phno">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobileNo">
               Phone Number
             </label>
             <input
               type="tel"
-              id="phno"
-              value={formData.phno}
+              id="mobileNo"
+              value={formData.mobileNo}
               onChange={handleChange}
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

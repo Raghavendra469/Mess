@@ -58,7 +58,7 @@ const DeleteUserForm = () => {
                     <table className="min-w-full bg-white">
                         <thead>
                             <tr>
-                                <th className="py-2 px-4 text-left">Name</th>
+                                <th className="py-2 px-4 text-left">Username</th>
                                 <th className="py-2 px-4 text-left">Email</th>
                                 <th className="py-2 px-4 text-left">Role</th>
                                 <th className="py-2 px-4 text-left">Status</th>

@@ -1,6 +1,5 @@
 const jwt =require('jsonwebtoken');
 const User =require('../models/userModel.js');
-const Song =require('../models/SongModel.js');
 const bcrypt =require('bcrypt');
 const saltRounds = 12; // 2^12 = 4096 rounds
 
@@ -20,6 +19,11 @@ const login = async (req, res) => {
         // Check if the user is active
         if (!user.isActive) {
             return res.status(403).json({ success: false, error: 'User is not active' });
+        }
+
+        // Check if the user is loging for the 1st time
+        if(user.isFirstLogin){
+            return res.status(200).json({ success: false, loginStatus: {ststus: 'first time login'} });
         }
 
         // Compare the provided password with the stored hash
