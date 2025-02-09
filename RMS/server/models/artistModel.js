@@ -8,6 +8,9 @@ const ArtistSchema = new mongoose.Schema({
   address: { type: String },
   songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }], // List of song IDs
   collaborators: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }], // List of other artists they collaborate with
+  fullRoyalty: { type: Number, default: 0 },
+  totalRoyaltyDue: { type: Number, default: 0 },
+  totalRoyaltyPaid: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

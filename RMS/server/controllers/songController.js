@@ -4,11 +4,12 @@
 const mongoose = require('mongoose');
 const songService = require('../services/songService');
 const royaltyController = require('../controllers/royaltyController');
+const Artist= require('../models/artistModel');
 
 exports.uploadSong = async (req, res) => {
   try {
-    if (!req.body.title || !req.body.artistName || !req.body.songName) {
-      return res.status(400).json({ message: "Missing required fields: title, artistName, songName" });
+    if (!req.body.artistName || !req.body.songName) {
+      return res.status(400).json({ message: "Missing required fields: artistName, songName" });
     }
 
     // Generate artistId and songId
@@ -32,9 +33,17 @@ exports.uploadSong = async (req, res) => {
       body: {
         royaltyId: artistId,  // Royalty ID based on artistId format
         artistId: song.artistId,  // Reference to the artist's ObjectId
-        songId: song._id,  // Reference to the song's ObjectId
+        songId: song._id, 
+        songName:song.songName // Reference to the song's ObjectId
       }
     };
+
+    await Artist.findByIdAndUpdate(
+        song.artistId,
+        {$addToSet:{songs:song._id}},
+        {new:true}
+
+    );
 
     // Mock response object for internal function call
     const royaltyRes = {
