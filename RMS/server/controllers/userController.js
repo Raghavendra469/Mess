@@ -32,7 +32,7 @@ const getUserByUsername = async (req, res) => {
     const user = await userService.getUserByUsername(req.params.username);
     console.log(user);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.status(200).json(user);
+    res.status(200).json({ success: true, user });
     console.log(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,8 +41,8 @@ const getUserByUsername = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    console.log(req.headers,"req.headers")
-    console.log(req.params.username,"username",req.body,"req.body")
+    // console.log(req.headers,"req.headers")
+    // console.log(req.params.username,"username",req.body,"req.body")
     const user = await userService.updateUser(req.params.username, req.body);
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.status(200).json(user);

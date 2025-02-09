@@ -79,4 +79,4 @@ const updateArtistRoyalty = async (artistId) => {
 
 // module.exports = mongoose.model('Song', songSchema, 'Song');
 
-module.exports =  mongoose.models.Song || mongoose.model('Song', SongSchema,'Song');
+module.exports =  mongoose.models.Song || mongoose.model('Song', songSchema,'Song');

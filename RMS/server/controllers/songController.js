@@ -5,9 +5,12 @@ const mongoose = require('mongoose');
 const songService = require('../services/songService');
 const royaltyController = require('../controllers/royaltyController');
 const Artist= require('../models/artistModel');
+const Song = require('../models/songModel');
+const Royalty = require('../models/royaltyModel');
 
 exports.uploadSong = async (req, res) => {
   try {
+    console.log("song request",req.body)
     if (!req.body.artistName || !req.body.songName) {
       return res.status(400).json({ message: "Missing required fields: artistName, songName" });
     }
@@ -27,6 +30,7 @@ exports.uploadSong = async (req, res) => {
 
     // Save song to database
     const song = await songService.createSong(songData);
+    
 
     // Call the createRoyaltyController to create the linked royalty entry
     const royaltyReq = {
@@ -54,7 +58,7 @@ exports.uploadSong = async (req, res) => {
 
     await royaltyController.createRoyaltyController(royaltyReq, royaltyRes);
 
-    res.status(201).json({ message: "Song and Royalty created successfully", song });
+    res.status(201).json({ success: "Song and Royalty created successfully", song });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -75,7 +79,7 @@ exports.getSongById = async (req, res) => {
 exports.getSongsByArtistId = async (req, res) => {
   try {
     const songs = await songService.findSongsByArtistId(req.params.artistId);
-    res.json(songs);
+    res.status(200).json({success:true, songs});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -112,10 +116,46 @@ exports.updateSong = async (req, res) => {
 
 exports.deleteSong = async (req, res) => {
   try {
-    const deleted = await songService.removeSong(req.params.songId);
-    if (!deleted) return res.status(404).json({ message: 'Song not found' });
-    res.json({ message: 'Song deleted successfully' });
+    const { songId } = req.params;
+ 
+    if (!songId) {
+      return res.status(400).json({ message: "Missing required field: songId" });
+    }
+ 
+    // Find the song to get related artistId before deletion
+    const song = await Song.findOne({ songId:songId });
+ 
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
+    }
+ 
+    const artist = await Artist.findOne({ _id: song.artistId });
+ 
+    if (!artist) {
+      return res.status(404).json({ message: "Associated artist not found" });
+    }
+ 
+    // Delete song from Songs collection
+    await Song.deleteOne({ songId });
+ 
+    // Remove song reference from the Artist's songs array
+    await Artist.findOneAndUpdate(
+      { _id: artist._id },
+      { $pull: { songs: song._id } },
+      { new: true }
+    );
+ 
+    // Delete the corresponding royalty entry
+    const royaltyDeleteResult = await Royalty.deleteOne({ songId: song._id });
+ 
+    res.status(200).json({
+      message: "Song and associated data deleted successfully",
+      deletedSong: songId,
+      royaltyDeleted: royaltyDeleteResult.deletedCount > 0,
+      artistSongDeleted:artist._id // Ensure royalty was actually deleted
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error deleting song:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };

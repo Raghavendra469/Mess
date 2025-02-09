@@ -16,6 +16,7 @@ import SongListPage from "./components/dashboard/artistPages/SongListPage";
 import AddSongForm from "./components/dashboard/artistPages/AddSongForm";
 import ResetPassword from "./pages/ResetPassword"; 
 import UpdateArtistProfileForm from "./components/dashboard/artistPages/updateArtistProfileForm"
+import DeleteSong from "./components/dashboard/artistPages/DeleteSong"
 
 function App() {
 
@@ -52,7 +53,7 @@ function App() {
           <Route path="" element={<ArtistSummary />} /> {/* default */}
           <Route path="my-songs" element={<SongListPage />} /> {/* display Songs */}
           <Route path="add-songs" element={<AddSongForm />} /> {/* add songs */}
-          <Route path="delete-songs" element={<DeleteUserForm />} /> {/* delete sngs */}
+          <Route path="delete-songs" element={<DeleteSong />} /> {/* delete sngs */}
           <Route path="collabration" element={<DeleteUserForm />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
           <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
