@@ -25,6 +25,7 @@ const DeleteSong = () => {
     };
     fetchSongs();
   }, [userData]); 
+
   // Search functionality
   const handleSearch = (searchTerm) => {
     if (!searchTerm) {
@@ -40,23 +41,20 @@ const DeleteSong = () => {
 
   // Delete a song without reloading
   const handleDeleteSong = async (songId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this song?");
-    if (!confirmDelete) return;
+    // const confirmDelete = window.confirm("Are you sure you want to delete this song?");
+    // if (!confirmDelete) return;
 
     try {
       const response = await axios.delete(`http://localhost:3000/api/songs/${songId}`);
       if (response.data.message) {
-       
         setSongs((prevSongs) => prevSongs.filter((song) => song.songId !== songId));
         setFilteredSongs((prevSongs) => prevSongs.filter((song) => song.songId !== songId));
 
-       
-        setStatusMessage("Song deleted successfully! 🎵");
-
-        
-        setTimeout(() => setStatusMessage(""), 3000);
+        setStatusMessage("✅ Song deleted successfully!");
+        setTimeout(() => setStatusMessage(""), 3000); 
       }
     } catch (error) {
+      setStatusMessage("❌ Failed to delete song.");
       console.error("Failed to delete song:", error);
     }
   };
@@ -69,11 +67,9 @@ const DeleteSong = () => {
         <SearchBar onSearch={handleSearch} />
       </header>
 
-     
+      {/* ✅ Status message (instead of alerts) */}
       {statusMessage && (
-        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
-          {statusMessage}
-        </div>
+        <p className="text-center text-gray-700 font-semibold mb-4">{statusMessage}</p>
       )}
 
       {/* Songs displayed as responsive cards */}
@@ -82,12 +78,12 @@ const DeleteSong = () => {
           filteredSongs.map((song) => (
             <div key={song._id} className="bg-white p-6 rounded-lg shadow-lg">
               <p className="font-bold text-lg">{song.songName}</p>
-              <p className="text-sm text-gray-600">Release Date: {song.releaseDate}</p>
-              <p className=" text-lg"><b>Total Streams:</b>{song.totalStreams}</p>
-              <p className=" text-lg"><b>Total Royalty:</b>{song.totalRoyalty}</p>
+              <p className="text-sm text-gray-600">Release Date: {new Date(song.releaseDate).toLocaleDateString()}</p>
+              <p className="text-lg"><b>Total Streams:</b> {song.totalStreams}</p>
+              <p className="text-lg"><b>Total Royalty:</b> {song.totalRoyalty}</p>
               <div className="mt-4">
                 <button
-                  onClick={() => handleDeleteSong(song.songId)} 
+                  onClick={() => handleDeleteSong(song.songId)}
                   className="w-full px-4 py-2 rounded text-white font-semibold bg-red-500 hover:bg-red-700"
                 >
                   Delete Song

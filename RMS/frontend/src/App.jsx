@@ -11,7 +11,7 @@ import CreateUserForm from "./components/dashboard/CreateUserForm";
 import DeleteUserForm from "./components/dashboard/DeleteUserForm";
 import ViewAdminForm from "./components/dashboard/ViewAdminForm";
 import AdminSummary from "./components/dashboard/AdminSummary"
-import ArtistSummary from "./components/dashboard/ArtistSummary"
+import ArtistSummary from "./components/dashboard/artistPages/ArtistSummary"
 import SongListPage from "./components/dashboard/artistPages/SongListPage";
 import AddSongForm from "./components/dashboard/artistPages/AddSongForm";
 import ResetPassword from "./pages/ResetPassword"; 
