@@ -32,7 +32,7 @@ const ForgotPassword = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-b from-teal-600 to-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">Forgot Password</h2>
+        {/* <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">Forgot Password</h2> */}
         {message && <p className="text-green-500 text-center mb-4">{message}</p>}
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>

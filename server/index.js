@@ -67,7 +67,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
   
         const mailOptions = {
             from: process.env.EMAIL_USER,
-            to: 'baruasudipta555@gmail.com',
+            to: email,
             subject: 'Reset your Password',
             text: `Click on the link to reset your password: ${resetLink}`
         };
@@ -100,7 +100,8 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
+        await User.findByIdAndUpdate(id, { password: hashedPassword },{ new: true });
+        await User.findByIdAndUpdate(id, {isFirstLogin:false},{ new: true });
 
         res.json({ success: true, message: "Password reset successful" });
     } catch (err) {

@@ -41,7 +41,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
       >
         <FaBars />
       </button>
-      <p className="text-xl font-bold text-white">Welcome, {user.name}</p>
+      <p className="text-xl font-bold text-white">Welcome, {user.username}</p>
       <div className="flex items-center space-x-6">
         <button onClick={toggleProfile} className="text-white text-2xl cursor-pointer">
           <FaUserCircle />
@@ -60,7 +60,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
           className="absolute right-4 top-16 bg-white shadow-lg rounded-lg p-6 w-80"
         >
           <h3 className="text-lg font-semibold mb-4">Profile Details</h3>
-          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Name:</strong> {user.username}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Role:</strong> {user.role}</p>
         </div>

@@ -1,6 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const CreateUserForm = () => {
+
+
+  const [formData, setFormData] = useState({
+    username: "",
+    fullname: "",
+    email: "",
+    password: "",
+    phno: "",
+    role: "artist",
+    address: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:3000/api/users");
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("User created successfully!");
+        setFormData({
+          username: "",
+          fullname: "",
+          email: "",
+          password: "",
+          phno: "",
+          role: "",
+          address: "",
+        });
+      } else {
+        alert(data.message || "Failed to create user");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error creating user");
+    }
+  };
+
+
   return (
     <div className="bg-gray-100 min-h-screen p-4">
       <header className="bg-white shadow-md py-4 px-6 mb-6 flex items-center justify-between">
@@ -8,7 +57,7 @@ const CreateUserForm = () => {
       </header>
 
       <div className="bg-white shadow-md rounded-lg p-6">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
               Username
@@ -16,6 +65,7 @@ const CreateUserForm = () => {
             <input
               type="text"
               id="username"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter username"
             />
@@ -27,6 +77,7 @@ const CreateUserForm = () => {
             <input
               type="text"
               id="fullname"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter fullname"
             />
@@ -38,6 +89,7 @@ const CreateUserForm = () => {
             <input
               type="email"
               id="email"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter email"
             />
@@ -49,6 +101,7 @@ const CreateUserForm = () => {
           <input
             type="password"
             id="password"
+            onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="Enter your password"
           />
@@ -60,6 +113,7 @@ const CreateUserForm = () => {
             <input
               type="number"
               id="phno"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter phone Number"
             />
@@ -70,6 +124,7 @@ const CreateUserForm = () => {
             </label>
             <select
               id="role"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             >
               <option value="artist">Artist</option>
@@ -83,6 +138,7 @@ const CreateUserForm = () => {
             <input
               type="text"
               id="address"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your address"
             />

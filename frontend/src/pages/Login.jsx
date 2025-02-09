@@ -38,20 +38,20 @@ const Login = () => {
             if (response.data.success) {
                 login(response.data.user); // Call `login` from context
                 localStorage.setItem("token", response.data.token);
-                const user = response.data.user;
-                if(response.data.user.firstLogin){
-                    navigate(`/reset-password/${user._id}/${response.data.token}`);
-                }
-                else{
-                if (response.data.user.role === "Admin") {
-                     console.log("Entering login",response.data.user);
+                console.log()
+                if (response.data.user.role === "Admin" && !response.data.user.isFirstLogin) {
+                    //  console.log("Entering login",response.data.user);
                     navigate("/admin-dashboard");
-                } else if (response.data.user.role === "Manager") {
+                } else if (response.data.user.role === "Manager" && !response.data.user.isFirstLogin) {
                     navigate("/manager-dashboard");
-                } else if (response.data.user.role === "Artist"){
+                } else if (response.data.user.role === "Artist" && !response.data.user.isFirstLogin){
+                    // console.log("Entering login",response.data.user);
                     navigate("/artist-dashboard");
                 }
-            }
+                else if (response.data.user.isFirstLogin){
+                    // console.log("Entering login",response.data.user);
+                    navigate("/reset-password");
+                }
             }
         } catch (error) {
             if (error.response && !error.response.data.success) {
@@ -102,7 +102,10 @@ const Login = () => {
                          {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
                     </div>
                     <div className="mb-4 flex items-center justify-between">
-                      
+                        <label className="inline-flex items-center">
+                            <input type="checkbox" className="form-checkbox rounded" />
+                            <span className="ml-2 text-gray-700">Remember me</span>
+                        </label>
                         <Link
                             to="/forgot-password"
                             className="text-blue-500 hover:text-blue-700 underline text-sm"

@@ -1,10 +1,13 @@
 const userService = require('../services/userService');
+const User =require('../models/userModel.js');
+// const User = require('../models/userModel');
 
 const createUser = async (req, res) => {
   try {
     // console.log(req.body)
     const user = await userService.createUser(req.body);
     res.status(201).json(user);
+    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -44,11 +47,30 @@ const deleteUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await userService.getAllUsers(req.params.role);
-    res.status(200).json(users);
+    return res.status(200).json({ success: true, users });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
+
+const toggleUserStatus = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { isActive } = req.body;
+      const user = await User.findByIdAndUpdate(id, { isActive }, { new: true });
+      console.log(user,"user")
+      if (!user) {
+          return res.status(404).json({ success: false, error: 'User not found' });
+      }
+      return res.status(200).json({ success: true, user });
+  } catch (error) {
+      return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
+
+
 
 module.exports = {
   createUser,
@@ -56,4 +78,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getAllUsers,
+  toggleUserStatus
 };

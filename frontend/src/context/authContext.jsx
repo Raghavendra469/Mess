@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => { // Renamed to PascalCase
                 })
                 if(response.data.success){
                     setUser(response.data.user)
+                    // console.log(user);
                 }
             }
             else{
@@ -37,6 +38,7 @@ export const AuthProvider = ({ children }) => { // Renamed to PascalCase
 
     const login = (user) => {
         setUser(user);
+        // console.log(user);
     };
 
     const logout = () => {

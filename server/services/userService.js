@@ -138,10 +138,27 @@ const deleteUser = async (username) => {
 };
 
 const getAllUsers = async (role) => {
+  // console.log(role,'role')
   if(role==='Artist')
-  return await Artist.find();
+  {
+    var out = await Artist.find()
+    // console.log(out,"artists out")
+  
+  return out;
+  }
   else if(role==='Manager')
-  return await Manager.find();
+  {
+    var manOut = await Manager.find();
+    // console.log(manOut,"manager out")
+
+
+    return manOut;
+  }
+  else if(role='User')
+  {
+    return await User.find();
+  }
+
 };
 
 module.exports = {

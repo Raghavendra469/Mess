@@ -61,7 +61,7 @@ const SongListPage = () => {
                     </thead>
                     <tbody>
                         {songs.map((song) => (
-                            <tr key={user._id}>
+                            <tr key={song._id}>
                                 <td className="border px-4 py-2">{song.songId}</td>
                                 <td className="border px-4 py-2">{song.title}</td>
                                 <td className="border px-4 py-2">{song.releaseDate}</td>
