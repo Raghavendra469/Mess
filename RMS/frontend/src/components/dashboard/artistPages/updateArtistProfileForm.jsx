@@ -20,11 +20,12 @@ const UpdateArtistProfileForm = () => {
             const fetchArtistDetails = async () => {
                 try {
                     const response = await axios.get(`http://localhost:3000/api/users/${user.username}`);
+                    // console.log("update------",response.data.user);
                     setFormData({
-                        fullName: response.data.fullName,
-                        mobileNo: response.data.mobileNo || "",
-                        address: response.data.address || "",
-                        description: response.data.description || "",
+                        fullName: response.data.user.fullName|| "",
+                        mobileNo: response.data.user.mobileNo || "",
+                        address: response.data.user.address || "",
+                        description: response.data.user.description || "",
                     });
                     setLoading(false);
                 } catch (error) {

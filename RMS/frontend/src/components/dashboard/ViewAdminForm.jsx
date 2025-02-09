@@ -7,14 +7,14 @@ const ViewAdminForm = () => {
 
   return (
     <div className="bg-gradient-to-br from-gray-200 to-gray-100 min-h-screen flex justify-center items-center p-6">
-      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl p-8 w-full max-w-lg border border-gray-300">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-lg border border-gray-300">
         
         {/* Profile Image */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center text-3xl font-semibold text-white">
             {user.username?.charAt(0).toUpperCase()}
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mt-3">My Profile</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mt-3">Admin Profile</h1>
         </div>
 
         <form className="space-y-6">
