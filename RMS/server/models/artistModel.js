@@ -7,6 +7,7 @@ const ArtistSchema = new mongoose.Schema({
   mobileNo: { type: String },
   address: { type: String },
   songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }], // List of song IDs
+  artistShare:{type:Number},
   collaborators: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }], // List of other artists they collaborate with
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
