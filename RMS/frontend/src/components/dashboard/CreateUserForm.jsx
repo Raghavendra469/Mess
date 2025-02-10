@@ -12,6 +12,9 @@ const CreateUserForm = () => {
     address: "",
   });
 
+  const [statusMessage, setStatusMessage] = useState(""); // State to store success/failure message
+  const [statusType, setStatusType] = useState(""); // "success" or "error"
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -22,7 +25,7 @@ const CreateUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ensure role is properly capitalized
+    // Ensure role is properly formatted
     const formattedData = {
       ...formData,
       role: formData.role.charAt(0).toUpperCase() + formData.role.slice(1).toLowerCase(),
@@ -32,7 +35,10 @@ const CreateUserForm = () => {
       const response = await axios.post("http://localhost:3000/api/users", formattedData);
 
       if (response.status === 201) {
-        alert("User created successfully!");
+        setStatusMessage("User created successfully!");
+        setStatusType("success");
+
+        // Reset form after successful submission
         setFormData({
           username: "",
           fullName: "",
@@ -43,11 +49,13 @@ const CreateUserForm = () => {
           address: "",
         });
       } else {
-        alert(response.data.message || "Failed to create user");
+        setStatusMessage(response.data.message || "Failed to create user");
+        setStatusType("error");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error creating user");
+      setStatusMessage("Error creating user");
+      setStatusType("error");
     }
   };
 
@@ -171,6 +179,13 @@ const CreateUserForm = () => {
           >
             Create User
           </button>
+
+          {/* Display success or error message */}
+          {statusMessage && (
+            <p className={`mt-4 font-semibold ${statusType === "success" ? "text-green-600" : "text-red-600"}`}>
+              {statusMessage}
+            </p>
+          )}
         </form>
       </div>
     </div>

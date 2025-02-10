@@ -21,6 +21,8 @@ import UpdateManagerProfileForm from "./components/dashboard/managerPages/Update
 import ManagerNotifications from "./components/dashboard/managerPages/ManagerNotifications.jsx"
 import DeleteSong from "./components/dashboard/artistPages/DeleteSong"
 import ManagerArtists from "./components/dashboard/managerPages/ManagerArtists.jsx";
+import RequestManagerList from "./components/dashboard/artistPages/RequestManagerList.jsx";
+import CollaborationRequests from "./components/dashboard/managerPages/CollaborationRequests.jsx";
 
 function App() {
 
@@ -58,7 +60,7 @@ function App() {
           <Route path="my-songs" element={<SongListPage />} /> {/* display Songs */}
           <Route path="add-songs" element={<AddSongForm />} /> {/* add songs */}
           <Route path="delete-songs" element={<DeleteSong />} /> {/* delete sngs */}
-          <Route path="collabration" element={<DeleteUserForm />} /> {/* collabration */}
+          <Route path="collabration" element={<RequestManagerList />} /> {/* collabration */}
           <Route path="view-manager" element={<DeleteUserForm />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
           <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
@@ -75,7 +77,7 @@ function App() {
           {/* Nested Routes for artist dashboard */}
           <Route path="" element={<ManagerSummary />} /> {/* default */}
           <Route path="view-artists" element={<ManagerArtists />} /> {/* display Songs */}
-          <Route path="collaboration-requests" element={<AddSongForm />} /> {/* add songs */}
+          <Route path="collaboration-requests" element={<CollaborationRequests />} /> {/* add songs */}
           <Route path="royalty-transactions" element={<DeleteSong />} /> {/* delete sngs */}
           <Route path="notifications" element={<ManagerNotifications />} /> {/* collabration */}
           <Route path="update-profile" element={<UpdateManagerProfileForm />} /> {/* collabration */}

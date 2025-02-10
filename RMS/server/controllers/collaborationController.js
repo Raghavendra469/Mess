@@ -2,10 +2,11 @@ const collaborationService = require('../services/collaborationService');
 
 const createCollaboration = async (req, res) => {
   try {
-    console.log(req.body,"createCollaboration")
-    console.log(req.headers,'req.headers')
+    // console.log(req.body,"createCollaboration")
+    // console.log(req.headers,'req.headers')
     const collaboration = await collaborationService.createCollaboration(req.body);
-    res.status(201).json(collaboration);
+    // console.log("result------",collaboration)
+    res.status(201).json({ success: true, collaboration });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -15,7 +16,7 @@ const getCollaborationsByUserAndRole = async (req, res) => {
   try {
     const { userId, role } = req.params;
     const collaborations = await collaborationService.getCollaborationsByUserAndRole(userId, role);
-    res.status(200).json(collaborations);
+    res.status(200).json({ success: true, collaborations });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

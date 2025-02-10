@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const ManagerSchema = new mongoose.Schema({
   managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to User schema
   fullName: { type: String, required: true },
+  username:{ type:String, required: true},
   email: { type: String, required: true, unique: true },
   mobileNo: { type: String },
   address: { type: String },
