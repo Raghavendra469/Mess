@@ -1,18 +1,20 @@
 const jwt =require('jsonwebtoken');
 const User =require('../models/userModel.js');
-const Song =require('../models/SongModel.js');
+const Song =require('../models/songModel.js');
+// const Artist = require('../models/artistModel.js');
+// const Manager = require('../models/managerModel.js')
 const bcrypt =require('bcrypt');
 const saltRounds = 12; // 2^12 = 4096 rounds
 
 const login = async (req, res) => {
 
-    console.log("this is auhtController error")
+    // console.log("this is auhtController error")
     try {
         const { email, password } = req.body;
 
         // Find the user by email
         const user = await User.findOne({ email });
-
+        
         if (!user) {
             return res.status(404).json({ success: false, error: 'User not found' }); // Stop further execution
         }
@@ -20,6 +22,11 @@ const login = async (req, res) => {
         // Check if the user is active
         if (!user.isActive) {
             return res.status(403).json({ success: false, error: 'User is not active' });
+        }
+
+        // Check if the user is loging for the 1st time
+        if(user.isFirstLogin){
+            return res.status(200).json({ success: false, loginStatus: {ststus: 'first time login'} });
         }
 
         // Compare the provided password with the stored hash
@@ -45,7 +52,8 @@ const login = async (req, res) => {
                 email:user.email,
                 role: user.role,
                 isActive:user.isActive,
-                isFirstLogin:user.isFirstLogin
+                isFirstLogin:user.isFirstLogin,
+                password:user.password
             },
         });
     } catch (error) {
@@ -62,6 +70,7 @@ const login = async (req, res) => {
 // }
 
 const verify = (req,res) =>{
+    // console.log("authcontroller",req.user);
     return res.status(200).json({success: true, user: req.user})
 } 
 

@@ -4,7 +4,7 @@ const transactionService = require('../services/transactionService');
 exports.createTransaction = async (req, res) => {
   try {
     console.log(req.body,"req.body")
-    const { userId, royaltyId, transactionAmount } = req.body;
+    const { userId, royaltyId,songId, transactionAmount } = req.body;
     if (!userId || !royaltyId || !transactionAmount) {
       return res.status(400).json({ error: "Missing required fields: userId, royaltyId, transactionAmount" });
     }

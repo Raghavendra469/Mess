@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const Manager = require('../models/managerModel');
 const Artist = require('../models/artistModel');
+const bcrypt=require('bcrypt');
 // const{v4:uuidv4}=require('uuid');
 const mongoose=require('mongoose');
 
@@ -52,21 +53,27 @@ const mongoose=require('mongoose');
 
 const createUser = async (userData) => {
   const { username, password, email, role, ...rest } = userData;
+
   // console.log(username);
   // console.log(password);
   // console.log(email);
   // console.log(role);
-  // console.log(rest);
+  console.log(rest);
   const session = await User.startSession();
   session.startTransaction();
 
   try {
-    const user = new User({ username, password, email, role });
+    // hashedPassword=password.bcrypt();
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({ username,password:hashedPassword, email, role });
+    // console.log(user);
     await user.save({ session });
 
     if (role === 'Manager') {
       const manager = new Manager({
         managerId: user._id,
+        username:username,
         email:email,
         ...rest,
       });
@@ -74,6 +81,7 @@ const createUser = async (userData) => {
     } else if (role === 'Artist') {
       const artist = new Artist({
         artistId: user._id,
+        username:username,
         email:email,
         ...rest,
       });

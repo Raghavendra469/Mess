@@ -1,0 +1,16 @@
+
+
+###cretae account
+POST http://localhost:3000/api/royalty/royalties
+Content-Type: application/json
+
+{
+  "royaltyId": "Kedar",
+  "artistId": "63e68a2b8d6e5c8a08f3c53f",
+  "songId": "67a70249de263ab977d3b64b",
+  "amount": 0.0,
+  "period": "March 2025"
+}
+
+###get by artistId
+GET http://localhost:3000/api/royalties/venu-krithik

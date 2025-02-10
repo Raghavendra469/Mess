@@ -1,0 +1,22 @@
+
+
+###using SongId
+### Calculate Royalty
+POST http://localhost:8000/royalty/calculate
+
+Content-Type: application/json
+
+{
+    "artistName": "Venu Krithik",
+    "artistId": "65c9bcd48f4e7b0012a5d123",
+    "songId": "65c9bcd48f4e7b0012a5d456",
+    "totalStreams": 30000,
+    "period": "January 2025"
+}
+
+
+### Get Royalty by Song ID
+GET http://localhost:4000/api/royalties/
+
+### Export Royalty Report
+GET http://localhost:4000/api/royalties/report/

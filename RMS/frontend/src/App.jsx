@@ -9,12 +9,14 @@ import PrivateRoutes from "./utils/PrivateRoutes";
 import RoleBaseRoutes from "./utils/RoleBaseRoutes";
 import CreateUserForm from "./components/dashboard/CreateUserForm";
 import DeleteUserForm from "./components/dashboard/DeleteUserForm";
-import UpdateAdminForm from "./components/dashboard/UpdateAdminForm";
+import ViewAdminForm from "./components/dashboard/ViewAdminForm";
 import AdminSummary from "./components/dashboard/AdminSummary"
-import ArtistSummary from "./components/dashboard/ArtistSummary"
+import ArtistSummary from "./components/dashboard/artistPages/ArtistSummary"
 import SongListPage from "./components/dashboard/artistPages/SongListPage";
 import AddSongForm from "./components/dashboard/artistPages/AddSongForm";
-import ResetPassword from "./pages/ResetPassword";
+import ResetPassword from "./pages/ResetPassword"; 
+import UpdateArtistProfileForm from "./components/dashboard/artistPages/updateArtistProfileForm"
+import DeleteSong from "./components/dashboard/artistPages/DeleteSong"
 
 function App() {
 
@@ -37,7 +39,7 @@ function App() {
           <Route path="" element={<AdminSummary />} /> {/* default */}
           <Route path="create-user-account" element={<CreateUserForm />} /> {/* User creation */}
           <Route path="delete-users" element={<DeleteUserForm />} /> {/* User deletion */}
-          <Route path="update-profile" element={<UpdateAdminForm />} />{/* Admin Data Updation */}
+          <Route path="view-profile" element={<ViewAdminForm />} />{/* Admin Data Updation */}
         </Route>
 
         <Route path="/artist-dashboard" element={
@@ -51,11 +53,11 @@ function App() {
           <Route path="" element={<ArtistSummary />} /> {/* default */}
           <Route path="my-songs" element={<SongListPage />} /> {/* display Songs */}
           <Route path="add-songs" element={<AddSongForm />} /> {/* add songs */}
-          <Route path="delete-songs" element={<DeleteUserForm />} /> {/* delete sngs */}
+          <Route path="delete-songs" element={<DeleteSong />} /> {/* delete sngs */}
           <Route path="collabration" element={<DeleteUserForm />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
           <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
-          <Route path="update-profile" element={<UpdateAdminForm />} />{/* Artist Data Updation */}
+          <Route path="view-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}
         </Route>
         
 
