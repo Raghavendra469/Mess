@@ -6,9 +6,11 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <div className="text-teal-600 text-2xl font-bold">
-          Royalty Management
+        {/* Logo and App Name */}
+        <div className="flex items-center space-x-2">
+          <div className="text-teal-600 text-2xl font-bold">
+            Royalty Management
+          </div>
         </div>
 
         {/* Navigation Links */}
