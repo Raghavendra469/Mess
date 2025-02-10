@@ -30,7 +30,8 @@ const updateCollaborationStatus = async (collaborationId, status) => {
       mongoose.set('debug', true);
       // Add SongId to songsManaged field in collaboration Collection
       const artistSongs = await Song.find({artistId}).select("_id")
-      Collaboration.songsManaged = artistSongs.map(song => song._id);
+      console.log(artistSongs,"artistSongs in collaboration")
+      collaboration.songsManaged = artistSongs.map(song => song._id);
       // Add artistId to manager's managedArtists field
       await Manager.findByIdAndUpdate(
         collaboration.managerId,
