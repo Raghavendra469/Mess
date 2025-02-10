@@ -67,14 +67,35 @@ songSchema.post('findOneAndUpdate', async function (doc) {
 const updateArtistRoyalty = async (artistId) => {
   const totalRoyalty = await mongoose.model('Song').aggregate([
     { $match: { artistId: new mongoose.Types.ObjectId(artistId) } },
-    { $group: { _id: null, totalRoyalty: { $sum: "$totalRoyalty" } } }
+    { $group: { _id: null, totalRoyalty: { $sum: "$totalRoyalty" } } },
+    
+
+
+  ]);
+  const totalStreams = await mongoose.model('Song').aggregate([
+    { $match: { artistId: new mongoose.Types.ObjectId(artistId) } },
+    { $group: { _id: null, totalStreams: { $sum: "$totalStreams" } } }
+
   ]);
 
-  const newRoyalty = totalRoyalty.length > 0 ? totalRoyalty[0].totalRoyalty : 0;
 
-  await Artist.findByIdAndUpdate(artistId, { fullRoyalty: newRoyalty });
+  const newRoyalty = totalRoyalty.length > 0 ? totalRoyalty[0].totalRoyalty : 0;
+  const newStreams = totalRoyalty.length > 0 ? totalStreams[0].totalStreams : 0;
+
+  // await Artist.findByIdAndUpdate(artistId, { fullRoyalty: newRoyalty,totalStreams: newStreams });
+  // await Artist.findByIdAndUpdate(artistId, { fullStreams: newStreams });
+  const updatedArtist = await Artist.findByIdAndUpdate(
+    artistId,
+    { $set: { fullRoyalty: newRoyalty, totalStreams: newStreams } },
+    { new: true }
+  );
+  console.log(updatedArtist,"UpdatedArtist")
+
+
 
   console.log(`✅ Updated fullRoyalty for artist ${artistId}: ${newRoyalty}`);
+  console.log(`✅ Updated fullStreams for artist ${artistId}: ${newStreams}`);
+
 };
 
 // module.exports = mongoose.model('Song', songSchema, 'Song');

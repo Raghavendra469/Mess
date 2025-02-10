@@ -108,12 +108,12 @@ const getUserByUsername = async (username) => {
   let userProfile;
   
   if (user.role === 'Artist') {
-    userProfile = await Artist.findOne({artistId: user._id}).lean();
+    userProfile = await Artist.findOne({artistId: user._id}).populate('songs').lean();
     console.log(user._id,"user._id")
     console.log(userProfile,"user profile")
   }
   else if(user.role==='Manager'){
-    userProfile = await Manager.findOne({managerId: user._id}).lean();
+    userProfile = await Manager.findOne({managerId: user._id}).populate('managedArtists').lean();
   }
   else
   {

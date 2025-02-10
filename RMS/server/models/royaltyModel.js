@@ -24,7 +24,9 @@ RoyaltySchema.pre("save", async function (next) {
       try {
         const updateResult=await Song.updateMany(
           { _id: this.songId }, // Use the formatted artistId (e.g., "venu-krithik")
-          { $set: { totalRoyalty: this.totalRoyalty } } // Sync totalRoyalty with Royalty module
+          { $set: { totalRoyalty: this.totalRoyalty } }, // Sync totalRoyalty with Royalty module
+          { $set: { totalStreams: this.totalStreams } }
+          
         );
         console.log("Update result:", updateResult);
       } catch (error) {

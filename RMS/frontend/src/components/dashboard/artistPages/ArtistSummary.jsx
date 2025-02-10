@@ -11,6 +11,7 @@ const ArtistSummary = () => {
     const fetchSongData = async () => {
       if (!userData?._id) return;
       try {
+
         const response = await axios.get(`http://localhost:3000/api/songs/artist/${userData._id}`);
         if (response.data.success) {
           setSongData(response.data.songs);
@@ -36,7 +37,7 @@ const ArtistSummary = () => {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={songData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <XAxis dataKey="songName" />
-            <YAxis />
+            <YAxis/>
             <Tooltip />
             <Legend />
             <Bar dataKey="totalStreams" fill="#8884d8" />

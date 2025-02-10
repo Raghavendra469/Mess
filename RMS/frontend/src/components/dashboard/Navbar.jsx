@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars } from "react-icons/fa"; // Import hamburger icon from react-icons
 
 const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const profileRef = useRef(null);
@@ -32,6 +32,11 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
     };
   }, []);
 
+  // If loading, show a loading message or spinner
+  if (loading) {
+    return <div className="flex items-center justify-between h-16 bg-teal-600 px-5 relative">Loading...</div>;
+  }
+
   return (
     <div className="flex items-center justify-between h-16 bg-teal-600 px-5 relative">
       {/* Hamburger Menu */}
@@ -41,7 +46,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
       >
         <FaBars />
       </button>
-      <p className="text-xl font-bold text-white">Welcome, {user.username}</p>
+      <p className="text-xl font-bold text-white">Welcome, {user ? user.username : "Guest"}</p>
       <div className="flex items-center space-x-6">
         <button onClick={toggleProfile} className="text-white text-2xl cursor-pointer">
           <FaUserCircle />
@@ -54,7 +59,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
         </button>
       </div>
 
-      {showProfile && (
+      {showProfile && user && (
         <div
           ref={profileRef}
           className="absolute right-4 top-16 bg-white shadow-lg rounded-lg p-6 w-80"

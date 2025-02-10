@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
                     if (response.data.success) {
                         const loggedInUser = response.data.user;
                         setUser(loggedInUser);
+                        // console.log("added user in state-------",loggedInUser)
                         await fetchRoleData(loggedInUser); // Ensure role data is fetched before setting loading to false
                     }
                 } else {

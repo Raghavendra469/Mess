@@ -40,10 +40,11 @@ const Song = require('../models/songModel');
 const updateArtistFullRoyalty = async (artistId) => {
   try {
     const artistSongs = await Song.find({ artistId });
+    const totalStreams=artistSongs.reduce((sum, song) => sum + (song.totalStreams || 0), 0);
     const totalRoyalty = artistSongs.reduce((sum, song) => sum + (song.totalRoyalty || 0), 0);
     const totalRoyaltyPaid = artistSongs.reduce((sum, song) => sum +(song.royaltyPaid ||0),0);
     const totalRoyaltyDue = artistSongs.reduce((sum, song) => sum+(song.royaltyDue || 0), 0);
-    await Artist.findOneAndUpdate({ _id: artistId }, { fullRoyalty: totalRoyalty },{ totalRoyaltyPaid: totalRoyaltyPaid },{ totalRoyaltyDue: totalRoyaltyDue });
+    await Artist.findOneAndUpdate({ _id: artistId }, { fullRoyalty: totalRoyalty },{ totalRoyaltyPaid: totalRoyaltyPaid },{ totalRoyaltyDue: totalRoyaltyDue },{totalStreams:totalStreams});
   } catch (error) {
     console.error("Error updating artist fullRoyalty:", error);
   }

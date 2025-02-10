@@ -37,7 +37,13 @@ const login = async (req, res) => {
 
         // Generate a JWT token
         const token = jwt.sign(
-            { _id: user._id, role: user.role, email:user.email },
+            { _id: user._id,
+                username: user.username,
+                email:user.email,
+                role: user.role,
+                isActive:user.isActive,
+                isFirstLogin:user.isFirstLogin,
+                password:user.password },
             process.env.JWT_KEY,
             { expiresIn: '1h' }
         );
@@ -48,7 +54,7 @@ const login = async (req, res) => {
             token,
             user: {
                 _id: user._id,
-                name: user.username,
+                username: user.username,
                 email:user.email,
                 role: user.role,
                 isActive:user.isActive,
@@ -71,6 +77,7 @@ const login = async (req, res) => {
 
 const verify = (req,res) =>{
     // console.log("authcontroller",req.user);
+    console.log("verify user--------",req)
     return res.status(200).json({success: true, user: req.user})
 } 
 

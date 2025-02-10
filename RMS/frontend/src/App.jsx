@@ -12,11 +12,15 @@ import DeleteUserForm from "./components/dashboard/DeleteUserForm";
 import ViewAdminForm from "./components/dashboard/ViewAdminForm";
 import AdminSummary from "./components/dashboard/AdminSummary"
 import ArtistSummary from "./components/dashboard/artistPages/ArtistSummary"
+import ManagerSummary from "./components/dashboard/managerPages/ManagerSummary"
 import SongListPage from "./components/dashboard/artistPages/SongListPage";
 import AddSongForm from "./components/dashboard/artistPages/AddSongForm";
 import ResetPassword from "./pages/ResetPassword"; 
 import UpdateArtistProfileForm from "./components/dashboard/artistPages/updateArtistProfileForm"
+import UpdateManagerProfileForm from "./components/dashboard/managerPages/UpdateManagerProfileForm"
+import ManagerNotifications from "./components/dashboard/managerPages/ManagerNotifications.jsx"
 import DeleteSong from "./components/dashboard/artistPages/DeleteSong"
+import ManagerArtists from "./components/dashboard/managerPages/ManagerArtists.jsx";
 
 function App() {
 
@@ -55,18 +59,29 @@ function App() {
           <Route path="add-songs" element={<AddSongForm />} /> {/* add songs */}
           <Route path="delete-songs" element={<DeleteSong />} /> {/* delete sngs */}
           <Route path="collabration" element={<DeleteUserForm />} /> {/* collabration */}
+          <Route path="view-manager" element={<DeleteUserForm />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
           <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
-          <Route path="view-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}
+          <Route path="update-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}
+        </Route>
+
+        <Route path="/manager-dashboard" element={
+          <PrivateRoutes>
+            <RoleBaseRoutes requiredRole={["Manager"]}>
+              <ManagerDashboard />
+            </RoleBaseRoutes>
+          </PrivateRoutes>
+        } >
+          {/* Nested Routes for artist dashboard */}
+          <Route path="" element={<ManagerSummary />} /> {/* default */}
+          <Route path="view-artists" element={<ManagerArtists />} /> {/* display Songs */}
+          <Route path="collaboration-requests" element={<AddSongForm />} /> {/* add songs */}
+          <Route path="royalty-transactions" element={<DeleteSong />} /> {/* delete sngs */}
+          <Route path="notifications" element={<ManagerNotifications />} /> {/* collabration */}
+          <Route path="update-profile" element={<UpdateManagerProfileForm />} /> {/* collabration */}
         </Route>
         
 
-        <Route path="/manager-dashboard" element={
-        <PrivateRoutes>
-          <RoleBaseRoutes requiredRole = {["Manager"]}>
-            <ManagerDashboard/>
-          </RoleBaseRoutes>
-        </PrivateRoutes>}></Route>
     </Routes>
     </BrowserRouter>
   )

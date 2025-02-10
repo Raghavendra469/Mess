@@ -1,22 +1,26 @@
-import React  from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/authContext";
-import { useNavigate } from "react-router-dom";
 import ManagerSidebar from "../components/dashboard/ManagerSidebar";
 import Navbar from "../components/dashboard/Navbar";
-import ManagerSummary from "../components/dashboard/ManagerSummary";
-
+import { Outlet } from "react-router-dom";
 
 const ManagerDashboard = () => {
-    const {user} = useAuth()
-    return (
+  const { user } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  return (
     <div className="flex">
-      <ManagerSidebar />
-      <div className="flex-1 ml-64  bg-gray-100 h-screen">
-        <Navbar />
-        <ManagerSummary />
+      <ManagerSidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'lg:ml-64'} transition-margin duration-300 bg-gray-100 min-h-screen`}>
+        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+        <Outlet /> {/* This will render the nested routes */}
       </div>
     </div>
-    )
-}
-export default ManagerDashboard
+  );
+};
 
+export default ManagerDashboard;
