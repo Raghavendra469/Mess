@@ -100,7 +100,7 @@ const createUser = async (userData) => {
 
 const getUserByUsername = async (username) => {
   const user = await User.findOne({username:username});
-  console.log(user,"user",username,"userId");
+  // console.log(user,"user",username,"userId");
   
   if (!user) {
     throw new Error('User not found');
@@ -108,7 +108,7 @@ const getUserByUsername = async (username) => {
   let userProfile;
   
   if (user.role === 'Artist') {
-    userProfile = await Artist.findOne({artistId: user._id}).populate('songs').lean();
+    userProfile = await Artist.findOne({artistId: user._id}).populate('songs').populate('manager').lean();
     console.log(user._id,"user._id")
     console.log(userProfile,"user profile")
   }

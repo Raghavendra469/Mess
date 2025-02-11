@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./../../../context/authContext";
 import axios from "axios";
-import { FiUser, FiPhone, FiHome, FiFileText } from "react-icons/fi"; // Import icons
+import { FiUser, FiPhone, FiHome, FiFileText,FiPercent } from "react-icons/fi"; // Import icons
 
 const UpdateArtistProfileForm = () => {
     const { user, loading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         fullName: "",
         mobileNo: "",
+        commissionPercentage:"",
         address: "",
         description: "",
     });
@@ -24,6 +25,7 @@ const UpdateArtistProfileForm = () => {
                     setFormData({
                         fullName: response.data.user.fullName|| "",
                         mobileNo: response.data.user.mobileNo || "",
+                        commissionPercentage:response.data.user.commissionPercentage||"",
                         address: response.data.user.address || "",
                         description: response.data.user.description || "",
                     });
@@ -98,6 +100,21 @@ const UpdateArtistProfileForm = () => {
                                     type="text"
                                     name="mobileNo"
                                     value={formData.mobileNo}
+                                    onChange={handleChange}
+                                    className="w-full bg-transparent text-gray-900 font-medium text-lg focus:outline-none"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Comission Percentage */}
+                        <div className="flex items-center gap-3 border-b pb-2">
+                            <FiPercent className="text-gray-500 text-lg" />
+                            <div className="w-full">
+                                <label className="block text-gray-600 text-sm font-semibold">Commission Percentage</label>
+                                <input
+                                    type="number"
+                                    name="commissionPercentage"
+                                    value={formData.commissionPercentage}
                                     onChange={handleChange}
                                     className="w-full bg-transparent text-gray-900 font-medium text-lg focus:outline-none"
                                 />

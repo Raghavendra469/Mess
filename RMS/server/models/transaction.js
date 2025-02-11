@@ -9,6 +9,8 @@ const TransactionSchema = new mongoose.Schema({
   transactionAmount: { type: Number, required: [true, "transactionAmount is required"], min: [1, "Amount must be greater than zero"] },
   royaltyPaid: { type: Number, default: 0 },  // Amount paid to the artist
   royaltyDue: { type: Number, default: 0 },   // Amount pending to be paid
+  artistShare:{type:Number, default:0},
+  managerShare:{type:Number, default:0},
   transactionDate: { type: Date, default: Date.now }
 });
 

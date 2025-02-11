@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/authContext";
+import SummaryCard from "../../commonComponents/summaryCard";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const ArtistSummary = () => {
@@ -11,7 +12,6 @@ const ArtistSummary = () => {
     const fetchSongData = async () => {
       if (!userData?._id) return;
       try {
-
         const response = await axios.get(`http://localhost:3000/api/songs/artist/${userData._id}`);
         if (response.data.success) {
           setSongData(response.data.songs);
@@ -24,12 +24,27 @@ const ArtistSummary = () => {
     fetchSongData();
   }, [userData]);
 
+  // Compute Summary Data
+  const totalSongs = songData.length;
+  const totalRoyalty = songData.reduce((sum, song) => sum + song.totalRoyalty, 0);
+  const totalStreams = songData.reduce((sum, song) => sum + song.totalStreams, 0);
+  const topSong = songData.reduce((top, song) => (song.totalStreams > (top?.totalStreams || 0) ? song : top), null);
+  // console.log("total royalty----------",userData.fullRoyalty)
+  // console.log("total streams----------",userData.totalStreams)
   // Colors for the Pie Chart
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#0088FE", "#00C49F"];
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Artist Performance Summary</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <SummaryCard title="Total Songs" value={totalSongs} />
+        <SummaryCard title="Top Song" value={topSong ? topSong.songName : "N/A"} />
+        <SummaryCard title="Total Royalty" value={`$${totalRoyalty.toFixed(2)}`} />
+        <SummaryCard title="Total Streams" value={totalStreams} />
+      </div>
 
       {/* Bar Chart - Top Performing Songs by Streams */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
@@ -37,7 +52,7 @@ const ArtistSummary = () => {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={songData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <XAxis dataKey="songName" />
-            <YAxis/>
+            <YAxis />
             <Tooltip />
             <Legend />
             <Bar dataKey="totalStreams" fill="#8884d8" />

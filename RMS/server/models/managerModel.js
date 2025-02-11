@@ -9,7 +9,8 @@ const ManagerSchema = new mongoose.Schema({
   address: { type: String },
   description:{type: String},
   managedArtists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }], // List of artist IDs
-  managerShare:{type:Number},
+  managerShare:{type:Number, default:0},
+  commissionPercentage:{type: Number, default:12},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

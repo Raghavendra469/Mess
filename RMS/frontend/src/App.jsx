@@ -23,6 +23,7 @@ import DeleteSong from "./components/dashboard/artistPages/DeleteSong"
 import ManagerArtists from "./components/dashboard/managerPages/ManagerArtists.jsx";
 import RequestManagerList from "./components/dashboard/artistPages/RequestManagerList.jsx";
 import CollaborationRequests from "./components/dashboard/managerPages/CollaborationRequests.jsx";
+import ViewMyManager from "./components/dashboard/artistPages/ViewMyManager.jsx";
 
 function App() {
 
@@ -61,7 +62,7 @@ function App() {
           <Route path="add-songs" element={<AddSongForm />} /> {/* add songs */}
           <Route path="delete-songs" element={<DeleteSong />} /> {/* delete sngs */}
           <Route path="collabration" element={<RequestManagerList />} /> {/* collabration */}
-          <Route path="view-manager" element={<DeleteUserForm />} /> {/* collabration */}
+          <Route path="view-manager" element={<ViewMyManager />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
           <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
           <Route path="update-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}

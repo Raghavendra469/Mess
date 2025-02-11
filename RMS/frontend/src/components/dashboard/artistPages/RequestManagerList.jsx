@@ -67,7 +67,7 @@ const RequestManagerList = () => {
                 <p className="text-gray-600"><strong>Mobile No:</strong> {manager.mobileNo}</p>
                 <p className="text-gray-600"><strong>Address:</strong> {manager.address}</p>
                 <p className="text-gray-600"><strong>Description:</strong> {manager.description}</p>
-                <p className="text-gray-600"><strong>Manager Share:</strong> {manager.managerShare}%</p>
+                <p className="text-gray-600"><strong>Commission Percentage:</strong> {manager.commissionPercentage}%</p>
                 <p className="text-gray-600"><strong>Managed Artists:</strong> {manager.managedArtists.length}</p>
                 
                 <button

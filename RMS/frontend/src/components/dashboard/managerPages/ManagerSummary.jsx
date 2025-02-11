@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/authContext";
+import SummaryCard from "../../commonComponents/summaryCard";
 import {
   BarChart,
   Bar,
@@ -63,23 +64,29 @@ const ManagerSummary = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Manager Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
       {/* Cards for Summary Info */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold">Total Managed Artists</h2>
-          <p className="text-2xl font-bold">{artists.length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold">Total Managed Royalty</h2>
-          <p className="text-2xl font-bold">${totalRoyalty.toFixed(2)}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold">Top Artist (by Royalty)</h2>
-          <p className="text-2xl font-bold">{topArtist ? topArtist.fullName : "N/A"}</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <SummaryCard title="Total Managed Artists" value={artists.length} />
+        <SummaryCard title="Total Managed Royalty" value={`$${totalRoyalty.toFixed(2)}`} />
+        <SummaryCard title="Top Artist (by Royalty)" value={topArtist ? topArtist.fullName : "N/A"} />
       </div>
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+          <h2 className="text-sm md:text-lg font-semibold truncate">Total Managed Artists</h2>
+          <p className="text-xl md:text-2xl font-bold">{artists.length}</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+          <h2 className="text-sm md:text-lg font-semibold truncate">Total Managed Royalty</h2>
+          <p className="text-xl md:text-2xl font-bold">${totalRoyalty.toFixed(2)}</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+          <h2 className="text-sm md:text-lg font-semibold truncate">Top Artist (by Royalty)</h2>
+          <p className="text-xl md:text-2xl font-bold truncate">{topArtist ? topArtist.fullName : "N/A"}</p>
+        </div>
+      </div> */}
+
 
       {/* Artist Comparison Bar Graph */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
