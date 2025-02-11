@@ -3,24 +3,23 @@ import { useAuth } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars, FaBell } from "react-icons/fa";
 import Notifications from "../commonComponents/Notification";
-import useNotifications from "../../hooks/useNotifications";
+import { useNotifications } from "../../context/NotificationContext";
 
 const Navbar = ({ toggleSidebar }) => {
-  const { user, logout, loading } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const profileRef = useRef(null);
   const notificationRef = useRef(null);
 
-  const { unreadCount } = useNotifications();
+  const { unreadCount } = useNotifications(); // Get unread count from context
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -37,7 +36,6 @@ const Navbar = ({ toggleSidebar }) => {
 
   return (
     <div className="flex items-center justify-between h-16 bg-teal-600 px-5 relative">
-      {/* Hamburger Menu */}
       <button onClick={toggleSidebar} className="text-white text-2xl cursor-pointer lg:hidden">
         <FaBars />
       </button>
@@ -68,7 +66,6 @@ const Navbar = ({ toggleSidebar }) => {
         </button>
       </div>
 
-      {/* Notification Dropdown */}
       {showNotifications && (
         <div ref={notificationRef} className="absolute right-0 top-16 z-50">
           <Notifications />

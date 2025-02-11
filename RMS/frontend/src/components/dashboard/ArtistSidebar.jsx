@@ -78,15 +78,6 @@ const ArtistSidebar = ({ isOpen, toggleSidebar }) => {
           Royalty Transactions
         </NavLink>
         <NavLink
-          to="/artist-dashboard/notifications"
-          onClick={handleLinkClick}
-          className={({ isActive }) =>
-            `${isActive ? "bg-teal-500" : ""} flex items-center space-x-4 block py-2.5 px-4 rounded hover:bg-gray-400 hover:text-white hover:scale-105 transition-all duration-200`
-          }
-        >
-          Notifications
-        </NavLink>
-        <NavLink
           to="/artist-dashboard/update-profile"
           onClick={handleLinkClick}
           className={({ isActive }) =>

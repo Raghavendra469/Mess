@@ -35,6 +35,7 @@ const AddSongForm = () => {
 
     try {
       const response = await axios.post("http://localhost:3000/api/songs/", newSong);
+      // const notificationResponse = await axios.post("http://localhost:3000/api/notifications/", newSong);
       if (response.data.success) {
         setSuccessMessage("Song added successfully! 🎵"); // Show success message
         setFormData({ songName: "", releaseDate: "" }); // Reset form

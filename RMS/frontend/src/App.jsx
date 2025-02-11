@@ -18,7 +18,6 @@ import AddSongForm from "./components/dashboard/artistPages/AddSongForm";
 import ResetPassword from "./pages/ResetPassword"; 
 import UpdateArtistProfileForm from "./components/dashboard/artistPages/updateArtistProfileForm"
 import UpdateManagerProfileForm from "./components/dashboard/managerPages/UpdateManagerProfileForm"
-import ManagerNotifications from "./components/dashboard/managerPages/ManagerNotifications.jsx"
 import DeleteSong from "./components/dashboard/artistPages/DeleteSong"
 import ManagerArtists from "./components/dashboard/managerPages/ManagerArtists.jsx";
 import RequestManagerList from "./components/dashboard/artistPages/RequestManagerList.jsx";
@@ -64,7 +63,6 @@ function App() {
           <Route path="collabration" element={<RequestManagerList />} /> {/* collabration */}
           <Route path="view-manager" element={<ViewMyManager />} /> {/* collabration */}
           <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
-          <Route path="notifications" element={<DeleteUserForm />} /> {/* notifications */}
           <Route path="update-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}
         </Route>
 
@@ -80,7 +78,6 @@ function App() {
           <Route path="view-artists" element={<ManagerArtists />} /> {/* display Songs */}
           <Route path="collaboration-requests" element={<CollaborationRequests />} /> {/* add songs */}
           <Route path="royalty-transactions" element={<DeleteSong />} /> {/* delete sngs */}
-          <Route path="notifications" element={<ManagerNotifications />} /> {/* collabration */}
           <Route path="update-profile" element={<UpdateManagerProfileForm />} /> {/* collabration */}
         </Route>
         
