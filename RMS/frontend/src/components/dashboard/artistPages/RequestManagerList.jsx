@@ -39,6 +39,14 @@ const RequestManagerList = () => {
           ...prevStatus,
           [managerId]: "Request Sent",
         }));
+
+        const notificationData = {
+          userId: userData.manager.managerId, // Send to manager
+          message: `${userData.fullName} requested you for collaboration.`,
+          type: "collaborationRequest",
+        };
+  
+        await axios.post("http://localhost:3000/api/notifications/", notificationData);
       }
     } catch (error) {
       console.error("Error sending request:", error);

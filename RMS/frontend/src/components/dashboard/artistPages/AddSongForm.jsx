@@ -35,10 +35,19 @@ const AddSongForm = () => {
 
     try {
       const response = await axios.post("http://localhost:3000/api/songs/", newSong);
-      // const notificationResponse = await axios.post("http://localhost:3000/api/notifications/", newSong);
       if (response.data.success) {
         setSuccessMessage("Song added successfully! 🎵"); // Show success message
         setFormData({ songName: "", releaseDate: "" }); // Reset form
+
+        // console.log("manager ID",userData.manager._id)
+
+        const notificationData = {
+          userId: userData.manager.managerId, // Send to manager
+          message: `${userData.fullName} added a new song: ${formData.songName}.`,
+          type: "songUpdate",
+        };
+  
+        await axios.post("http://localhost:3000/api/notifications/", notificationData);
 
         // Hide message after 3 seconds
         setTimeout(() => {

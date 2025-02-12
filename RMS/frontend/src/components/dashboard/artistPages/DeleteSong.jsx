@@ -40,7 +40,7 @@ const DeleteSong = () => {
   };
 
   // Delete a song without reloading
-  const handleDeleteSong = async (songId) => {
+  const handleDeleteSong = async (songId,songName) => {
     // const confirmDelete = window.confirm("Are you sure you want to delete this song?");
     // if (!confirmDelete) return;
 
@@ -52,6 +52,14 @@ const DeleteSong = () => {
 
         setStatusMessage("✅ Song deleted successfully!");
         setTimeout(() => setStatusMessage(""), 3000); 
+
+        const notificationData = {
+          userId: userData.manager.managerId, // Send to manager
+          message: `${userData.fullName} deleted a song: ${songName}.`,
+          type: "songUpdate",
+        };
+  
+        await axios.post("http://localhost:3000/api/notifications/", notificationData);
       }
     } catch (error) {
       setStatusMessage("❌ Failed to delete song.");
@@ -83,7 +91,7 @@ const DeleteSong = () => {
               <p className="text-lg"><b>Total Royalty:</b> {song.totalRoyalty}</p>
               <div className="mt-4">
                 <button
-                  onClick={() => handleDeleteSong(song.songId)}
+                  onClick={() => handleDeleteSong(song.songId,song.songName)}
                   className="w-full px-4 py-2 rounded text-white font-semibold bg-red-500 hover:bg-red-700"
                 >
                   Delete Song

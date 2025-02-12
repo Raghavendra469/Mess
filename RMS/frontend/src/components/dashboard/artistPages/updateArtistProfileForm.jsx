@@ -4,7 +4,7 @@ import axios from "axios";
 import { FiUser, FiPhone, FiHome, FiFileText } from "react-icons/fi"; // Import icons
 
 const UpdateArtistProfileForm = () => {
-    const { user, loading: authLoading } = useAuth();
+    const { user,userData, loading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         fullName: "",
         mobileNo: "",
@@ -51,6 +51,14 @@ const UpdateArtistProfileForm = () => {
         try {
             await axios.put(`http://localhost:3000/api/users/${user.username}`, formData);
             setMessage("Profile updated successfully!");
+
+            const notificationData = {
+                userId: userData.manager.managerId, // Send to manager
+                message: `${userData.fullName} updated their profile.`,
+                type: "profileUpdate",
+              };
+        
+              await axios.post("http://localhost:3000/api/notifications/", notificationData);
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");
