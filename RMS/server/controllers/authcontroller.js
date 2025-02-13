@@ -59,7 +59,7 @@ const login = async (req, res) => {
                 role: user.role,
                 isActive:user.isActive,
                 isFirstLogin:user.isFirstLogin,
-                password:user.password
+               
             },
         });
     } catch (error) {

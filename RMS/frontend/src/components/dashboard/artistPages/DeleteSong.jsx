@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/authContext";
+import { useNotifications } from "../../../context/notificationContext";
 import SearchBar from "../../commonComponents/SearchBar";
 
 const DeleteSong = () => {
@@ -8,6 +9,7 @@ const DeleteSong = () => {
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [statusMessage, setStatusMessage] = useState("");
   const { userData } = useAuth();
+  const { sendNotification } = useNotifications();
 
   // Fetch songs when the component loads or when userData changes
   useEffect(() => {
@@ -40,10 +42,7 @@ const DeleteSong = () => {
   };
 
   // Delete a song without reloading
-  const handleDeleteSong = async (songId,songName) => {
-    // const confirmDelete = window.confirm("Are you sure you want to delete this song?");
-    // if (!confirmDelete) return;
-
+  const handleDeleteSong = async (songId, songName) => {
     try {
       const response = await axios.delete(`http://localhost:3000/api/songs/${songId}`);
       if (response.data.message) {
@@ -51,15 +50,9 @@ const DeleteSong = () => {
         setFilteredSongs((prevSongs) => prevSongs.filter((song) => song.songId !== songId));
 
         setStatusMessage("✅ Song deleted successfully!");
-        setTimeout(() => setStatusMessage(""), 3000); 
+        setTimeout(() => setStatusMessage(""), 3000);
 
-        const notificationData = {
-          userId: userData.manager.managerId, // Send to manager
-          message: `${userData.fullName} deleted a song: ${songName}.`,
-          type: "songUpdate",
-        };
-  
-        await axios.post("http://localhost:3000/api/notifications/", notificationData);
+        await sendNotification(userData.manager.managerId,`${userData.fullName} deleted a song: ${songName}.`,"songUpdate");
       }
     } catch (error) {
       setStatusMessage("❌ Failed to delete song.");
@@ -91,7 +84,7 @@ const DeleteSong = () => {
               <p className="text-lg"><b>Total Royalty:</b> {song.totalRoyalty}</p>
               <div className="mt-4">
                 <button
-                  onClick={() => handleDeleteSong(song.songId,song.songName)}
+                  onClick={() => handleDeleteSong(song.songId, song.songName)}
                   className="w-full px-4 py-2 rounded text-white font-semibold bg-red-500 hover:bg-red-700"
                 >
                   Delete Song

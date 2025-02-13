@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "../../../context/authContext";
+import { useNotifications } from "../../../context/notificationContext";
 import axios from "axios";
 
 const AddSongForm = () => {
   const { userData } = useAuth(); // Get user data
+  const { sendNotification } = useNotifications(); // Use context function
   const [formData, setFormData] = useState({
     songName: "",
     releaseDate: "",
@@ -39,15 +41,8 @@ const AddSongForm = () => {
         setSuccessMessage("Song added successfully! 🎵"); // Show success message
         setFormData({ songName: "", releaseDate: "" }); // Reset form
 
-        // console.log("manager ID",userData.manager._id)
-
-        const notificationData = {
-          userId: userData.manager.managerId, // Send to manager
-          message: `${userData.fullName} added a new song: ${formData.songName}.`,
-          type: "songUpdate",
-        };
-  
-        await axios.post("http://localhost:3000/api/notifications/", notificationData);
+        // Send notification via context
+        await sendNotification(userData.manager.managerId,`${userData.fullName} added a song: ${newSong.songName}.`,"songUpdate");
 
         // Hide message after 3 seconds
         setTimeout(() => {
@@ -74,8 +69,7 @@ const AddSongForm = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Artist ID (Read-Only) */}
-          <div className="mb-4">
+        <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="artistId">
               Artist ID
             </label>
@@ -87,7 +81,6 @@ const AddSongForm = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed"
             />
           </div>
-
           {/* Artist Name (Read-Only) */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="artistName">

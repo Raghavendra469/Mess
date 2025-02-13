@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./../../../context/authContext";
 import axios from "axios";
-import { FiUser, FiPhone, FiHome, FiFileText,FiPercent } from "react-icons/fi"; // Import icons
+import { FiUser, FiPhone, FiHome, FiFileText, FiPercent } from "react-icons/fi"; // Import icons
+import { useNotifications } from "../../../context/notificationContext";
 
 const UpdateArtistProfileForm = () => {
-    const { user, loading: authLoading } = useAuth();
+    const { user, userData, loading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         fullName: "",
         mobileNo: "",
-        commissionPercentage:"",
+        commissionPercentage: "",
         address: "",
         description: "",
     });
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
+    const { sendNotification } = useNotifications();
 
     // Fetch existing artist details
     useEffect(() => {
@@ -21,11 +23,10 @@ const UpdateArtistProfileForm = () => {
             const fetchArtistDetails = async () => {
                 try {
                     const response = await axios.get(`http://localhost:3000/api/users/${user.username}`);
-                    // console.log("update------",response.data.user);
                     setFormData({
-                        fullName: response.data.user.fullName|| "",
+                        fullName: response.data.user.fullName || "",
                         mobileNo: response.data.user.mobileNo || "",
-                        commissionPercentage:response.data.user.commissionPercentage||"",
+                        commissionPercentage: response.data.user.commissionPercentage || "",
                         address: response.data.user.address || "",
                         description: response.data.user.description || "",
                     });
@@ -53,6 +54,12 @@ const UpdateArtistProfileForm = () => {
         try {
             await axios.put(`http://localhost:3000/api/users/${user.username}`, formData);
             setMessage("Profile updated successfully!");
+
+            if (userData.managedArtists) {
+                userData.managedArtists.forEach(async (artist) => {
+                    await sendNotification(artist.artistId, `${userData.fullName} updated their profile.`, "profileUpdate");
+                });
+            }
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");
@@ -106,7 +113,7 @@ const UpdateArtistProfileForm = () => {
                             </div>
                         </div>
 
-                        {/* Comission Percentage */}
+                        {/* Commission Percentage */}
                         <div className="flex items-center gap-3 border-b pb-2">
                             <FiPercent className="text-gray-500 text-lg" />
                             <div className="w-full">

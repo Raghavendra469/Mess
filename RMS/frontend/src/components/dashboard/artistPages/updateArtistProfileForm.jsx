@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "./../../../context/authContext";
 import axios from "axios";
 import { FiUser, FiPhone, FiHome, FiFileText } from "react-icons/fi"; // Import icons
+import { useNotifications } from "../../../context/notificationContext";
+
 
 const UpdateArtistProfileForm = () => {
     const { user,userData, loading: authLoading } = useAuth();
@@ -13,6 +15,8 @@ const UpdateArtistProfileForm = () => {
     });
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
+    const { sendNotification } = useNotifications();
+
 
     // Fetch existing artist details
     useEffect(() => {
@@ -51,14 +55,8 @@ const UpdateArtistProfileForm = () => {
         try {
             await axios.put(`http://localhost:3000/api/users/${user.username}`, formData);
             setMessage("Profile updated successfully!");
+            await sendNotification(userData.manager.managerId,`${userData.fullName} updated their profile.`,"profileUpdate");
 
-            const notificationData = {
-                userId: userData.manager.managerId, // Send to manager
-                message: `${userData.fullName} updated their profile.`,
-                type: "profileUpdate",
-              };
-        
-              await axios.post("http://localhost:3000/api/notifications/", notificationData);
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");

@@ -23,7 +23,9 @@ export const AuthProvider = ({ children }) => {
                         const loggedInUser = response.data.user;
                         setUser(loggedInUser);
                         // console.log("added user in state-------",loggedInUser)
-                        await fetchRoleData(loggedInUser); // Ensure role data is fetched before setting loading to false
+                        if (loggedInUser.role !== "Admin") {
+                            await fetchRoleData(loggedInUser);
+                        }
                     }
                 } else {
                     setUser(null);
@@ -57,7 +59,10 @@ export const AuthProvider = ({ children }) => {
     const login = async (userData, token) => {
         localStorage.setItem("token", token);
         setUser(userData);
-        await fetchRoleData(userData); // Fetch role data for the logged-in user
+         // Call fetchRoleData only if the user is not an Admin
+         if (userData.role !== "Admin") {
+            await fetchRoleData(userData);
+        }
     };
 
     // Handle logout

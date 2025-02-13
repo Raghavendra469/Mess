@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/authContext";
+import { useNotifications } from "../../../context/notificationContext";
+
 
 const RequestManagerList = () => {
   const { userData } = useAuth(); // Get logged-in artist data
   const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [requestStatus, setRequestStatus] = useState({}); // State to track request status
+  const { sendNotification } = useNotifications();
+
 
   useEffect(() => {
     const fetchManagers = async () => {
@@ -23,7 +27,7 @@ const RequestManagerList = () => {
     fetchManagers();
   }, []);
 
-  const sendRequest = async (managerId) => {
+  const sendRequest = async (managerId,notifyManager) => {
     try {
       console.log("manager id", managerId);
       console.log("artistId", userData._id);
@@ -40,13 +44,15 @@ const RequestManagerList = () => {
           [managerId]: "Request Sent",
         }));
 
-        const notificationData = {
-          userId: userData.manager.managerId, // Send to manager
-          message: `${userData.fullName} requested you for collaboration.`,
-          type: "collaborationRequest",
-        };
+        // const notificationData = {
+        //   userId: userData.manager.managerId, // Send to manager
+        //   message: `${userData.fullName} requested you for collaboration.`,
+        //   type: "collaborationRequest",
+        // };
   
-        await axios.post("http://localhost:3000/api/notifications/", notificationData);
+        // await axios.post("http://localhost:3000/api/notifications/", notificationData);
+        await sendNotification(notifyManager,`${userData.fullName} requested you for collaboration.`,"collaborationRequest");
+
       }
     } catch (error) {
       console.error("Error sending request:", error);
@@ -79,7 +85,7 @@ const RequestManagerList = () => {
                 <p className="text-gray-600"><strong>Managed Artists:</strong> {manager.managedArtists.length}</p>
                 
                 <button
-                  onClick={() => sendRequest(manager._id)}
+                  onClick={() => sendRequest(manager._id,manager.managerId)}
                   className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                   disabled={requestStatus[manager._id] === "Request Sent"}
                 >

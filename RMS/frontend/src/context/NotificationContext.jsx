@@ -5,7 +5,7 @@ import { useAuth } from "./authContext";
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user,userData } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,10 +37,25 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  const sendNotification = async (userId,messageToSend,msgType) => {
+    const notificationData = {
+      userId: userId, // Send to manager
+      message: `${messageToSend}`,
+      type: msgType,
+    };
+    try{
+      await axios.post("http://localhost:3000/api/notifications/", notificationData);
+    }
+    catch (error) {
+      console.error("Error in sending the notification", error);
+    }
+    
+  };
+
   const unreadCount = notifications.filter((notif) => !notif.isRead).length;
 
   return (
-    <NotificationContext.Provider value={{ notifications, loading, markAsRead, unreadCount }}>
+    <NotificationContext.Provider value={{ notifications, loading, markAsRead, unreadCount ,sendNotification}}>
       {children}
     </NotificationContext.Provider>
   );
