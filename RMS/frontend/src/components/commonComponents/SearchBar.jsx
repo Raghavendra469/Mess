@@ -12,7 +12,7 @@ const SearchBar = ({ onSearch }) => {
     return (
         <input
             type="text"
-            placeholder="Search by username..."
+            placeholder="Search here..."
             value={searchTerm}
             onChange={handleSearch}
             className="px-4 py-2 border rounded-md w-full md:w-1/3"

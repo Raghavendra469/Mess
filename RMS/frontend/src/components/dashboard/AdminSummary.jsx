@@ -1,53 +1,38 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { useArtistsManagers } from "../../context/ArtistsManagersContext";
+import TopArtistsChart from "../dashboard/adminPages/TopArtistChart";
+import TopManagersChart from "../dashboard/adminPages/TopManagerCharts";
+import ArtistsTable from "../dashboard/adminPages/ArtistTable";
+import ManagersTable from "../dashboard/adminPages/ManagerTable";
 
-// Register chart.js modules
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const AdminSummary = () => {
-  const chartData = {
-    labels: ["Manager 1", "Manager 2", "Manager 3", "Artist 1", "Artist 2", "Artist 3"],
-    datasets: [
-      {
-        label: "Performance",
-        data: [85, 70, 90, 75, 88, 95], // Example data for performance scores
-        backgroundColor: ["#4fd1c5", "#63b3ed", "#fc8181", "#68d391", "#f6ad55", "#ed64a6"], // Bar colors
-      },
-    ],
-  };
+    const { artists = [], managerStats = [] ,managers} = useArtistsManagers();
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false, // This allows the chart to resize based on the container size
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Performance of Managers and Artists",
-      },
-    },
-  };
+    return (
+        <div className="p-4 md:p-6 lg:p-8">
+            <h2 className="text-2xl font-bold mb-4 text-center">Admin Summary</h2>
 
-  return (
-    <div className="bg-gray-100 min-h-screen p-4">
-      {/* Header */}
-      <header className="bg-white shadow-md py-4 px-6 mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Top Performing Artists & Managers
-        </h1>
-      </header>
+            {/* Charts Section */}
+            <div className="flex flex-col gap-8">
+                <div className="bg-white shadow-lg p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2 text-center">Top 5 Artists</h3>
+                    <TopArtistsChart data={artists.slice(0, 5)} />
+                </div>
 
-      {/* Chart Section */}
-      <div className="bg-white shadow-md rounded-lg p-6" style={{ height: "400px" }}>
-        <Bar data={chartData} options={chartOptions} />
-      </div>
-    </div>
-  );
+                <div className="bg-white shadow-lg p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2 text-center">Top 5 Managers</h3>
+                    <TopManagersChart data={managerStats.slice(0, 5)} />
+                </div>
+            </div>
+
+            {/* Tables Section */}
+            <div className="mt-8 flex flex-col gap-6">
+                <ArtistsTable artists={artists} />
+                <ManagersTable managers={managerStats} />
+            </div>
+        </div>
+    );
 };
 
 export default AdminSummary;
