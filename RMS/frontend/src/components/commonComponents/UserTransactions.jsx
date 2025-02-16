@@ -100,10 +100,10 @@ const ManagerTransactions = () => {
                                             ${tx.transactionAmount}
                                         </td>
                                         <td className="px-4 py-3 text-green-600 font-semibold">
-                                            ${tx.artistShare}
+                                            ${tx.artistShare.toFixed(2)}
                                         </td>
                                         <td className="px-4 py-3 text-green-600 font-semibold">
-                                            ${tx.managerShare}
+                                            ${tx.managerShare.toFixed(2)}
                                         </td>
                                         <td className="px-4 py-3">
                                             <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-md

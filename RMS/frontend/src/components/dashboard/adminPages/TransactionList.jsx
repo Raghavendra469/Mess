@@ -67,7 +67,7 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                                     <td className="border p-2 flex flex-col gap-2 items-center sm:flex-row sm:justify-center">
                                         <button 
                                             className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full sm:w-auto"
-                                            onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-(tx.transactionAmount*tx.userId.manager.commissionPercentage)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
+                                            onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-((tx.transactionAmount*tx.userId.manager.commissionPercentage)/100)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
                                             Pay
                                         </button>
                                         <button
@@ -111,7 +111,7 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                             <div className="flex gap-2 mt-4">
                                 <button 
                                     className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full"
-                                    onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
+                                    onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-((tx.transactionAmount*tx.userId.manager.commissionPercentage)/100)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
                                     Pay
                                 </button>
                                 <button

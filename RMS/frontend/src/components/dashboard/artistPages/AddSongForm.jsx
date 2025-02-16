@@ -10,7 +10,8 @@ const AddSongForm = () => {
     songName: "",
     releaseDate: "",
   });
-  const [successMessage, setSuccessMessage] = useState(""); // State for success message
+  const [successMessage, setSuccessMessage] = useState(""); // Success message state
+  const [errorMessage, setErrorMessage] = useState(""); // Error message state
 
   // Handle input changes
   const handleChange = (e) => {
@@ -23,8 +24,11 @@ const AddSongForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccessMessage(""); // Clear previous messages
+    setErrorMessage(""); 
+
     if (!userData?._id) {
-      console.error("User data not found!");
+      setErrorMessage("User data not found. Please log in again.");
       return;
     }
 
@@ -38,19 +42,26 @@ const AddSongForm = () => {
     try {
       const response = await axios.post("http://localhost:3000/api/songs/", newSong);
       if (response.data.success) {
-        setSuccessMessage("Song added successfully! 🎵"); // Show success message
+        setSuccessMessage("Song added successfully! 🎵");
         setFormData({ songName: "", releaseDate: "" }); // Reset form
 
         // Send notification via context
-        await sendNotification(userData.manager.managerId,`${userData.fullName} added a song: ${newSong.songName}.`,"songUpdate");
+        await sendNotification(
+          userData.manager.managerId,
+          `${userData.fullName} added a song: ${newSong.songName}.`,
+          "songUpdate"
+        );
 
-        // Hide message after 3 seconds
+        // Hide success message after 3 seconds
         setTimeout(() => {
           setSuccessMessage("");
         }, 3000);
+      } else {
+        setErrorMessage("Failed to add song. Please try again.");
       }
     } catch (error) {
       console.error("Failed to add song:", error);
+      setErrorMessage("An error occurred while adding the song because song is already exist");
     }
   };
 
@@ -68,19 +79,28 @@ const AddSongForm = () => {
           </div>
         )}
 
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+            {errorMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+          {/* Artist ID (Read-Only) */}
+          <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="artistId">
               Artist ID
             </label>
             <input
               type="text"
               id="artistId"
-              value={userData?.artistId || "N/A"}
+              value={userData?._id || "N/A"}
               readOnly
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 cursor-not-allowed"
             />
           </div>
+
           {/* Artist Name (Read-Only) */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="artistName">

@@ -13,12 +13,7 @@ const Payments = () => {
     const [transactions, setTransactions] = useState([]);
     const [statusMessage, setStatusMessage] = useState({ type: "", text: "" });
 
-    useEffect(() => {
-        if (selectedArtist) {
-            fetchRoyaltyByArtist(selectedArtist);
-            loadTransactions(selectedArtist);
-        }
-    }, [selectedArtist]);
+    
 
     const handleArtistChange = (event) => {
         const artistId = event.target.value;
@@ -31,9 +26,22 @@ const Payments = () => {
     };
 
     const loadTransactions = async (artistId) => {
-        const data = await TransactionService.fetchTransactions(artistId);
+        if (!artistId) {
+            setStatusMessage({ type: "error", text: "No artist selected." });
+            return;
+        }
+
+        const data = await TransactionService.fetchTransactions("artist", artistId);
+        // const data = await TransactionService.fetchTransactions(artistId);
         setTransactions(data);
     };
+
+    useEffect(() => {
+        if (selectedArtist) {
+            fetchRoyaltyByArtist(selectedArtist);
+            loadTransactions(selectedArtist);
+        }
+    }, [selectedArtist]);
 
     return (
         <div className="p-4">
