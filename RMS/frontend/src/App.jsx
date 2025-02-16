@@ -23,6 +23,8 @@ import ManagerArtists from "./components/dashboard/managerPages/ManagerArtists.j
 import RequestManagerList from "./components/dashboard/artistPages/RequestManagerList.jsx";
 import CollaborationRequests from "./components/dashboard/managerPages/CollaborationRequests.jsx";
 import ViewMyManager from "./components/dashboard/artistPages/ViewMyManager.jsx";
+import AdminPayments from "./components/dashboard/adminPages/AdminPayments.jsx"
+import UserTransactions from "./components/commonComponents/UserTransactions.jsx"
 
 function App() {
 
@@ -45,6 +47,7 @@ function App() {
           <Route path="" element={<AdminSummary />} /> {/* default */}
           <Route path="create-user-account" element={<CreateUserForm />} /> {/* User creation */}
           <Route path="delete-users" element={<DeleteUserForm />} /> {/* User deletion */}
+          <Route path="payments" element={<AdminPayments />} />{/* Admin Data Updation */}
           <Route path="view-profile" element={<ViewAdminForm />} />{/* Admin Data Updation */}
         </Route>
 
@@ -62,7 +65,7 @@ function App() {
           <Route path="delete-songs" element={<DeleteSong />} /> {/* delete sngs */}
           <Route path="collabration" element={<RequestManagerList />} /> {/* collabration */}
           <Route path="view-manager" element={<ViewMyManager />} /> {/* collabration */}
-          <Route path="royalty-transactions" element={<DeleteUserForm />} /> {/* transactions */}
+          <Route path="royalty-transactions" element={<UserTransactions />} /> {/* transactions */}
           <Route path="update-profile" element={<UpdateArtistProfileForm />} />{/* Artist Data Updation */}
         </Route>
 
@@ -77,7 +80,7 @@ function App() {
           <Route path="" element={<ManagerSummary />} /> {/* default */}
           <Route path="view-artists" element={<ManagerArtists />} /> {/* display Songs */}
           <Route path="collaboration-requests" element={<CollaborationRequests />} /> {/* add songs */}
-          <Route path="royalty-transactions" element={<DeleteSong />} /> {/* delete sngs */}
+          <Route path="royalty-transactions" element={<UserTransactions />} /> {/* delete sngs */}
           <Route path="update-profile" element={<UpdateManagerProfileForm />} /> {/* collabration */}
         </Route>
         

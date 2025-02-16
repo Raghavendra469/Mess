@@ -1,41 +1,7 @@
-/*const { createRoyalty, getRoyaltyById } = require('../services/royaltyService');
-
-// POST API to create a new royalty
-const createRoyaltyController = async (req, res) => {
-    try {
-        const { royaltyId, artistId, songId} = req.body;
-
-        const newRoyalty = await createRoyalty({ royaltyId, artistId, songId});
-
-        res.status(201).json({ message: 'Royalty created successfully', royalty: newRoyalty });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-// GET API to fetch royalty details by royaltyId
-const getRoyaltyByIdController = async (req, res) => {
-    try {
-        const { royaltyId } = req.params;
-
-        const royalty = await getRoyaltyById(royaltyId);
-
-        if (!royalty) {
-            return res.status(404).json({ message: 'Royalty not found' });
-        }
-
-        res.status(200).json(royalty);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-module.exports = { createRoyaltyController, getRoyaltyByIdController };*/
-
-const { createRoyalty, getRoyaltyById } = require('../services/royaltyService');
+const { createRoyalty, getRoyaltyById,getRoyaltyByArtistId } = require('../services/royaltyService');
 const Artist = require('../models/artistModel');
 const Song = require('../models/songModel');
-
+ 
 // ✅ Recalculate fullRoyalty for the artist
 const updateArtistFullRoyalty = async (artistId) => {
   try {
@@ -49,45 +15,65 @@ const updateArtistFullRoyalty = async (artistId) => {
     console.error("Error updating artist fullRoyalty:", error);
   }
 };
-
+ 
 // ✅ Create Royalty and update artist fullRoyalty
 const createRoyaltyController = async (req, res) => {
   try {
     const { artistId, songId,artistName } = req.body;
-
-    // const royaltyId=req.body.songName.toLowerCase().replace(/\s+/g, '-');
+ 
+   
     const royaltyId = `${artistName}-${req.body.songName.toLowerCase().replace(/\s+/g, '-')}`;
-
+ 
     // Create Royalty
     const newRoyalty = await createRoyalty({ royaltyId, artistId, songId });
-
+ 
     // ✅ Update fullRoyalty after adding new royalty
     await updateArtistFullRoyalty(artistId);
-
+ 
     res.status(201).json({ message: 'Royalty created successfully', royalty: newRoyalty });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
-
+ 
 // ✅ Ensure fullRoyalty updates when royalty is fetched
 const getRoyaltyByIdController = async (req, res) => {
   try {
     const { royaltyId } = req.params;
     const royalty = await getRoyaltyById(royaltyId);
-
+ 
     if (!royalty) {
       return res.status(404).json({ message: 'Royalty not found' });
     }
-
+ 
     // ✅ Ensure fullRoyalty is always up to date
     await updateArtistFullRoyalty(royalty.artistId);
-
+ 
     res.status(200).json(royalty);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
-
-module.exports = { createRoyaltyController, getRoyaltyByIdController };
-
+ 
+const getRoyaltyByArtistIdController = async (req, res) => {
+  try {
+    const { artistId } = req.params;
+    console.log(artistId,"artistId");
+    const artist = await getRoyaltyByArtistId(artistId);
+    console.log(artist,"artist");
+ 
+    if (!artist) {
+      return res.status(404).json({ message: 'Royalty not found' });
+    }
+ 
+    // ✅ Ensure fullRoyalty is always up to date
+    await updateArtistFullRoyalty(artist.artistId);
+ 
+    res.status(200).json({success:true,artist});
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+ 
+module.exports = { createRoyaltyController, getRoyaltyByIdController,getRoyaltyByArtistIdController };
+ 

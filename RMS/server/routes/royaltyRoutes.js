@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { createRoyaltyController, getRoyaltyByIdController } = require('../controllers/royaltyController');
-
+const { createRoyaltyController, getRoyaltyByIdController,getRoyaltyByArtistIdController } = require('../controllers/royaltyController');
+ 
 // POST route to create royalty
-router.post('/royalties', createRoyaltyController);
-
+router.post('/', createRoyaltyController);
+ 
 // GET route to fetch royalty details by royaltyId
-router.get('/royalties/:royaltyId', getRoyaltyByIdController);
-
+router.get('/:royaltyId', getRoyaltyByIdController);
+ 
+router.get('/artists/:artistId', getRoyaltyByArtistIdController);
+ 
 module.exports = router;

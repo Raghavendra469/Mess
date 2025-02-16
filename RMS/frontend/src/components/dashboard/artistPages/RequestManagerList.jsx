@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/authContext";
-import { useNotifications } from "../../../context/notificationContext";
+import { useNotifications } from "../../../context/NotificationContext";
 
 
 const RequestManagerList = () => {
@@ -10,6 +10,8 @@ const RequestManagerList = () => {
   const [loading, setLoading] = useState(false);
   const [requestStatus, setRequestStatus] = useState({}); // State to track request status
   const { sendNotification } = useNotifications();
+  const [alreadyHasManager, setAlreadyHasManager] = useState(false);
+  const [message, setMessage] = useState(""); // Message to display in UI
 
 
   useEffect(() => {
@@ -25,12 +27,22 @@ const RequestManagerList = () => {
       }
     };
     fetchManagers();
-  }, []);
+
+    // Check if the artist already has a manager
+    if (userData.manager) {
+      setAlreadyHasManager(true);
+      setMessage("You already have a manager! You cannot send a new request.");
+    }
+  }, [userData]);
 
   const sendRequest = async (managerId,notifyManager) => {
+    if (alreadyHasManager) {
+      alert("You already have a manager! You cannot send a new request.");
+      return;
+    }
     try {
-      console.log("manager id", managerId);
-      console.log("artistId", userData._id);
+      // console.log("manager id", managerId);
+      // console.log("artistId", userData._id);
       
       const response = await axios.post("http://localhost:3000/api/collaborations/", {
         collaborationId: Math.random().toString(36).substring(2, 9),
@@ -66,6 +78,7 @@ const RequestManagerList = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Available Managers</h1>
+      {message && <p className="mb-4 text-red-600 font-semibold">{message}</p>}
       {loading ? (
         <p className="text-center text-gray-600">Loading managers...</p>
       ) : (

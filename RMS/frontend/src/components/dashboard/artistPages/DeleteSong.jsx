@@ -81,7 +81,7 @@ const DeleteSong = () => {
               <p className="font-bold text-lg">{song.songName}</p>
               <p className="text-sm text-gray-600">Release Date: {new Date(song.releaseDate).toLocaleDateString()}</p>
               <p className="text-lg"><b>Total Streams:</b> {song.totalStreams}</p>
-              <p className="text-lg"><b>Total Royalty:</b> {song.totalRoyalty}</p>
+              <p className="text-lg"><b>Total Royalty:</b> {song.totalRoyalty.toFixed(2)}</p>
               <div className="mt-4">
                 <button
                   onClick={() => handleDeleteSong(song.songId, song.songName)}

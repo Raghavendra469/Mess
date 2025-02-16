@@ -53,7 +53,7 @@ const DeleteUserForm = () => {
 
             {/* Users displayed as responsive cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredUsers.map((user) => (
+                {filteredUsers.filter(user => user.role !== "Admin").map((user) => (
                     <div key={user._id} className="bg-white p-6 rounded-lg shadow-lg">
                         <div className="flex justify-between items-center">
                             <div>

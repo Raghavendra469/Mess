@@ -3,7 +3,7 @@ require('../models/royaltyModel'); // Import Royalty model
 require('../models/userModel');    // Import User model
 
 const TransactionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: [true, "userId is required"] },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Artist', required: [true, "userId is required"] },
   royaltyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Royalty', required: [true, "royaltyId is required"] },
   songId: { type: mongoose.Schema.Types.ObjectId, ref: 'Song', required: true },
   transactionAmount: { type: Number, required: [true, "transactionAmount is required"], min: [1, "Amount must be greater than zero"] },
@@ -11,6 +11,7 @@ const TransactionSchema = new mongoose.Schema({
   royaltyDue: { type: Number, default: 0 },   // Amount pending to be paid
   artistShare:{type:Number, default:0},
   managerShare:{type:Number, default:0},
+  status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
   transactionDate: { type: Date, default: Date.now }
 });
 

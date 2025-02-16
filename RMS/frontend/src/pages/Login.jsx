@@ -68,7 +68,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex flex-col items-center h-screen justify-center bg-gradient-to-b from-teal-600 from-50% to-gray-100 to-50% space-y-6 p-4">
+        <div className="flex flex-col items-center h-screen  justify-center bg-gradient-to-b from-teal-600 to-gray-100 space-y-6 p-4">
             {/* Title */}
             <h2 className="font-cavet text-2xl sm:text-3xl md:text-4xl text-white text-center">
                 Royalty Management System
@@ -107,10 +107,10 @@ const Login = () => {
                          {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
                     </div>
                     <div className="mb-4 flex items-center justify-between">
-                        <label className="inline-flex items-center">
+                        {/* <label className="inline-flex items-center">
                             <input type="checkbox" className="form-checkbox rounded" />
                             <span className="ml-2 text-gray-700">Remember me</span>
-                        </label>
+                        </label> */}
                         <Link
                             to="/forgot-password"
                             className="text-blue-500 hover:text-blue-700 underline text-sm"
@@ -130,7 +130,7 @@ const Login = () => {
             </div>
 
             {/* Footer */}
-            <footer className="bg-gray-100 w-full py-4 mt-10">
+            <footer className=" w-full py-4 mt-10">
                 <div className="container mx-auto text-center text-teal-600 font-semibold text-sm sm:text-base">
                     &copy; 2025 Royalty Management System. All rights reserved.
                 </div>
