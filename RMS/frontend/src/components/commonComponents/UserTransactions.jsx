@@ -2,18 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/authContext";
 import TransactionService from "../../services/TransactionService";
 
-const ManagerTransactions = () => {
-    const { user,userData, loading } = useAuth();
+const UserTransactions = () => {
+    const { user, userData, loading } = useAuth();
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [walletAmount, setWalletAmount] = useState(0);
 
     useEffect(() => {
         const fetchArtistTransactions = async () => {
             setIsLoading(true);
             try {
-                const response = await TransactionService.fetchTransactions(user.role,userData._id);
+                const response = await TransactionService.fetchTransactions(user.role, userData._id);
                 if (response) {
                     setTransactions(response);
+                    const totalAmount = response.reduce((acc, tx) => {
+                        return acc + (user.role === "Artist" ? tx.artistShare : tx.managerShare);
+                    }, 0);
+                    setWalletAmount(totalAmount);
                 } else {
                     console.error("Failed to fetch transactions:", response?.message);
                 }
@@ -57,6 +62,13 @@ const ManagerTransactions = () => {
             <h3 className="text-2xl font-semibold text-gray-900 text-center mb-6">
                 💰 Your Transactions
             </h3>
+
+            {/* Wallet Display */}
+            <div className="flex justify-center mb-6">
+                <div className="bg-black text-white font-bold py-3 px-6 rounded-xl shadow-lg text-lg flex items-center gap-2">
+                    🏦 Wallet Balance: <span className="text-2xl">${walletAmount.toFixed(2)}</span>
+                </div>
+            </div>
 
             {/* Download PDF Button */}
             <div className="flex justify-center mb-4">
@@ -118,35 +130,6 @@ const ManagerTransactions = () => {
                             </tbody>
                         </table>
                     </div>
-
-                    {/* Mobile Cards */}
-                    <div className="md:hidden space-y-4">
-                        {transactions.map((tx) => (
-                            <div key={tx._id} className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                                <div className="flex justify-between items-center mb-2">
-                                    <p className="text-sm font-medium text-gray-800">Transaction ID</p>
-                                    <p className="text-sm text-gray-700 truncate max-w-[150px]">{tx._id}</p>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <p className="text-sm font-medium text-gray-800">Song Name</p>
-                                    <p className="text-sm text-gray-700">{tx.songId?.songName || "N/A"}</p>
-                                </div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <p className="text-sm font-medium text-gray-800">Amount</p>
-                                    <p className="text-sm text-green-600 font-semibold">${tx.transactionAmount}</p>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <p className="text-sm font-medium text-gray-800">Status</p>
-                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-md
-                                        ${tx.status === "Approved" ? "bg-green-100 text-green-700" :
-                                        tx.status === "Pending" ? "bg-yellow-100 text-yellow-700" :
-                                        "bg-red-100 text-red-700"}`}>
-                                        {tx.status}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             ) : (
                 <p className="text-gray-500 text-center">No transactions available</p>
@@ -155,4 +138,4 @@ const ManagerTransactions = () => {
     );
 };
 
-export default ManagerTransactions;
+export default UserTransactions;

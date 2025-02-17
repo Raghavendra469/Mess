@@ -147,28 +147,26 @@ exports.generateTransactionsPDF = async (userId, role) => {
     let transactions = [];
  
     if (role === "artist") {
-      // Fetch transactions directly for the artist
       transactions = await Transaction.find({ userId: userId })
-        .populate("royaltyId", "royaltyAmount artistId")
-        .populate("userId", "username email");
+        .populate("royaltyId", "royaltyAmount artistId songId")
+        .populate("userId", "username email")
+        .populate("songId", "songName");
     } else if (role === "manager") {
-      // Fetch all artists under this manager
       const artists = await Artist.find({ manager: userId }).select("_id");
       if (!artists.length) throw new Error("No artists found under this manager.");
  
       const artistIds = artists.map((artist) => artist._id);
  
-      // Fetch transactions for all managed artists
       transactions = await Transaction.find({ userId: { $in: artistIds } })
-        .populate("royaltyId", "royaltyAmount artistId")
-        .populate("userId", "username email");
+        .populate("royaltyId", "royaltyAmount artistId songId")
+        .populate("userId", "username email")
+        .populate("songId", "songName");
     } else {
       throw new Error("Invalid role");
     }
  
     console.log(transactions, "transactions");
  
-    // Fetch user details
     let userData;
     if (role === "artist") {
       userData = await Artist.findById(userId);
@@ -182,43 +180,153 @@ exports.generateTransactionsPDF = async (userId, role) => {
       throw new Error("No transactions found for this user.");
     }
  
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({
+      margin: 50,
+      size: 'A4'
+    });
+   
     let buffers = [];
- 
     doc.on("data", (chunk) => buffers.push(chunk));
-    doc.on("end", () => {});
  
-    // Add PDF Header
-    doc.fontSize(18).text("Transaction Report", { align: "center" });
+    // Define column widths and positions
+    const columns = {
+      date: { x: 50, width: 80 },
+      songName: { x: 130, width: 180 },
+      amount: { x: 310, width: 80 },
+      royalty: { x: 390, width: 80 },
+      share: { x: 470, width: 80 }
+    };
+ 
+    // Helper function to truncate text
+    const truncateText = (text, width) => {
+      if (!text) return 'N/A';
+      if (doc.widthOfString(text) <= width) return text;
+      let truncated = text;
+      while (doc.widthOfString(truncated + '...') > width && truncated.length > 0) {
+        truncated = truncated.slice(0, -1);
+      }
+      return truncated + '...';
+    };
+ 
+    // Helper function to draw a row with proper text alignment
+    const drawRow = (items, isHeader = false) => {
+      const y = doc.y;
+      const textOptions = { width: 0, align: 'left' };
+     
+      if (isHeader) {
+        doc.font('Helvetica-Bold');
+      } else {
+        doc.font('Helvetica');
+      }
+ 
+      // Date
+      doc.text(items.date, columns.date.x, y, {
+        ...textOptions,
+        width: columns.date.width
+      });
+ 
+      // Song Name
+      doc.text(
+        truncateText(items.songName, columns.songName.width),
+        columns.songName.x,
+        y,
+        {
+          ...textOptions,
+          width: columns.songName.width
+        }
+      );
+ 
+      // Amount
+      doc.text(items.amount, columns.amount.x, y, {
+        ...textOptions,
+        width: columns.amount.width,
+        align: 'right'
+      });
+ 
+      // Royalty
+      doc.text(items.royalty, columns.royalty.x, y, {
+        ...textOptions,
+        width: columns.royalty.width,
+        align: 'right'
+      });
+ 
+      // Share
+      doc.text(items.share, columns.share.x, y, {
+        ...textOptions,
+        width: columns.share.width,
+        align: 'right'
+      });
+ 
+      doc.moveDown();
+    };
+ 
+    // PDF Header
+    doc.fontSize(18)
+      .font('Helvetica-Bold')
+      .text("Transaction Report", { align: "center" });
     doc.moveDown();
  
-    // Add User Info
-    doc.fontSize(12).text(`User: ${userData.username}`, { continued: true });
-    doc.text(` | Email: ${userData.email}`);
+    // User Info
+    doc.fontSize(12)
+      .font('Helvetica')
+      .text(`User: ${userData.username} | Email: ${userData.email}`);
     doc.moveDown();
  
-    // Table Headers
-    doc.fontSize(12).text("Date", 60, doc.y, { continued: true });
-    doc.text("Amount", 120, doc.y, { continued: true });
-    doc.text("Royalty Paid", 180, doc.y, { continued: true });
-    doc.text("Royalty Due", 240, doc.y, { continued: true });
-    doc.text(role === "artist" ? "Artist Share" : "Manager Share", 300, doc.y);
+    // Draw header row
+    doc.fontSize(10);
+    drawRow(
+      {
+        date: "Date",
+        songName: "Song Name",
+        amount: "Amount",
+        royalty: "Royalty Paid",
+        share: role === "artist" ? "Artist Share" : "Manager Share"
+      },
+      true
+    );
  
-    doc.moveDown();
+    // Draw divider line
+    doc.moveTo(50, doc.y)
+      .lineTo(550, doc.y)
+      .stroke();
+    doc.moveDown(0.5);
+ 
+    // Calculate totals while adding transactions
+    let totalAmount = 0;
+    let totalRoyalty = 0;
+    let totalShare = 0;
  
     // Add Transactions
     transactions.forEach((txn) => {
-      doc.text(new Date(txn.transactionDate).toLocaleDateString(), 50, doc.y, { continued: true });
-      doc.text(`$${txn.transactionAmount.toFixed(2)}`, 90, doc.y, { continued: true });
-      doc.text(`$${txn.royaltyPaid.toFixed(2)}`, 160, doc.y, { continued: true });
-      doc.text(`$${txn.royaltyDue.toFixed(2)}`, 250, doc.y, { continued: true });
+      totalAmount += txn.transactionAmount;
+      totalRoyalty += txn.royaltyPaid;
+      totalShare += role === "artist" ? txn.artistShare : txn.managerShare;
  
-      // Dynamically display Artist or Manager share
-      const share = role === "artist" ? txn.artistShare : txn.managerShare;
-      doc.text(`$${share.toFixed(2)}`, 335, doc.y);
- 
-      doc.moveDown();
+      drawRow({
+        date: new Date(txn.transactionDate).toLocaleDateString(),
+        songName: txn.songId ? txn.songId.songName : "Unknown",
+        amount: `$${txn.transactionAmount.toFixed(2)}`,
+        royalty: `$${txn.royaltyPaid.toFixed(2)}`,
+        share: `$${(role === "artist" ? txn.artistShare : txn.managerShare).toFixed(2)}`
+      });
     });
+ 
+    // Add a divider line before totals
+    doc.moveDown(0.5);
+    doc.moveTo(50, doc.y)
+      .lineTo(550, doc.y)
+      .stroke();
+    doc.moveDown(0.5);
+ 
+    // Add totals row
+    doc.font('Helvetica-Bold').fontSize(10);
+    drawRow({
+      date: "",
+      songName: "Total",
+      amount: `$${totalAmount.toFixed(2)}`,
+      royalty: `$${totalRoyalty.toFixed(2)}`,
+      share: `$${totalShare.toFixed(2)}`
+    }, true);
  
     doc.end();
  
