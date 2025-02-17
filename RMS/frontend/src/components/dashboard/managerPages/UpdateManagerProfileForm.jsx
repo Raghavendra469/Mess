@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./../../../context/authContext";
-import axios from "axios";
 import { FiUser, FiPhone, FiHome, FiFileText, FiPercent } from "react-icons/fi"; // Import icons
-import { useNotifications } from "../../../context/notificationContext";
+import { useNotifications } from "../../../context/NotificationContext";
+import { fetchUserDetails, updateUserProfile } from "../../../services/userService"; // Import the userService functions
 
-const UpdateArtistProfileForm = () => {
+const UpdateManagerProfileForm = () => {
     const { user, userData, loading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         fullName: "",
@@ -17,18 +17,18 @@ const UpdateArtistProfileForm = () => {
     const [message, setMessage] = useState("");
     const { sendNotification } = useNotifications();
 
-    // Fetch existing artist details
+    // Fetch existing manager details
     useEffect(() => {
         if (!authLoading && user) {
             const fetchArtistDetails = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3000/api/users/${user.username}`);
+                    const userDetails = await fetchUserDetails(user.username);
                     setFormData({
-                        fullName: response.data.user.fullName || "",
-                        mobileNo: response.data.user.mobileNo || "",
-                        commissionPercentage: response.data.user.commissionPercentage || "",
-                        address: response.data.user.address || "",
-                        description: response.data.user.description || "",
+                        fullName: userDetails.fullName || "",
+                        mobileNo: userDetails.mobileNo || "",
+                        commissionPercentage: userDetails.commissionPercentage || "",
+                        address: userDetails.address || "",
+                        description: userDetails.description || "",
                     });
                     setLoading(false);
                 } catch (error) {
@@ -52,11 +52,13 @@ const UpdateArtistProfileForm = () => {
         e.preventDefault();
         setMessage("");
         try {
-            await axios.put(`http://localhost:3000/api/users/${user.username}`, formData);
+            await updateUserProfile(user.username, formData);
             setMessage("Profile updated successfully!");
 
+            // Send notification to managed artists
             if (userData.managedArtists) {
                 userData.managedArtists.forEach(async (artist) => {
+                    console.log("artistId",artist.artistId)
                     await sendNotification(artist.artistId, `${userData.fullName} updated their profile.`, "profileUpdate");
                 });
             }
@@ -175,4 +177,4 @@ const UpdateArtistProfileForm = () => {
     );
 };
 
-export default UpdateArtistProfileForm;
+export default UpdateManagerProfileForm;

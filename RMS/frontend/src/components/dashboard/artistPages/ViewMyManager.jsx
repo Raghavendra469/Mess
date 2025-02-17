@@ -8,8 +8,6 @@ const ViewMyManager = () => {
     return <p className="text-gray-600 p-6 text-center">No manager assigned.</p>;
   }
 
-  // console.log(userData, "----------manager");
-
   const {
     fullName,
     email,

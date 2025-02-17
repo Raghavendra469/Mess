@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { forgotPassword } from "../services/AuthServices";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -16,14 +16,14 @@ const ForgotPassword = () => {
     setMessage(null);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
-      if (response.data.success) {
+      const response = await forgotPassword(email);
+      if (response.success) {
         setMessage("Password reset email sent. Please check your inbox.");
       } else {
         setError("Something went wrong. Please try again.");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Server error. Please try again later.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -32,7 +32,6 @@ const ForgotPassword = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-b from-teal-600 to-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        {/* <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">Forgot Password</h2> */}
         {message && <p className="text-green-500 text-center mb-4">{message}</p>}
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../context/authContext";
-import { useNotifications } from "../../../context/notificationContext";
+import { useNotifications } from "../../../context/NotificationContext";
 import SearchBar from "../../commonComponents/SearchBar";
+import SongService from "../../../services/SongService";
 
 const DeleteSong = () => {
   const [songs, setSongs] = useState([]);
@@ -13,25 +13,25 @@ const DeleteSong = () => {
 
   // Fetch songs when the component loads or when userData changes
   useEffect(() => {
+    if (!userData?._id) return;
+
     const fetchSongs = async () => {
-      if (!userData?._id) return;
       try {
-        const response = await axios.get(`http://localhost:3000/api/songs/artist/${userData._id}`);
-        if (response.data.success) {
-          setSongs(response.data.songs);
-          setFilteredSongs(response.data.songs);
-        }
+        const fetchedSongs = await SongService.fetchSongsByArtist(userData._id);
+        setSongs(fetchedSongs);
+        setFilteredSongs(fetchedSongs); // Initially, set filteredSongs to all songs
       } catch (error) {
         console.error("Failed to fetch songs:", error);
       }
     };
+
     fetchSongs();
-  }, [userData]); 
+  }, [userData]);
 
   // Search functionality
   const handleSearch = (searchTerm) => {
     if (!searchTerm) {
-      setFilteredSongs(songs);
+      setFilteredSongs(songs); // If no search term, display all songs
     } else {
       setFilteredSongs(
         songs.filter((song) =>
@@ -41,19 +41,30 @@ const DeleteSong = () => {
     }
   };
 
-  // Delete a song without reloading
   const handleDeleteSong = async (songId, songName) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/api/songs/${songId}`);
-      if (response.data.message) {
-        setSongs((prevSongs) => prevSongs.filter((song) => song.songId !== songId));
-        setFilteredSongs((prevSongs) => prevSongs.filter((song) => song.songId !== songId));
+      // Delete the song from the server
+      await SongService.deleteSong(songId);
+  
+      // Remove the song from the songs state
+      setSongs((prevSongs) => {
+        const updatedSongs = prevSongs.filter((song) => song.songId !== songId);
+        return updatedSongs;
+      });
 
-        setStatusMessage("✅ Song deleted successfully!");
-        setTimeout(() => setStatusMessage(""), 3000);
-
-        await sendNotification(userData.manager.managerId,`${userData.fullName} deleted a song: ${songName}.`,"songUpdate");
-      }
+      // Recalculate filteredSongs based on the updated songs list
+      setFilteredSongs((prevFilteredSongs) =>
+        prevFilteredSongs.filter((song) => song.songId !== songId)
+      );
+  
+      setStatusMessage("✅ Song deleted successfully!");
+      setTimeout(() => setStatusMessage(""), 3000);
+  
+      await sendNotification(
+        userData.manager.managerId,
+        `${userData.fullName} deleted a song: ${songName}.`,
+        "songUpdate"
+      );
     } catch (error) {
       setStatusMessage("❌ Failed to delete song.");
       console.error("Failed to delete song:", error);
@@ -68,7 +79,7 @@ const DeleteSong = () => {
         <SearchBar onSearch={handleSearch} />
       </header>
 
-      {/* ✅ Status message (instead of alerts) */}
+      {/* ✅ Status message */}
       {statusMessage && (
         <p className="text-center text-gray-700 font-semibold mb-4">{statusMessage}</p>
       )}
@@ -79,9 +90,15 @@ const DeleteSong = () => {
           filteredSongs.map((song) => (
             <div key={song._id} className="bg-white p-6 rounded-lg shadow-lg">
               <p className="font-bold text-lg">{song.songName}</p>
-              <p className="text-sm text-gray-600">Release Date: {new Date(song.releaseDate).toLocaleDateString()}</p>
-              <p className="text-lg"><b>Total Streams:</b> {song.totalStreams}</p>
-              <p className="text-lg"><b>Total Royalty:</b> {song.totalRoyalty.toFixed(2)}</p>
+              <p className="text-sm text-gray-600">
+                Release Date: {new Date(song.releaseDate).toLocaleDateString()}
+              </p>
+              <p className="text-lg">
+                <b>Total Streams:</b> {song.totalStreams}
+              </p>
+              <p className="text-lg">
+                <b>Total Royalty:</b> {song.totalRoyalty.toFixed(2)}
+              </p>
               <div className="mt-4">
                 <button
                   onClick={() => handleDeleteSong(song.songId, song.songName)}

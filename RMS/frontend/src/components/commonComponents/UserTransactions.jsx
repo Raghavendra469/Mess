@@ -12,16 +12,11 @@ const UserTransactions = () => {
         const fetchArtistTransactions = async () => {
             setIsLoading(true);
             try {
-                const response = await TransactionService.fetchTransactions(user.role, userData._id);
-                if (response) {
-                    setTransactions(response);
-                    const totalAmount = response.reduce((acc, tx) => {
-                        return acc + (user.role === "Artist" ? tx.artistShare : tx.managerShare);
-                    }, 0);
-                    setWalletAmount(totalAmount);
-                } else {
-                    console.error("Failed to fetch transactions:", response?.message);
-                }
+                const fetchedTransactions = await TransactionService.fetchTransactions(user.role, userData._id);
+                setTransactions(fetchedTransactions);
+
+                const totalAmount = TransactionService.fetchWalletAmount(fetchedTransactions, user.role);
+                setWalletAmount(totalAmount);
             } catch (error) {
                 console.error("Error fetching artist transactions:", error);
             } finally {
@@ -30,22 +25,13 @@ const UserTransactions = () => {
         };
 
         if (!loading) fetchArtistTransactions();
-    }, [userData, loading]);
+    }, [userData, loading, user.role]);
 
     // Function to Download PDF
     const handleDownloadPDF = async () => {
         try {
-            const response = await fetch(
-                `http://localhost:3000/api/transactions/export/${user.role.toLowerCase()}/${userData._id}`,
-                { method: "GET" }
-            );
-
-            if (!response.ok) {
-                throw new Error("Failed to download PDF");
-            }
-
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
+            const pdfBlob = await TransactionService.downloadTransactionsPDF(user.role, userData._id);
+            const url = window.URL.createObjectURL(pdfBlob);
             const a = document.createElement("a");
             a.href = url;
             a.download = "transactions.pdf";

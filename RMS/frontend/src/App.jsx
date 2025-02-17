@@ -7,10 +7,10 @@ import ArtistDashboard from "./pages/ArtistDashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import RoleBaseRoutes from "./utils/RoleBaseRoutes";
-import CreateUserForm from "./components/dashboard/CreateUserForm";
-import DeleteUserForm from "./components/dashboard/DeleteUserForm";
-import ViewAdminForm from "./components/dashboard/ViewAdminForm";
-import AdminSummary from "./components/dashboard/AdminSummary"
+import CreateUserForm from "./components/dashboard/adminPages/CreateUserForm.jsx";
+import DeleteUserForm from "./components/dashboard/adminPages/DeleteUserForm.jsx";
+import ViewAdminForm from "./components/dashboard/adminPages/ViewAdminForm.jsx";
+import AdminSummary from "./components/dashboard/adminPages/AdminSummary.jsx"
 import ArtistSummary from "./components/dashboard/artistPages/ArtistSummary"
 import ManagerSummary from "./components/dashboard/managerPages/ManagerSummary"
 import SongListPage from "./components/dashboard/artistPages/SongListPage";

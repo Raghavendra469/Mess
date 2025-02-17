@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
-
+import { useArtistsManagers } from "../../../context/ArtistsManagersContext"; // Import the context hook
+import { sendCollaborationRequest } from "../../../services/CollaborationService"; // Import the collaboration service
 
 const RequestManagerList = () => {
   const { userData } = useAuth(); // Get logged-in artist data
-  const [managers, setManagers] = useState([]);
+  const { managers } = useArtistsManagers(); // Access managers from the ArtistsManagersContext
+  const { sendNotification } = useNotifications(); // For sending notifications
   const [loading, setLoading] = useState(false);
   const [requestStatus, setRequestStatus] = useState({}); // State to track request status
-  const { sendNotification } = useNotifications();
   const [alreadyHasManager, setAlreadyHasManager] = useState(false);
   const [message, setMessage] = useState(""); // Message to display in UI
 
-
   useEffect(() => {
-    const fetchManagers = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:3000/api/users/role/Manager");
-        setManagers(response.data.users);
-      } catch (error) {
-        console.error("Failed to fetch managers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchManagers();
-
     // Check if the artist already has a manager
     if (userData.manager) {
       setAlreadyHasManager(true);
@@ -35,39 +21,26 @@ const RequestManagerList = () => {
     }
   }, [userData]);
 
-  const sendRequest = async (managerId,notifyManager) => {
+  const handleSendRequest = async (managerId,notifyManager) => {
     if (alreadyHasManager) {
       alert("You already have a manager! You cannot send a new request.");
       return;
     }
-    try {
-      // console.log("manager id", managerId);
-      // console.log("artistId", userData._id);
-      
-      const response = await axios.post("http://localhost:3000/api/collaborations/", {
-        collaborationId: Math.random().toString(36).substring(2, 9),
-        artistId: userData._id,
-        managerId: managerId,
-      });
 
-      if (response.data.success) {
+    try {
+      // Call the collaboration service to send the request
+      const response = await sendCollaborationRequest(userData._id, managerId);
+
+      if (response.success) {
         setRequestStatus((prevStatus) => ({
           ...prevStatus,
           [managerId]: "Request Sent",
         }));
 
-        // const notificationData = {
-        //   userId: userData.manager.managerId, // Send to manager
-        //   message: `${userData.fullName} requested you for collaboration.`,
-        //   type: "collaborationRequest",
-        // };
-  
-        // await axios.post("http://localhost:3000/api/notifications/", notificationData);
-        await sendNotification(notifyManager,`${userData.fullName} requested you for collaboration.`,"collaborationRequest");
-
+        // Notify the manager about the collaboration request
+        await sendNotification(notifyManager, `${userData.fullName} requested you for collaboration.`, "collaborationRequest");
       }
     } catch (error) {
-      console.error("Error sending request:", error);
       setRequestStatus((prevStatus) => ({
         ...prevStatus,
         [managerId]: "Request Failed",
@@ -98,7 +71,7 @@ const RequestManagerList = () => {
                 <p className="text-gray-600"><strong>Managed Artists:</strong> {manager.managedArtists.length}</p>
                 
                 <button
-                  onClick={() => sendRequest(manager._id,manager.managerId)}
+                  onClick={() => handleSendRequest(manager._id,manager.managerId)}
                   className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                   disabled={requestStatus[manager._id] === "Request Sent"}
                 >

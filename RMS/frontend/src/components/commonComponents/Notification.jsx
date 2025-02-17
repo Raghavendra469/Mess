@@ -7,7 +7,6 @@ const Notifications = () => {
   return (
     <div className="absolute right-4 bg-white shadow-lg rounded-lg p-4 w-80 z-50 border border-gray-200">
       <h3 className="text-lg font-semibold mb-4 text-gray-800">Notifications</h3>
-      
       {loading ? (
         <p className="text-gray-500">Loading...</p>
       ) : notifications.length === 0 ? (
@@ -15,6 +14,7 @@ const Notifications = () => {
       ) : (
         <ul className="space-y-2">
           {notifications.map((notif) => (
+            // {console.log(notif._id)}
             <li 
               key={notif._id} 
               className="flex justify-between items-center p-3 border rounded bg-gray-100 hover:bg-gray-200 transition"

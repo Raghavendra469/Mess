@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "../../../context/authContext";
 import SummaryCard from "../../commonComponents/summaryCard";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { fetchUserDetails } from "../../../services/userService";  // Import userService
+import SongService from "../../../services/SongService";  // Import songService
 
 const ManagerSummary = () => {
   const { userData } = useAuth();
@@ -22,13 +12,14 @@ const ManagerSummary = () => {
   const [songData, setSongData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Fetch artists when the user data changes
   useEffect(() => {
     const fetchArtists = async () => {
       if (!userData?.username) return;
       try {
-        const response = await axios.get(`http://localhost:3000/api/users/${userData.username}`);
-        if (response.data.user.managedArtists) {
-          setArtists(response.data.user.managedArtists);
+        const userDetails = await fetchUserDetails(userData.username);  // Use userService
+        if (userDetails.managedArtists) {
+          setArtists(userDetails.managedArtists);
         }
       } catch (error) {
         console.error("Failed to fetch managed artists:", error);
@@ -38,15 +29,14 @@ const ManagerSummary = () => {
     fetchArtists();
   }, [userData]);
 
+  // Fetch song data when an artist is selected
   useEffect(() => {
     const fetchSongData = async () => {
       if (!selectedArtistId) return;
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3000/api/songs/artist/${selectedArtistId}`);
-        if (response.data.success) {
-          setSongData(response.data.songs);
-        }
+        const songs = await SongService.fetchSongsByArtist(selectedArtistId);  // Use songService
+        setSongData(songs);
       } catch (error) {
         console.error("Failed to fetch song data:", error);
       } finally {
@@ -57,6 +47,7 @@ const ManagerSummary = () => {
     fetchSongData();
   }, [selectedArtistId]);
 
+  // Calculate the total royalty and top artist
   const totalRoyalty = artists.reduce((sum, artist) => sum + artist.fullRoyalty, 0);
   const topArtist = artists.reduce((top, artist) => (artist.fullRoyalty > (top?.fullRoyalty || 0) ? artist : top), null);
 
@@ -72,21 +63,6 @@ const ManagerSummary = () => {
         <SummaryCard title="Total Managed Royalty" value={`$${totalRoyalty.toFixed(2)}`} />
         <SummaryCard title="Top Artist (by Royalty)" value={topArtist ? topArtist.fullName : "N/A"} />
       </div>
-      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-          <h2 className="text-sm md:text-lg font-semibold truncate">Total Managed Artists</h2>
-          <p className="text-xl md:text-2xl font-bold">{artists.length}</p>
-        </div>
-        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-          <h2 className="text-sm md:text-lg font-semibold truncate">Total Managed Royalty</h2>
-          <p className="text-xl md:text-2xl font-bold">${totalRoyalty.toFixed(2)}</p>
-        </div>
-        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-          <h2 className="text-sm md:text-lg font-semibold truncate">Top Artist (by Royalty)</h2>
-          <p className="text-xl md:text-2xl font-bold truncate">{topArtist ? topArtist.fullName : "N/A"}</p>
-        </div>
-      </div> */}
-
 
       {/* Artist Comparison Bar Graph */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">

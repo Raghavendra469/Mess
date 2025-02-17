@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/authContext";
-import Navbar from "../components/dashboard/Navbar.jsx";
+import Navbar from "../components/commonComponents/Navbar.jsx";
 import ArtistSidebar from "../components/dashboard/ArtistSidebar.jsx";
 import { Outlet } from "react-router-dom";
 

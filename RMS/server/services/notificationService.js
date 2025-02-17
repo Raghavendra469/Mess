@@ -12,7 +12,7 @@ const getNotificationsByUser = async (userId) => {
 const markNotificationAsRead = async (notificationId) => {
   // return await Notification.findByIdAndUpdate(notificationId, { isRead: true }, { new: true });
   await Notification.findByIdAndUpdate(notificationId, { isRead: true }, { new: true });
-  return await Notification.findOneAndDelete(notificationId);
+  // return await Notification.findOneAndDelete(notificationId);
 
 };
 

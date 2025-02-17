@@ -3,8 +3,7 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:3000/api/transactions";
 
 const TransactionService = {
-
-    fetchTransactions: async (role,id) => {
+    fetchTransactions: async (role, id) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/user/${role.toLowerCase()}/${id}`);
             return response.data;
@@ -14,6 +13,23 @@ const TransactionService = {
         }
     },
 
+    fetchWalletAmount: (transactions, role) => {
+        return transactions.reduce((acc, tx) => {
+            return acc + (role === "Artist" ? tx.artistShare : tx.managerShare);
+        }, 0);
+    },
+
+    downloadTransactionsPDF: async (role, id) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:3000/api/transactions/export/${role.toLowerCase()}/${id}`,
+                { responseType: 'blob' }
+            );
+            return response.data;
+        } catch (error) {
+            throw new Error("Failed to download PDF");
+        }
+    },
 
     createTransaction: async (transactionData) => {
         try {
@@ -33,7 +49,7 @@ const TransactionService = {
         }
     },
 
-    payTransaction: async (transactionId,paymentAmount) => {
+    payTransaction: async (transactionId, paymentAmount) => {
         try {
             await axios.post(`${API_BASE_URL}/pay`, { transactionId, paymentAmount });
             return { success: true, message: "Payment successful!" };

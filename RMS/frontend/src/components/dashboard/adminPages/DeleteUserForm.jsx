@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useAuth } from "../../context/authContext";
-import SearchBar from "../commonComponents/SearchBar";
+import { useAuth } from "../../../context/authContext";
+import SearchBar from "../../commonComponents/SearchBar";
+import { fetchUsersByRole, toggleUserStatus } from "../../../services/userService";
 
 const DeleteUserForm = () => {
     const [users, setUsers] = useState([]);
@@ -9,18 +9,16 @@ const DeleteUserForm = () => {
     const { user } = useAuth();
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const getUsers = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/users/role/User");
-                if (response.data.success) {
-                    setUsers(response.data.users);
-                    setFilteredUsers(response.data.users);
-                }
+                const usersData = await fetchUsersByRole("User");
+                setUsers(usersData);
+                setFilteredUsers(usersData);
             } catch (error) {
                 console.error("Failed to fetch users:", error);
             }
         };
-        fetchUsers();
+        getUsers();
     }, []);
 
     const handleSearch = (searchTerm) => {
@@ -33,11 +31,9 @@ const DeleteUserForm = () => {
 
     const handleToggleStatus = async (userId, isActive) => {
         try {
-            const response = await axios.put(`http://localhost:3000/api/users/toggle/${userId}`, { isActive });
-            if (response.data.success) {
-                setUsers(users.map(user => user._id === userId ? { ...user, isActive } : user));
-                setFilteredUsers(filteredUsers.map(user => user._id === userId ? { ...user, isActive } : user));
-            }
+            const updatedUser = await toggleUserStatus(userId, isActive);
+            setUsers(users.map(user => user._id === userId ? { ...user, isActive } : user));
+            setFilteredUsers(filteredUsers.map(user => user._id === userId ? { ...user, isActive } : user));
         } catch (error) {
             console.error("Failed to toggle user status:", error);
         }

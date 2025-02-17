@@ -1,9 +1,9 @@
 import React from "react";
-import { useArtistsManagers } from "../../context/ArtistsManagersContext";
-import TopArtistsChart from "../dashboard/adminPages/TopArtistChart";
-import TopManagersChart from "../dashboard/adminPages/TopManagerCharts";
-import ArtistsTable from "../dashboard/adminPages/ArtistTable";
-import ManagersTable from "../dashboard/adminPages/ManagerTable";
+import { useArtistsManagers } from "../../../context/ArtistsManagersContext";
+import TopArtistsChart from "./TopArtistChart";
+import TopManagersChart from "./TopManagerCharts";
+import ArtistsTable from "./ArtistTable";
+import ManagersTable from "./ManagerTable";
 
 
 const AdminSummary = () => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../context/authContext";
 import SummaryCard from "../../commonComponents/summaryCard";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import SongService from "../../../services/SongService";
 
 const ArtistSummary = () => {
   const { userData } = useAuth();
@@ -12,10 +12,8 @@ const ArtistSummary = () => {
     const fetchSongData = async () => {
       if (!userData?._id) return;
       try {
-        const response = await axios.get(`http://localhost:3000/api/songs/artist/${userData._id}`);
-        if (response.data.success) {
-          setSongData(response.data.songs);
-        }
+        const fetchedSongs = await SongService.fetchSongsByArtist(userData._id);
+        setSongData(fetchedSongs);
       } catch (error) {
         console.error("Failed to fetch song data:", error);
       }
@@ -29,8 +27,7 @@ const ArtistSummary = () => {
   const totalRoyalty = songData.reduce((sum, song) => sum + song.totalRoyalty, 0);
   const totalStreams = songData.reduce((sum, song) => sum + song.totalStreams, 0);
   const topSong = songData.reduce((top, song) => (song.totalStreams > (top?.totalStreams || 0) ? song : top), null);
-  // console.log("total royalty----------",userData.fullRoyalty)
-  // console.log("total streams----------",userData.totalStreams)
+
   // Colors for the Pie Chart
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#0088FE", "#00C49F"];
 

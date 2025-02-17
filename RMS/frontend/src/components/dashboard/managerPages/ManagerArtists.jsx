@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../context/authContext";
+import { fetchUserDetails } from "../../../services/userService"; // Import user service
 import SearchBar from "../../commonComponents/SearchBar";
 
 const ManagerArtists = () => {
@@ -13,10 +13,10 @@ const ManagerArtists = () => {
       if (!userData?.username) return; // Prevent API call if username is undefined
 
       try {
-        const response = await axios.get(`http://localhost:3000/api/users/${userData.username}`);
-        if (response.data.user && response.data.user.managedArtists) {
-          setArtists(response.data.user.managedArtists);
-          setFilteredArtists(response.data.user.managedArtists);
+        const user = await fetchUserDetails(userData.username); // Fetch user details using the user service
+        if (user?.managedArtists) {
+          setArtists(user.managedArtists);
+          setFilteredArtists(user.managedArtists);
         } else {
           setArtists([]);
           setFilteredArtists([]);

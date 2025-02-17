@@ -1,56 +1,48 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../context/authContext";
-import { useNotifications } from "../../../context/notificationContext";
-
+import { useNotifications } from "../../../context/NotificationContext";
+import {
+  fetchCollaborationRequests,
+  acceptCollaborationRequest,
+  rejectCollaborationRequest,
+} from "../../../services/CollaborationService"; // Import service functions
 
 const CollaborationRequests = () => {
-  const { userData } = useAuth(); // Get logged-in manager details
+  const { userData } = useAuth();
   const [requests, setRequests] = useState([]);
   const { sendNotification } = useNotifications();
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const getRequests = async () => {
       if (!userData?._id) return;
       try {
-        // console.log("Fetching requests for manager:", userData._id);
-        const response = await axios.get(`http://localhost:3000/api/collaborations/${userData._id}/Manager`);
-        
-        // console.log("Fetched response:", response.data.collaborations);
-        if (response.data && response.data.collaborations) {
-          setRequests(response.data.collaborations);
-        } else {
-          setRequests([]);
-        }
+        const fetchedRequests = await fetchCollaborationRequests(userData._id);
+        setRequests(fetchedRequests);
       } catch (error) {
         console.error("Error fetching requests:", error);
       }
     };
 
-    fetchRequests();
+    getRequests();
   }, [userData]);
 
   // Handle Accept Request
-  const handleAccept = async (requestId,artistId) => {
+  const handleAccept = async (requestId, artistId) => {
     try {
-      await axios.put(`http://localhost:3000/api/collaborations/${requestId}`,{status:"Approved"});
-      setRequests(prevRequests => prevRequests.filter(request => request._id !== requestId));
-      // console.log(artistId,"-------------------artist")
-      await sendNotification(artistId,`${userData.fullName} accepted your Request.`,"collaborationRequest");
-
+      await acceptCollaborationRequest(requestId);
+      setRequests((prevRequests) => prevRequests.filter((req) => req._id !== requestId));
+      await sendNotification(artistId, `${userData.fullName} accepted your request.`, "collaborationRequest");
     } catch (error) {
       console.error("Error accepting request:", error);
     }
   };
 
   // Handle Reject Request
-  const handleReject = async (requestId,artistId) => {
+  const handleReject = async (requestId, artistId) => {
     try {
-      await axios.put(`http://localhost:3000/api/collaborations/${requestId}`,{status:"Rejected"});
-      setRequests(prevRequests => prevRequests.filter(request => request._id !== requestId));
-
-      await sendNotification(artistId,`${userData.fullName} rejected your Request.`,"collaborationRequest");
-
+      await rejectCollaborationRequest(requestId);
+      setRequests((prevRequests) => prevRequests.filter((req) => req._id !== requestId));
+      await sendNotification(artistId, `${userData.fullName} rejected your request.`, "collaborationRequest");
     } catch (error) {
       console.error("Error rejecting request:", error);
     }
@@ -69,16 +61,15 @@ const CollaborationRequests = () => {
               <h3 className="text-xl font-semibold text-gray-800">{request.artistId?.fullName || "Unknown Artist"}</h3>
               <p className="text-gray-600 mt-2"><strong>Email:</strong> {request.artistId?.email || "N/A"}</p>
               <p className="text-gray-600"><strong>Mobile No:</strong> {request.artistId?.mobileNo || "N/A"}</p>
-              {/* <p className="text-gray-600"><strong>Mobile No:</strong> {request.artistId?.artistId || "N/A"}</p> */}
               <div className="mt-4 flex justify-between">
                 <button
-                  onClick={() => handleAccept(request._id,request.artistId.artistId)}
+                  onClick={() => handleAccept(request._id, request.artistId.artistId)}
                   className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
                 >
                   Accept
                 </button>
                 <button
-                  onClick={() => handleReject(request._id,request.artistId.artistId)}
+                  onClick={() => handleReject(request._id, request.artistId.artistId)}
                   className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                 >
                   Reject

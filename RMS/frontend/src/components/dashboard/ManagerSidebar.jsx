@@ -19,7 +19,7 @@ const ManagerSidebar = ({ isOpen, toggleSidebar }) => {
           to="/manager-dashboard"
           end
           onClick={handleLinkClick}
-          className={({ isActive }) => `${isActive ? "bg-teal-500" : ""} flex items-center space-x-4 block py-2.5 px-4 rounded`}
+          className={({ isActive }) => `${isActive ? "bg-teal-500" : ''} flex items-center space-x-4 block py-2.5 px-4 rounded hover:bg-gray-400 hover:text-white hover:scale-105 transition-all duration-200`}
         >
           Dashboard
         </NavLink>
@@ -40,7 +40,7 @@ const ManagerSidebar = ({ isOpen, toggleSidebar }) => {
         <NavLink
           to="/manager-dashboard/royalty-transactions"
           onClick={handleLinkClick}
-          className="flex items-center space-x-4 block py-2.5 px-4 rounded"
+          className={({ isActive }) => `${isActive ? "bg-teal-500" : ''} flex items-center space-x-4 block py-2.5 px-4 rounded hover:bg-gray-400 hover:text-white hover:scale-105 transition-all duration-200`}
         >
           Royalty Transactions
         </NavLink>

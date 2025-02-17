@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/authContext";
 import ManagerSidebar from "../components/dashboard/ManagerSidebar";
-import Navbar from "../components/dashboard/Navbar";
+import Navbar from "../components/commonComponents/Navbar";
 import { Outlet } from "react-router-dom";
 
 const ManagerDashboard = () => {

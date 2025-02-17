@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./../../../context/authContext";
-import axios from "axios";
 import { FiUser, FiPhone, FiHome, FiFileText } from "react-icons/fi"; // Import icons
-import { useNotifications } from "../../../context/notificationContext";
-
+import { useNotifications } from "../../../context/NotificationContext";
+import { fetchUserDetails, updateUserProfile } from "../../../services/userService"; // Import the userService functions
 
 const UpdateArtistProfileForm = () => {
-    const { user,userData, loading: authLoading } = useAuth();
+    const { user, userData, loading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         fullName: "",
         mobileNo: "",
@@ -17,29 +16,27 @@ const UpdateArtistProfileForm = () => {
     const [message, setMessage] = useState("");
     const { sendNotification } = useNotifications();
 
-
-    // Fetch existing artist details
+    // Fetch existing user details
     useEffect(() => {
         if (!authLoading && user) {
-            const fetchArtistDetails = async () => {
+            const loadUserDetails = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3000/api/users/${user.username}`);
-                    // console.log("update------",response.data.user);
+                    const userDetails = await fetchUserDetails(user.username);
                     setFormData({
-                        fullName: response.data.user.fullName|| "",
-                        mobileNo: response.data.user.mobileNo || "",
-                        address: response.data.user.address || "",
-                        description: response.data.user.description || "",
+                        fullName: userDetails.fullName || "",
+                        mobileNo: userDetails.mobileNo || "",
+                        address: userDetails.address || "",
+                        description: userDetails.description || "",
                     });
                     setLoading(false);
                 } catch (error) {
-                    console.error("Error fetching artist data:", error);
-                    setMessage("Failed to load artist data.");
+                    console.error("Error fetching user data:", error);
+                    setMessage("Failed to load user data.");
                     setLoading(false);
                 }
             };
 
-            fetchArtistDetails();
+            loadUserDetails();
         }
     }, [user, authLoading]);
 
@@ -53,10 +50,9 @@ const UpdateArtistProfileForm = () => {
         e.preventDefault();
         setMessage("");
         try {
-            await axios.put(`http://localhost:3000/api/users/${user.username}`, formData);
+            await updateUserProfile(user.username, formData);
             setMessage("Profile updated successfully!");
-            await sendNotification(userData.manager.managerId,`${userData.fullName} updated their profile.`,"profileUpdate");
-
+            await sendNotification(userData.manager.managerId, `${userData.fullName} updated their profile.`, "profileUpdate");
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");
