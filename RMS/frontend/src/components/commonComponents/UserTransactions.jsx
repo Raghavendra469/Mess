@@ -130,6 +130,26 @@ const UserTransactions = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Mobile Cards */}
+                    <div className="md:hidden space-y-4">
+                        {transactions.map((tx) => (
+                            <div key={tx._id} className="bg-gray-50 p-4 rounded-lg shadow-sm">
+                                <div className="flex justify-between items-center mb-2">
+                                    <p className="text-sm font-medium text-gray-800">Transaction ID</p>
+                                    <p className="text-sm text-gray-700 truncate max-w-[150px]">{tx._id}</p>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <p className="text-sm font-medium text-gray-800">Song Name</p>
+                                    <p className="text-sm text-gray-700">{tx.songId?.songName || "N/A"}</p>
+                                </div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <p className="text-sm font-medium text-gray-800">Amount</p>
+                                    <p className="text-sm text-green-600 font-semibold">${tx.transactionAmount}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             ) : (
                 <p className="text-gray-500 text-center">No transactions available</p>
