@@ -59,12 +59,18 @@ const DeleteSong = () => {
   
       setStatusMessage("✅ Song deleted successfully!");
       setTimeout(() => setStatusMessage(""), 3000);
-  
-      await sendNotification(
-        userData.manager.managerId,
-        `${userData.fullName} deleted a song: ${songName}.`,
-        "songUpdate"
-      );
+
+      // Ensure userData and manager exist before accessing managerId
+      if (userData?.manager?.managerId) {
+        await sendNotification(
+            userData.manager.managerId,
+            `${userData.fullName} deleted a song: ${songName}.`,
+            "songUpdate"
+        );
+      } else {
+          console.warn("Manager data is missing. No notification sent.");
+      }
+      
     } catch (error) {
       setStatusMessage("❌ Failed to delete song.");
       console.error("Failed to delete song:", error);
@@ -102,7 +108,7 @@ const DeleteSong = () => {
               <div className="mt-4">
                 <button
                   onClick={() => handleDeleteSong(song.songId, song.songName)}
-                  className="w-full px-4 py-2 rounded text-white font-semibold bg-red-500 hover:bg-red-700"
+                  className="w-full px-4 py-2 rounded text-white font-semibold bg-red-500 hover:bg-red-700 cursor-pointer"
                 >
                   Delete Song
                 </button>

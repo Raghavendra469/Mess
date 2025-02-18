@@ -72,7 +72,7 @@ const RequestManagerList = () => {
                 
                 <button
                   onClick={() => handleSendRequest(manager._id,manager.managerId)}
-                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
                   disabled={requestStatus[manager._id] === "Request Sent"}
                 >
                   {requestStatus[manager._id] === "Request Sent" ? "Request Sent" : "Send Request"}

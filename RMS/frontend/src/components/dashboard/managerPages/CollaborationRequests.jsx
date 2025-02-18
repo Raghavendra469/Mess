@@ -64,13 +64,13 @@ const CollaborationRequests = () => {
               <div className="mt-4 flex justify-between">
                 <button
                   onClick={() => handleAccept(request._id, request.artistId.artistId)}
-                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 cursor-pointer"
                 >
                   Accept
                 </button>
                 <button
                   onClick={() => handleReject(request._id, request.artistId.artistId)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 cursor-pointer"
                 >
                   Reject
                 </button>

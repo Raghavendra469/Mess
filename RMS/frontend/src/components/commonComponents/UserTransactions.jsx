@@ -29,6 +29,11 @@ const UserTransactions = () => {
 
     // Function to Download PDF
     const handleDownloadPDF = async () => {
+        if (transactions.length === 0) {
+            console.warn("No transactions available to download.");
+            alert("No transactions available to download.");
+            return;
+        }
         try {
             const pdfBlob = await TransactionService.downloadTransactionsPDF(user.role, userData._id);
             const url = window.URL.createObjectURL(pdfBlob);
@@ -60,7 +65,7 @@ const UserTransactions = () => {
             <div className="flex justify-center mb-4">
                 <button
                     onClick={handleDownloadPDF}
-                    className="bg-gray-800 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all"
+                    className="bg-gray-800 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all cursor-pointer"
                 >
                     📥 Download Transactions PDF
                 </button>

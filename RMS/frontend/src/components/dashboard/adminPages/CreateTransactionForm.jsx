@@ -42,8 +42,8 @@ const CreateTransactionForm = ({ selectedRoyalty, setSelectedRoyalty, fetchTrans
             <form onSubmit={handleTransactionSubmit}>
                 <input type="number" className="border p-2 rounded w-full mb-2"
                     value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} />
-                <button type="submit" className="bg-green-500 text-white px-3 py-1 rounded">Submit</button>
-                <button type="button" className="bg-gray-400 text-white px-3 py-1 rounded ml-2" onClick={() => setSelectedRoyalty(null)}>Cancel</button>
+                <button type="submit" className="bg-green-500 text-white px-3 py-1 rounded cursor-pointer">Submit</button>
+                <button type="button" className="bg-gray-400 text-white px-3 py-1 rounded ml-2 cursor-pointer" onClick={() => setSelectedRoyalty(null)}>Cancel</button>
             </form>
         </div>
     );

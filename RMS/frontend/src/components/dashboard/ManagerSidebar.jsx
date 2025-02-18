@@ -35,7 +35,7 @@ const ManagerSidebar = ({ isOpen, toggleSidebar }) => {
           onClick={handleLinkClick}
           className={({ isActive }) => `${isActive ? "bg-teal-500" : ''} flex items-center space-x-4 block py-2.5 px-4 rounded hover:bg-gray-400 hover:text-white hover:scale-105 transition-all duration-200`}
         >
-          Colabration Request
+          Collaboration Request
         </NavLink>
         <NavLink
           to="/manager-dashboard/royalty-transactions"

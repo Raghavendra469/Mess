@@ -78,7 +78,7 @@ const Payments = () => {
                                 <td className="border p-2">${royalty.totalRoyalty?.toFixed(2) || 0}</td>
                                 <td className="border p-2">${royalty.royaltyDue?.toFixed(2) || 0}</td>
                                 <td className="border p-2">
-                                    <button className="bg-blue-500 text-white px-3 py-1 rounded"
+                                    <button className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer"
                                         onClick={() => handleCreateTransaction(royalty)}>
                                         Create Transaction
                                     </button>

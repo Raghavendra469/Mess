@@ -41,12 +41,17 @@ const AddSongForm = () => {
       if (response.success) {
         setSuccessMessage("Song added successfully! 🎵");
         setFormData({ songName: "", releaseDate: "" });
-        
-        await sendNotification(
-          userData.manager.managerId,
-          `${userData.fullName} added a song: ${newSong.songName}.`,
-          "songUpdate"
-        );
+
+          // Ensure userData and manager exist before accessing managerId
+          if (userData?.manager?.managerId) {
+            await sendNotification(
+                userData.manager.managerId,
+                `${userData.fullName} added a song: ${newSong.songName}.`,
+                "songUpdate"
+            );
+          } else {
+              console.warn("Manager data is missing. No notification sent.");
+          }
 
         setTimeout(() => setSuccessMessage(""), 3000);
       } else {
@@ -128,7 +133,7 @@ const AddSongForm = () => {
           </div>
           <button
             type="submit"
-            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
           >
             Add Song
           </button>

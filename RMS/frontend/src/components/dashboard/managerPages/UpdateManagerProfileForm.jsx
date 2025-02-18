@@ -56,7 +56,8 @@ const UpdateManagerProfileForm = () => {
             setMessage("Profile updated successfully!");
 
             // Send notification to managed artists
-            if (userData.managedArtists) {
+            if (userData?.managedArtists) {
+                // console.log(userData.managedArtists)
                 userData.managedArtists.forEach(async (artist) => {
                     // console.log("artistId",artist.artistId)
                     await sendNotification(artist.artistId, `${userData.fullName} updated their profile.`, "profileUpdate");
@@ -163,7 +164,7 @@ const UpdateManagerProfileForm = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg w-full transition duration-200"
+                            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg w-full transition duration-200 cursor-pointer"
                         >
                             Update Profile
                         </button>

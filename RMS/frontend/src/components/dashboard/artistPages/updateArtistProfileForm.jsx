@@ -52,7 +52,16 @@ const UpdateArtistProfileForm = () => {
         try {
             await updateUserProfile(user.username, formData);
             setMessage("Profile updated successfully!");
-            await sendNotification(userData.manager.managerId, `${userData.fullName} updated their profile.`, "profileUpdate");
+            // Ensure userData and manager exist before accessing managerId
+            if (userData?.manager?.managerId) {
+                await sendNotification(
+                    userData.manager.managerId,
+                    `${userData.fullName} updated their profile.`,
+                    "profileUpdate"
+                );
+            } else {
+                console.warn("Manager data is missing. No notification sent.");
+            }
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");
@@ -116,7 +125,7 @@ const UpdateArtistProfileForm = () => {
                                     name="address"
                                     value={formData.address}
                                     onChange={handleChange}
-                                    className="w-full bg-transparent text-gray-900 font-medium text-lg focus:outline-none"
+                                    className="w-full bg-transparent text-gray-900 font-medium text-lg focus:outline-none cursor-pointer"
                                 />
                             </div>
                         </div>
@@ -139,7 +148,7 @@ const UpdateArtistProfileForm = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg w-full transition duration-200"
+                            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg w-full transition duration-200 cursor-pointer"
                         >
                             Update Profile
                         </button>

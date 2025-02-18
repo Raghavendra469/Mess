@@ -4,6 +4,7 @@ import TopArtistsChart from "./TopArtistChart";
 import TopManagersChart from "./TopManagerCharts";
 import ArtistsTable from "./ArtistTable";
 import ManagersTable from "./ManagerTable";
+import SummaryCard from "../../commonComponents/summaryCard";
 
 
 const AdminSummary = () => {
@@ -11,7 +12,13 @@ const AdminSummary = () => {
 
     return (
         <div className="p-4 md:p-6 lg:p-8">
-            <h2 className="text-2xl font-bold mb-4 text-center">Admin Summary</h2>
+            <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
+
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <SummaryCard title="Total Artists" value={artists.length} />
+                <SummaryCard title="Total Managers" value={managers.length} />
+            </div>
 
             {/* Charts Section */}
             <div className="flex flex-col gap-8">

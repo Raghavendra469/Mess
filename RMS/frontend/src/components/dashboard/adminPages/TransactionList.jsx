@@ -66,12 +66,12 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                                     <td className="border p-2">{tx.status}</td>
                                     <td className="border p-2 flex flex-col gap-2 items-center sm:flex-row sm:justify-center">
                                         <button 
-                                            className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full sm:w-auto"
+                                            className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full sm:w-auto cursor-pointer"
                                             onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-((tx.transactionAmount*tx.userId.manager.commissionPercentage)/100)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
                                             Pay
                                         </button>
                                         <button
-                                            className="bg-red-500 text-white text-xs px-3 py-1 rounded w-full sm:w-auto"
+                                            className="bg-red-500 text-white text-xs px-3 py-1 rounded w-full sm:w-auto cursor-pointer"
                                             onClick={() => handleDeleteTransaction(tx._id)}>
                                             Cancel
                                         </button>
@@ -110,12 +110,12 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                             </div>
                             <div className="flex gap-2 mt-4">
                                 <button 
-                                    className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full"
+                                    className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full cursor-pointer"
                                     onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-((tx.transactionAmount*tx.userId.manager.commissionPercentage)/100)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
                                     Pay
                                 </button>
                                 <button
-                                    className="bg-red-500 text-white text-xs px-3 py-1 rounded w-full"
+                                    className="bg-red-500 text-white text-xs px-3 py-1 rounded w-full cursor-pointer"
                                     onClick={() => handleDeleteTransaction(tx._id)}>
                                     Cancel
                                 </button>
