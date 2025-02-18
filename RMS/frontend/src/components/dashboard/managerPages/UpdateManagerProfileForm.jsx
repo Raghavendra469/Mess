@@ -58,7 +58,7 @@ const UpdateManagerProfileForm = () => {
             // Send notification to managed artists
             if (userData.managedArtists) {
                 userData.managedArtists.forEach(async (artist) => {
-                    console.log("artistId",artist.artistId)
+                    // console.log("artistId",artist.artistId)
                     await sendNotification(artist.artistId, `${userData.fullName} updated their profile.`, "profileUpdate");
                 });
             }
