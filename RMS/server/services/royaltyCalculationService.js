@@ -5,13 +5,11 @@ const calculateRoyalty = (streams) => {
 };
 
 // Service to calculate royalty based on streams
-const calculateRoyaltyForStreams =  (royalty) => {
-    // console.log('inside trhe calcula royalty', royalty);
+const calculateRoyaltyForStreams = (royalty) => {
     const totalRoyalty = calculateRoyalty(royalty.totalStreams);
     royalty.totalRoyalty = totalRoyalty;
     royalty.royaltyDue = totalRoyalty - royalty.royaltyPaid; // Calculate pending royalty
     console.log('before calculate royalty save')
-    // await royalty.save();
     console.log('after calculate royalty save')
     return royalty;
 };

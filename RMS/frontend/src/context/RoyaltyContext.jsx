@@ -11,8 +11,8 @@ export const RoyaltyProvider = ({ children }) => {
         try {
             // console.log("Fetching royalties for artistId:", artistId); // Debugging log
             const res = await axios.get(`http://localhost:3000/api/royalty/artists/${artistId}`);
-            // console.log("API Response:", res.data);
-            setRoyalties(res.data?.artist|| []);
+            console.log("API Response:", res.data);
+            setRoyalties(res.data?.royalties|| []);
         } catch (error) {
             console.error("Error fetching royalty data:", error);
         }

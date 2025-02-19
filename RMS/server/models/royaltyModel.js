@@ -14,28 +14,23 @@ const RoyaltySchema = new mongoose.Schema({
     calculated_date: { type: Date, default: Date.now } // Last updated timestamp
 });
 
-// module.exports = mongoose.model('Royalty', RoyaltySchema);
-// Middleware to update Song.totalRoyalty whenever Royalty.totalRoyalty updates
-// console.log("Royalty model is loaded");
+
 RoyaltySchema.pre("save", async function (next) {
-    console.log("💡 Middleware triggered for", this.royaltyId);
     if (this.isModified("totalRoyalty")) { // Check if totalRoyalty is changed
-        console.log(`Updating totalRoyalty in Song module for song: ${this.songId}`);
       try {
-        const updateResult=await Song.updateMany(
+        await Song.updateMany(
           { _id: this.songId }, // Use the formatted artistId (e.g., "venu-krithik")
           { $set: { totalRoyalty: this.totalRoyalty } }, // Sync totalRoyalty with Royalty module
           { $set: { totalStreams: this.totalStreams } }
           
         );
-        console.log("Update result:", updateResult);
+        
       } catch (error) {
-        console.error("Error updating totalRoyalty in Song module:", error);
+        
       }
     }
     next();
   });
   
-//   const Royalty = mongoose.model("Royalty", royaltySchema);
 
 module.exports = mongoose.model('Royalty', RoyaltySchema, 'Royalty');

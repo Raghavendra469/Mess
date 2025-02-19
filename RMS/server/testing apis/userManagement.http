@@ -1,0 +1,81 @@
+@basePath = http://localhost:3000
+@apiPath = {{basePath}}/api
+
+POST {{apiPath}}/users
+
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "password_hash": "securePassword123",
+  "role": "Manager",
+  "fullName": "John Doe",
+  "email": "john.doe@example.com",
+  "mobileNo": "9876543210",
+  "address": "123 Business Street, City, State"
+}
+###post api for artist example
+POST {{apiPath}}/users
+
+Content-Type: application/json
+
+{
+  "username": "artist_anna",
+  "password_hash": "password123",
+  "role": "Artist",
+  "fullName": "Anna Smith",
+  "email": "anna.smith@example.com",
+  "mobileNo": "8765432109",
+  "address": "456 Creative Avenue, City, State",
+  "genres": ["Pop", "Jazz"],
+  "albums": ["album1", "album2"]
+}
+
+###get all users
+
+GET {{apiPath}}/users
+
+###get user by id
+
+GET {{apiPath}}/users/679b1d29003b79fc216f61cd
+
+###update user by id
+
+PUT {{apiPath}}/users/67992abaa3e7eceb9212309e
+Content-Type: application/json
+
+{
+  "mobileNo":7032804237
+}
+
+###delete user by id
+
+DELETE {{apiPath}}/users/679b1d29003b79fc216f61cd
+
+###
+POST {{apiPath}}/users
+Content-Type: application/json
+
+{
+  "username": "aditya",
+  "password_hash": "studentNo.1",
+  "role": "Manager",
+  "fullName": "Aditya Arunachalam",
+  "email": "aditya.arunachalam@example.com",
+  "mobileNo": "8464012689",
+  "address": "chuchil street,Annavaram"
+}
+
+###
+POST {{apiPath}}/users
+Content-Type: application/json
+
+{
+  "username": "john_doe3",
+  "password_hash": "securePassword123",
+  "role": "Manager",
+  "fullName": "John Doe",
+  "email": "john.doe3@example.com",
+  "mobileNo": "9876543210",
+  "address": "123 Business Street, City, State"
+}

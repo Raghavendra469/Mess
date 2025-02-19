@@ -1,0 +1,73 @@
+@basePath = http://localhost:3000
+@apiPath = {{basePath}}/api/collaborations
+
+
+GET {{apiPath}}/60f9a7f14d1bfc0f4c5f5e53/Manager
+
+###
+
+PUT {{apiPath}}/64c8b2b3a778f52e40b8d002
+Content-Type: application/json
+
+{
+  "status": "Approved"
+}
+###
+
+
+POST {{apiPath}}/
+
+Content-Type: application/json
+
+{
+  "collaborationId": "COLLAB002", // Unique collaboration ID
+  "managerId": "60f9a7f14d1bfc0f4c5f5e53", // Valid ObjectId from Manager collection
+  "artistId": "60f9a7f14d1bfc0f4c5f5e55", // Valid ObjectId from Artist collection
+  "songsManaged": [
+  
+  ]
+}
+
+###
+POST {{apiPath}}/
+
+Content-Type: application/json
+{
+  "collaborationId": "COLLAB003", // Unique collaboration ID
+  "managerId": "679b1d1c003b79fc216f61cb", // Valid ObjectId from Manager collection
+  "artistId": "67992ba0a3e7eceb921230a5", // Valid ObjectId from Artist collection
+  "songsManaged": [
+  ]
+}
+###
+
+
+
+
+
+
+
+PUT {{apiPath}}/03d31153-3085-416b-b236-539fd9643a3f
+
+Content-Type: application/json
+
+{
+  "status": "Approved"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

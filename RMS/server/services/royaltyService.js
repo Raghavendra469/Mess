@@ -1,27 +1,52 @@
-const Royalty = require('../models/royaltyModel');
- 
-// Create a new royalty
-const createRoyalty = async ({ royaltyId, artistId, songId}) => {
-    const royalty = new Royalty({
-        royaltyId,
-        artistId,
-        songId
-    });
-    // console.log("before save")
- 
-    await royalty.save();
-    // console.log("🟢 After saving, should trigger middleware");
-    return royalty;
-};
- 
-// Get royalty by ID
-const getRoyaltyById = async (royaltyId) => {
-    return await Royalty.findOne({ royaltyId });
-};
- 
-const getRoyaltyByArtistId = async (artistId) => {
-    return await Royalty.find({ artistId:artistId }).populate('artistId').populate('songId');
-};
- 
- 
-module.exports = { createRoyalty, getRoyaltyById, getRoyaltyByArtistId};
+const RoyaltyRepository = require('../repositories/royaltyRepository');
+
+class RoyaltyService {
+    constructor() {
+        this.royaltyRepository = new RoyaltyRepository();
+    }
+
+    async updateArtistFullRoyalty(artistId) {
+        try {
+            const artistSongs = await this.royaltyRepository.findSongsByArtistId(artistId);
+            console.log(artistSongs,"artistSongs----------------")
+            const totalStreams = artistSongs.reduce((sum, song) => sum + (song.totalStreams || 0), 0);
+            const totalRoyalty = artistSongs.reduce((sum, song) => sum + (song.totalRoyalty || 0), 0);
+            const totalRoyaltyPaid = artistSongs.reduce((sum, song) => sum + (song.royaltyPaid || 0), 0);
+            const totalRoyaltyDue = artistSongs.reduce((sum, song) => sum + (song.royaltyDue || 0), 0);
+
+            await this.royaltyRepository.updateArtistRoyalty(artistId, totalRoyalty, totalRoyaltyPaid, totalRoyaltyDue, totalStreams);
+        } catch (error) {
+            console.error("Error updating artist fullRoyalty:", error);
+            throw error;
+        }
+    }
+
+    // Create a new royalty
+    async createRoyalty(royaltyData) {
+        const { royaltyId, artistId, songId } = royaltyData;
+        const newRoyalty = await this.royaltyRepository.create(royaltyId,artistId,songId);
+        await this.updateArtistFullRoyalty(royaltyData.artistId);
+        return newRoyalty;
+    }
+
+    // Get royalty by ID and update artist fullRoyalty
+    async getRoyaltyById(royaltyId) {
+        const royalty = await this.royaltyRepository.findById(royaltyId);
+        if (royalty) {
+            await this.updateArtistFullRoyalty(royalty.artistId);
+        }
+        return royalty;
+    }
+
+    // Get royalties by artist ID and update artist fullRoyalty
+    async getRoyaltyByArtistId(artistId) {
+        const royalties = await this.royaltyRepository.findByArtistId(artistId);
+        if (royalties.length > 0) {
+            await this.updateArtistFullRoyalty(artistId);
+        }
+        console.log(royalties,"inside service")
+        return royalties;
+    }
+}
+
+module.exports = RoyaltyService;

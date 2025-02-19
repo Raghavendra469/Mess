@@ -1,4 +1,6 @@
-const transactionService = require('../services/transactionService');
+const TransactionService = require('../services/transactionService');
+
+const transactionService=new TransactionService()
  
 // Ensure all functions are defined correctly
 exports.createTransaction = async (req, res) => {
@@ -57,6 +59,7 @@ exports.deleteTransaction = async (req, res) => {
 exports.payArtist = async (req, res) => {
   try {
     const { transactionId, paymentAmount } = req.body;
+    console.log(transactionId, paymentAmount,"*******************************");
     if (!transactionId || !paymentAmount) {
       return res.status(400).json({ error: "Missing required fields: transactionId, paymentAmount" });
     }

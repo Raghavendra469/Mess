@@ -1,43 +1,38 @@
-const collaborationService = require('../services/collaborationService');
-
-const createCollaboration = async (req, res) => {
-  try {
-    // console.log(req.body,"createCollaboration")
-    // console.log(req.headers,'req.headers')
-    const collaboration = await collaborationService.createCollaboration(req.body);
-    // console.log("result------",collaboration)
-    res.status(201).json({ success: true, collaboration });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+const { routeHandler } = require('ca-webutils/expressx');
+const CollaborationService = require('../services/collaborationService');
+const collaborationService= new CollaborationService();
+ 
+const collaborationController = {
+    createCollaboration: routeHandler(async ({ body }) => {
+        const collaboration = await collaborationService.createCollaboration(body);
+        return {
+            success: true,
+            collaboration
+        };
+    }),
+ 
+    getCollaborationsByUserAndRole: routeHandler(async ({ params }) => {
+        const { userId, role } = params;
+        const collaborations = await collaborationService.getCollaborationsByUserAndRole(userId, role);
+        return {
+            success: true,
+            collaborations
+        };
+    }),
+ 
+    updateCollaborationStatus: routeHandler(async ({ params, body }) => {
+        const { collaborationId } = params;
+        const { status } = body;
+        const collaboration = await collaborationService.updateCollaborationStatus(collaborationId, status);
+        if (!collaboration) {
+            throw new Error('Collaboration not found');
+        }
+ 
+        return {
+            success: true,
+            collaboration
+        };
+    })
 };
-
-const getCollaborationsByUserAndRole = async (req, res) => {
-  try {
-    const { userId, role } = req.params;
-    const collaborations = await collaborationService.getCollaborationsByUserAndRole(userId, role);
-    res.status(200).json({ success: true, collaborations });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const updateCollaborationStatus = async (req, res) => {
-  try {
-    console.log("req.body",req.body)
-    const { collaborationId } = req.params;
-    const { status } = req.body;
-    console.log("status",status)
-
-    const collaboration = await collaborationService.updateCollaborationStatus(collaborationId, status);
-    res.status(200).json(collaboration);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-module.exports = {
-  createCollaboration,
-  getCollaborationsByUserAndRole,
-  updateCollaborationStatus,
-};
+ 
+module.exports = collaborationController;

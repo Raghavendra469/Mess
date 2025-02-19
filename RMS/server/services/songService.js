@@ -1,26 +1,56 @@
-const Song = require('../models/songModel');
+const SongRepository = require('../repositories/songRepository');
+const RoyaltyService= require('../services/royaltyService');
 
-exports.createSong = async (songData) => {
-  
-  return await Song.create(songData);
-};
+const royaltyService = new RoyaltyService();
 
-exports.findSongById = async (songId) => {
-  return await Song.findOne({ songId });
-};
+class SongService {
+  constructor() {
+    this.songRepository = new SongRepository(); // Dependency Injection
+  }
+  async uploadSong(songData, artistName, songName) {
+    const song = await this.songRepository.createSong(songData);
+    // Add song to artist's songs
+    await this.songRepository.addSongToArtist(song.artistId, song._id);
 
-exports.findSongsByArtistId = async (artistId) => {
-  return await Song.find({ artistId });
-};
+    // Generate royalty and create entry
+    const royaltyId = `${artistName}-${songName.toLowerCase().replace(/\s+/g, '-')}`;
+    const newRoyalty = await royaltyService.createRoyalty({ royaltyId, artistId: song.artistId, songId: song._id });
+    
+    return { song, newRoyalty };
+  }
 
-exports.findSongsBySongId = async (songId) => {
-  return await Song.find({ songId });
-};
+  async getSongById(songId) {
+    return await this.songRepository.findSongById(songId);
+  }
 
-exports.modifySong = async (songId, updateData) => {
-  return await Song.findOneAndUpdate({ songId }, updateData, { new: true });
-};
+  async getSongsByArtistId(artistId) {
+    return await this.songRepository.findSongsByArtistId(artistId);
+  }
 
-exports.removeSong = async (songId) => {
-  return await Song.findOneAndDelete({ songId });
-};
+  async getSongsBySongId(songId) {
+    return await this.songRepository.findSongsBySongId(songId);
+  }
+
+  async updateSong(songId, updateData) {
+    return await this.songRepository.modifySong(songId, updateData);
+  }
+
+  async deleteSong(songId) {
+    // Get the song before deletion to ensure it's removed from Artist and Royalty
+    const song = await this.songRepository.findSongById(songId);
+    console.log(song,"insideservice")
+    if (!song) throw new Error('Song not found');
+
+    const artistId = song.artistId;
+    console.log(artistId,"insideservice222222222222222222222")
+    // Remove song from artist and delete royalty
+    const removedArtist=await this.songRepository.removeSongFromArtist(song.artistId, song._id);
+    console.log(removedArtist,"removed from Artist")
+    const deletedroyalty=await this.songRepository.deleteRoyalty(song._id);
+    console.log(deletedroyalty,"deleted from Royalty")
+    
+    return await this.songRepository.removeSong(songId);
+  }
+}
+
+module.exports = SongService;

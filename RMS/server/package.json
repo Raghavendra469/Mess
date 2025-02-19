@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*.test.js",
     "start": "nodemon --env-file=.env index.js"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "ca-webutils": "^1.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -24,5 +25,10 @@
     "nodemon": "^3.1.9",
     "path": "^0.12.7",
     "pdfkit": "^0.16.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^11.1.0",
+    "sinon": "^19.0.2"
   }
 }
