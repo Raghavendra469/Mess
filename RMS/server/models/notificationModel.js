@@ -8,7 +8,7 @@ const notificationSchema = new mongoose.Schema(
     createdAt: { type: Date, default: Date.now },
     type: {
       type: String,
-      enum: ['royaltyPayment', 'collaborationRequest', 'profileUpdate','songUpdate'], // Allowed types of notifications
+      enum: ['royaltyPayment', 'collaborationRequest', 'profileUpdate','songUpdate','cancelCollaboration','trendingSong'], // Allowed types of notifications
       required: true
     },
   },

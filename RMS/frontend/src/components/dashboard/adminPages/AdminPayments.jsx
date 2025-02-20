@@ -76,7 +76,7 @@ const Payments = () => {
                             <tr key={royalty._id} className="text-center">
                                 <td className="border p-2">{royalty.songId?.songName || "N/A"}</td>
                                 <td className="border p-2">${royalty.totalRoyalty?.toFixed(2) || 0}</td>
-                                <td className="border p-2">${royalty.royaltyDue?.toFixed(2) || 0}</td>
+                                <td className="border p-2">${royalty.royaltyDue?.toString().split(".")[0] + "." + (royalty.royaltyDue?.toString().split(".")[1] || "00").slice(0, 2) || 0}</td>
                                 <td className="border p-2">
                                     <button className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer"
                                         onClick={() => handleCreateTransaction(royalty)}>

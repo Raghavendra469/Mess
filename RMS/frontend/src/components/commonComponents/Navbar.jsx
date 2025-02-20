@@ -74,11 +74,14 @@ const Navbar = ({ toggleSidebar }) => {
 
       {/* Profile Dropdown */}
       {showProfile && user && (
-        <div ref={profileRef} className="absolute right-0 top-16 bg-white shadow-lg rounded-lg p-6 w-80 z-50">
-          <h3 className="text-lg font-semibold mb-4">Profile Details</h3>
-          <p><strong>Name:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
+        <div 
+          ref={profileRef} 
+          className="absolute right-6 top-16 bg-white shadow-lg rounded-lg p-5 w-72 z-50 border border-gray-200 animate-fade-in"
+        >
+          <h3 className="text-lg font-semibold border-b pb-2 mb-3 text-gray-700">Profile Details</h3>
+          <p className="text-sm text-gray-600"><strong>Name:</strong> {user.username}</p>
+          <p className="text-sm text-gray-600"><strong>Email:</strong> {user.email}</p>
+          <p className="text-sm text-gray-600"><strong>Role:</strong> {user.role}</p>
         </div>
       )}
     </div>

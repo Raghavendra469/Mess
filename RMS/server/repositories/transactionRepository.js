@@ -17,8 +17,8 @@ class TransactionRepository {
       return Transaction.find({ userId }).populate('royaltyId').populate('songId').populate('userId').populate({path:'userId',populate:{path:'manager'}});
     } else if (role === "manager") {
       const artists = await Artist.find({ manager: userId }).select("_id");
-      if (!artists.length) throw new Error("No artists found under this manager.");
-
+      // if (!artists.length) throw new Error("No artists found under this manager.");
+      
       const artistIds = artists.map(artist => artist._id);
       return await Transaction.find({ userId: { $in: artistIds } })
         .populate("royaltyId", "royaltyAmount artistId songId")

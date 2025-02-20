@@ -17,7 +17,11 @@ const CollaborationRequests = () => {
       if (!userData?._id) return;
       try {
         const fetchedRequests = await fetchCollaborationRequests(userData._id);
-        setRequests(fetchedRequests);
+        const pendingRequests = fetchedRequests.filter(
+          (collab) => collab.status === "Pending"
+        );
+        setRequests(pendingRequests);
+        // setRequests(fetchedRequests);
       } catch (error) {
         console.error("Error fetching requests:", error);
       }

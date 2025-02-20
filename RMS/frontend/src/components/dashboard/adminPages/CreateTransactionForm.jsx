@@ -14,6 +14,7 @@ const CreateTransactionForm = ({ selectedRoyalty, setSelectedRoyalty, fetchTrans
         }
 
         if (parseFloat(transactionAmount) > selectedRoyalty.royaltyDue) {
+            console.log(selectedRoyalty.royaltyDue)
             setStatusMessage({ type: "error", text: `Transaction amount cannot exceed the royalty due $${selectedRoyalty.royaltyDue.toFixed(2)}! `});
             return;
         }

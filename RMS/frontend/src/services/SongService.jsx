@@ -3,10 +3,15 @@ import axios from "axios";
 const API_URL = "http://localhost:3000/api/songs/";
 
 const SongService = {
-
+  // 🔹 Add a new song
   addSong: async (newSong) => {
     try {
-      const response = await axios.post(API_URL, newSong);
+      const response = await axios.post(API_URL, newSong, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
       return response.data;
     } catch (error) {
       if (error.response?.status === 409) {
@@ -18,9 +23,15 @@ const SongService = {
     }
   },
 
+  // 🔹 Fetch songs by artist
   fetchSongsByArtist: async (artistId) => {
     try {
-      const response = await axios.get(`${API_URL}artist/${artistId}`);
+      const response = await axios.get(`${API_URL}artist/${artistId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
       return response.data.songs;
     } catch (error) {
       console.error("Failed to fetch songs:", error);
@@ -28,9 +39,15 @@ const SongService = {
     }
   },
 
+  // 🔹 Delete a song by ID
   deleteSong: async (songId) => {
     try {
-      const response = await axios.delete(`${API_URL}${songId}`);
+      const response = await axios.delete(`${API_URL}${songId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Failed to delete song:", error);

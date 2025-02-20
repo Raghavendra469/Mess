@@ -43,16 +43,9 @@ const DeleteSong = () => {
 
   const handleDeleteSong = async (songId, songName) => {
     try {
-      // Delete the song from the server
       await SongService.deleteSong(songId);
   
-      // Remove the song from the songs state
-      setSongs((prevSongs) => {
-        const updatedSongs = prevSongs.filter((song) => song.songId !== songId);
-        return updatedSongs;
-      });
-
-      // Recalculate filteredSongs based on the updated songs list
+      setSongs((prevSongs) => prevSongs.filter((song) => song.songId !== songId));
       setFilteredSongs((prevFilteredSongs) =>
         prevFilteredSongs.filter((song) => song.songId !== songId)
       );
@@ -60,15 +53,14 @@ const DeleteSong = () => {
       setStatusMessage("✅ Song deleted successfully!");
       setTimeout(() => setStatusMessage(""), 3000);
 
-      // Ensure userData and manager exist before accessing managerId
       if (userData?.manager?.managerId) {
         await sendNotification(
-            userData.manager.managerId,
-            `${userData.fullName} deleted a song: ${songName}.`,
-            "songUpdate"
+          userData.manager.managerId,
+          `${userData.fullName} deleted a song: ${songName}.`,
+          "songUpdate"
         );
       } else {
-          console.warn("Manager data is missing. No notification sent.");
+        console.warn("Manager data is missing. No notification sent.");
       }
       
     } catch (error) {
@@ -78,45 +70,48 @@ const DeleteSong = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4">
+    <div className="bg-gray-100 min-h-screen p-6">
+      
       {/* Header with SearchBar */}
-      <header className="bg-white shadow-md py-4 px-6 mb-6 flex flex-col md:flex-row items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Manage Songs</h1>
+      <header className="bg-white shadow-md py-5 px-8 mb-8 flex flex-col md:flex-row items-center justify-between rounded-lg">
+        <h1 className="text-3xl font-bold text-gray-800">Manage Songs</h1>
         <SearchBar onSearch={handleSearch} />
       </header>
 
-      {/* ✅ Status message */}
+      {/* ✅ Status Message */}
       {statusMessage && (
-        <p className="text-center text-gray-700 font-semibold mb-4">{statusMessage}</p>
+        <div className="text-center text-white font-semibold bg-teal-600 py-3 px-5 rounded-lg shadow-md mb-6 max-w-md mx-auto">
+          {statusMessage}
+        </div>
       )}
 
       {/* Songs displayed as responsive cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredSongs.length > 0 ? (
           filteredSongs.map((song) => (
-            <div key={song._id} className="bg-white p-6 rounded-lg shadow-lg">
-              <p className="font-bold text-lg">{song.songName}</p>
-              <p className="text-sm text-gray-600">
-                Release Date: {new Date(song.releaseDate).toLocaleDateString()}
+            <div key={song._id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-200">
+              <p className="font-bold text-xl text-gray-800">{song.songName}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                📅 Release Date: {new Date(song.releaseDate).toLocaleDateString()}
               </p>
-              <p className="text-lg">
-                <b>Total Streams:</b> {song.totalStreams}
+              <p className="text-lg mt-3 text-gray-700">
+                <b>🎧 Total Streams:</b> {song.totalStreams}
               </p>
-              <p className="text-lg">
-                <b>Total Royalty:</b> {song.totalRoyalty.toFixed(2)}
+              <p className="text-lg text-gray-700">
+                <b>💰 Total Royalty:</b> ${song.totalRoyalty.toFixed(2)}
               </p>
-              <div className="mt-4">
+              <div className="mt-6">
                 <button
                   onClick={() => handleDeleteSong(song.songId, song.songName)}
-                  className="w-full px-4 py-2 rounded text-white font-semibold bg-red-500 hover:bg-red-700 cursor-pointer"
+                  className="w-full px-5 py-3 rounded-lg text-white font-semibold bg-red-500 hover:bg-red-600 transition-all duration-200 shadow-md hover:scale-105"
                 >
-                  Delete Song
+                  🗑 Delete Song
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">No songs found.</p>
+          <p className="text-center text-gray-500 text-lg">No songs found.</p>
         )}
       </div>
     </div>

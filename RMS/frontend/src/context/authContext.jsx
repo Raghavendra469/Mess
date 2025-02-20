@@ -1,35 +1,31 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
-
+ 
 const AuthContext = createContext();
-
+ 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [userData, setUserData] = useState(null); // Store logged-in user data
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const verifyUser = async () => {
+ 
+    const verifyUser = async () => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
             try {
-                const token = localStorage.getItem("token");
-                if (token) {
-                    const response = await axios.get("http://localhost:3000/api/auth/verify", {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-
-                    if (response.data.success) {
-                        const loggedInUser = response.data.user;
-                        setUser(loggedInUser);
-                        // console.log("added user in state-------",loggedInUser)
-                        if (loggedInUser.role !== "Admin") {
-                            await fetchRoleData(loggedInUser);
-                        }
+                const response = await axios.get("http://localhost:3000/api/auth/verify", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+ 
+                if (response.data.success) {
+                    const loggedInUser = response.data.user;
+                    setUser(loggedInUser);
+ 
+                    if (loggedInUser.role !== "Admin") {
+                        await fetchRoleData(loggedInUser);
                     }
-                } else {
-                    setUser(null);
-                    setLoading(false);
                 }
             } catch (error) {
                 console.error("Verification failed:", error);
@@ -37,47 +33,55 @@ export const AuthProvider = ({ children }) => {
             } finally {
                 setLoading(false);
             }
-        };
-
-        verifyUser();
-    }, []);
-
-    // Fetch artist or manager data based on role
+        } else {
+            setUser(null);
+            setLoading(false);
+        }
+    };
+ 
     const fetchRoleData = async (loggedInUser) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/users/${loggedInUser.username}`);
+            const response = await axios.get(`http://localhost:3000/api/users/${loggedInUser.username}`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                },
+            });
             if (response.data.success) {
-                // console.log("User Data:", response.data.user);
                 setUserData(response.data.user);
             }
         } catch (error) {
             console.error("Error fetching role data:", error);
         }
     };
-
-    // Handle login
-    const login = async (userData, token) => {
-        localStorage.setItem("token", token);
-        setUser(userData);
-         // Call fetchRoleData only if the user is not an Admin
-         if (userData.role !== "Admin") {
-            await fetchRoleData(userData);
+ 
+    const login = async (data, token) => {
+        try {
+            sessionStorage.setItem("token", token);
+            setUser(data); // Set user state immediately after login
+            await verifyUser(); // Trigger verification after login
+        } catch (error) {
+            console.error("Verification failed:", error);
+            setUser(null);
         }
     };
-
-    // Handle logout
+ 
     const logout = () => {
         setUser(null);
         setUserData(null);
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
     };
-
+ 
+    // Verify the user on mount or token change
+    useEffect(() => {
+        verifyUser();
+    }, []);
+ 
     return (
-        <AuthContext.Provider value={{ user, userData, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, userData, login, logout, loading,setUserData }}>
             {children}
         </AuthContext.Provider>
     );
 };
-
-// Hook to use authentication context
+ 
 export const useAuth = () => useContext(AuthContext);

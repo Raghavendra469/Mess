@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const {verifyUser} = require('../middleware/authMiddleware')
 
-router.post('/', userController.createUser);
-router.get('/:username', userController.getUserByUsername);
-router.put('/:username', userController.updateUser);
-router.delete('/:username', userController.deleteUser);
-router.get('/role/:role', userController.getAllUsers);
-router.put('/toggle/:id',  userController.toggleUserStatus);
+
+router.post('/', verifyUser,userController.createUser);
+router.get('/:username', verifyUser,userController.getUserByUsername);
+router.put('/:username',verifyUser, userController.updateUser);
+router.delete('/:username', verifyUser,userController.deleteUser);
+router.get('/role/:role',verifyUser,userController.getAllUsers);
+router.put('/toggle/:id',  verifyUser,userController.toggleUserStatus);
 
 module.exports = router;

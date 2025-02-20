@@ -5,6 +5,7 @@ import ManagerArtists from "../components/dashboard/managerPages/ManagerArtists"
 import CollaborationRequests from "../components/dashboard/managerPages/CollaborationRequests";
 import UpdateManagerProfileForm from "../components/dashboard/managerPages/UpdateManagerProfileForm";
 import UserTransactions from "../components/commonComponents/UserTransactions";
+import CollaborationCancellation from "../components/dashboard/managerPages/CollaborationCancellation"
 
 const ManagerRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const ManagerRoutes = () => {
         <Route path="collaboration-requests" element={<CollaborationRequests />} />
         <Route path="royalty-transactions" element={<UserTransactions />} />
         <Route path="update-profile" element={<UpdateManagerProfileForm />} />
+        <Route path="cancel-collaboration" element={<CollaborationCancellation />} />
       </Route>
     </Routes>
   );
