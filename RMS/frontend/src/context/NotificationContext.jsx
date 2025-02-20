@@ -8,6 +8,8 @@ export const NotificationProvider = ({ children }) => {
   const { user,userData } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const token = sessionStorage.getItem("token");
+
 
   useEffect(() => {
     if (user) fetchNotifications();
@@ -15,7 +17,12 @@ export const NotificationProvider = ({ children }) => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/notifications/${user._id}`);
+      const response = await axios.get(`http://localhost:3000/api/notifications/${user._id}`,{
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
       if (response.data.success) {
         setNotifications(response.data.notifications.filter((notif)=>!notif.isRead));
       }
@@ -28,7 +35,12 @@ export const NotificationProvider = ({ children }) => {
 
   const markAsRead = async (notificationId) => {
     try {
-      await axios.put(`http://localhost:3000/api/notifications/${notificationId}`, { isRead: true });
+      await axios.put(`http://localhost:3000/api/notifications/${notificationId}`, { isRead: true },{
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
 
       // Remove the notification from the list
       setNotifications((prev) => prev.filter((notif) => notif._id !== notificationId));
@@ -44,7 +56,12 @@ export const NotificationProvider = ({ children }) => {
       type: msgType,
     };
     try{
-      await axios.post("http://localhost:3000/api/notifications/", notificationData);
+      await axios.post("http://localhost:3000/api/notifications/", notificationData,{
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
     }
     catch (error) {
       console.error("Error in sending the notification", error);

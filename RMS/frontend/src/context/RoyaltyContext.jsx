@@ -8,10 +8,16 @@ export const RoyaltyProvider = ({ children }) => {
     const [selectedArtist, setSelectedArtist] = useState(null);
 
     const fetchRoyaltyByArtist = async (artistId) => {
+        const token = sessionStorage.getItem("token");
         try {
             // console.log("Fetching royalties for artistId:", artistId); // Debugging log
-            const res = await axios.get(`http://localhost:3000/api/royalty/artists/${artistId}`);
-            console.log("API Response:", res.data);
+            const res = await axios.get(`http://localhost:3000/api/royalty/artists/${artistId}`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            // console.log("API Response:", res.data);
             setRoyalties(res.data?.royalties|| []);
         } catch (error) {
             console.error("Error fetching royalty data:", error);
