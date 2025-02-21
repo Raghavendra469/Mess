@@ -12,14 +12,35 @@ const Login = () => {
  
     const validate = () => {
         let newErrors = [];
-        if (!email) newErrors.push("Email is required");
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.push("Invalid email address");
-        if (!password) newErrors.push("Password is required");
-        else if (password.length < 6) newErrors.push("Password must be at least 6 characters");
- 
+    
+        // Email Validation
+        if (!email) {
+            newErrors.push("Email is required");
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.push("Invalid email address");
+        } else if (!/\.(com|gmail\.com|co\.in)$/i.test(email)) {
+            newErrors.push("Email must be a valid domain (.com, gmail.com, .co.in)");
+        }
+    
+        // Password Validation
+        if (!password) {
+            newErrors.push("Password is required");
+        } else if (password.length < 6) {
+            newErrors.push("Password must be at least 6 characters");
+        } else if (!/[A-Z]/.test(password)) {
+            newErrors.push("Password must contain at least one uppercase letter");
+        } else if (!/[a-z]/.test(password)) {
+            newErrors.push("Password must contain at least one lowercase letter");
+        } else if (!/[0-9]/.test(password)) {
+            newErrors.push("Password must contain at least one number");
+        } else if (!/[@$!%*?&]/.test(password)) {
+            newErrors.push("Password must contain at least one special character (@, $, !, %, *, ?, &)");
+        }
+    
         setError(newErrors.join("\n"));
         return newErrors.length === 0;
     };
+    
  
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,7 +69,7 @@ const Login = () => {
     return (
         <div className="flex flex-col items-center h-screen justify-center bg-gradient-to-b from-teal-600 to-gray-100 space-y-6 p-4">
             <h2 className="font-cavet text-2xl sm:text-3xl md:text-4xl text-white text-center">
-                Royalty Management System
+                <Link to="/home-page">Royalty Management System</Link>
             </h2>
             <div className="border shadow p-6 w-full max-w-sm bg-white rounded-lg">
                 <h2 className="text-2xl font-bold mb-4">Login</h2>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaBars, FaBell } from "react-icons/fa";
 import Notifications from "../commonComponents/Notification";
 import { useNotifications } from "../../context/NotificationContext";
-
+ 
 const Navbar = ({ toggleSidebar }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -12,19 +12,31 @@ const Navbar = ({ toggleSidebar }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const profileRef = useRef(null);
   const notificationRef = useRef(null);
-
-  const { unreadCount } = useNotifications(); // Get unread count from context
-
+ 
+  const { unreadCount } = useNotifications();
+ 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
-
+ 
+  // Function to handle profile button click
+  const toggleProfile = () => {
+    setShowProfile((prev) => !prev);
+    setShowNotifications(false); // Close notifications when opening profile
+  };
+ 
+  // Function to handle notifications button click
+  const toggleNotifications = () => {
+    setShowNotifications((prev) => !prev);
+    setShowProfile(false); // Close profile when opening notifications
+  };
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        (profileRef.current && !profileRef.current.contains(event.target)) &&
-        (notificationRef.current && !notificationRef.current.contains(event.target))
+        !profileRef.current?.contains(event.target) &&
+        !notificationRef.current?.contains(event.target)
       ) {
         setShowProfile(false);
         setShowNotifications(false);
@@ -33,20 +45,17 @@ const Navbar = ({ toggleSidebar }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+ 
   return (
     <div className="flex items-center justify-between h-16 bg-teal-600 px-5 relative">
       <button onClick={toggleSidebar} className="text-white text-2xl cursor-pointer lg:hidden">
         <FaBars />
       </button>
       <p className="text-xl font-bold text-white">Welcome, {user ? user.username : "Guest"}</p>
-
+ 
       <div className="flex items-center space-x-6 relative">
         {user && (user.role === "Artist" || user.role === "Manager") && (
-          <button 
-            onClick={() => setShowNotifications(!showNotifications)} 
-            className="relative text-white text-2xl cursor-pointer"
-          >
+          <button onClick={toggleNotifications} className="relative text-white text-2xl cursor-pointer">
             <FaBell />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
@@ -55,27 +64,26 @@ const Navbar = ({ toggleSidebar }) => {
             )}
           </button>
         )}
-        <button onClick={() => setShowProfile(!showProfile)} className="text-white text-2xl cursor-pointer">
+        <button onClick={toggleProfile} className="text-white text-2xl cursor-pointer">
           <FaUserCircle />
         </button>
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={handleLogout}
           className="px-4 py-1 bg-teal-700 hover:bg-teal-800 text-white rounded cursor-pointer"
         >
           Logout
         </button>
       </div>
-
+ 
       {showNotifications && (
         <div ref={notificationRef} className="absolute right-0 top-16 z-50">
           <Notifications />
         </div>
       )}
-
-      {/* Profile Dropdown */}
+ 
       {showProfile && user && (
-        <div 
-          ref={profileRef} 
+        <div
+          ref={profileRef}
           className="absolute right-6 top-16 bg-white shadow-lg rounded-lg p-5 w-72 z-50 border border-gray-200 animate-fade-in"
         >
           <h3 className="text-lg font-semibold border-b pb-2 mb-3 text-gray-700">Profile Details</h3>
@@ -87,5 +95,5 @@ const Navbar = ({ toggleSidebar }) => {
     </div>
   );
 };
-
+ 
 export default Navbar;

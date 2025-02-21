@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/authContext";
-import SummaryCard from "../../commonComponents/summaryCard";
+import SummaryCard from "../../commonComponents/SummaryCard";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import SongService from "../../../services/SongService";
 

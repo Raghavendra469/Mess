@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../../context/authContext";
-import { cancelCollaboration, fetchCollaborationsByUserAndRole } from "../../../services/CollaborationService";
+import { cancelCollaboration, fetchCollaborationsByUserAndRole } from "../../../services/CollaborationService.jsx";
 import { useNotifications } from "../../../context/NotificationContext";
 
 const ViewMyManager = () => {

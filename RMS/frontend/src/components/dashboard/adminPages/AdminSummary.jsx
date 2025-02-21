@@ -4,7 +4,7 @@ import TopArtistsChart from "./TopArtistChart";
 import TopManagersChart from "./TopManagerCharts";
 import ArtistsTable from "./ArtistTable";
 import ManagersTable from "./ManagerTable";
-import SummaryCard from "../../commonComponents/summaryCard";
+import SummaryCard from "../../commonComponents/SummaryCard";
 
 
 const AdminSummary = () => {
