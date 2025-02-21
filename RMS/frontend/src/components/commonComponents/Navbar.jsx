@@ -13,18 +13,30 @@ const Navbar = ({ toggleSidebar }) => {
   const profileRef = useRef(null);
   const notificationRef = useRef(null);
 
-  const { unreadCount } = useNotifications(); // Get unread count from context
+  const { unreadCount } = useNotifications();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
+  // Function to handle profile button click
+  const toggleProfile = () => {
+    setShowProfile((prev) => !prev);
+    setShowNotifications(false); // Close notifications when opening profile
+  };
+
+  // Function to handle notifications button click
+  const toggleNotifications = () => {
+    setShowNotifications((prev) => !prev);
+    setShowProfile(false); // Close profile when opening notifications
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        (profileRef.current && !profileRef.current.contains(event.target)) &&
-        (notificationRef.current && !notificationRef.current.contains(event.target))
+        !profileRef.current?.contains(event.target) &&
+        !notificationRef.current?.contains(event.target)
       ) {
         setShowProfile(false);
         setShowNotifications(false);
@@ -43,10 +55,7 @@ const Navbar = ({ toggleSidebar }) => {
 
       <div className="flex items-center space-x-6 relative">
         {user && (user.role === "Artist" || user.role === "Manager") && (
-          <button 
-            onClick={() => setShowNotifications(!showNotifications)} 
-            className="relative text-white text-2xl cursor-pointer"
-          >
+          <button onClick={toggleNotifications} className="relative text-white text-2xl cursor-pointer">
             <FaBell />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
@@ -55,7 +64,7 @@ const Navbar = ({ toggleSidebar }) => {
             )}
           </button>
         )}
-        <button onClick={() => setShowProfile(!showProfile)} className="text-white text-2xl cursor-pointer">
+        <button onClick={toggleProfile} className="text-white text-2xl cursor-pointer">
           <FaUserCircle />
         </button>
         <button 
@@ -72,7 +81,6 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
       )}
 
-      {/* Profile Dropdown */}
       {showProfile && user && (
         <div 
           ref={profileRef} 
