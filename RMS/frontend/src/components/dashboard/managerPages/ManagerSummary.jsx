@@ -13,11 +13,28 @@ const ManagerSummary = () => {
   const [loading, setLoading] = useState(false);
 
   // Fetch artists when the user data changes
+  // useEffect(() => {
+  //   const fetchArtists = async () => {
+  //     if (!userData?.username) return;
+  //     try {
+  //       const userDetails = await fetchUserDetails(userData.username);  // Use userService
+  //       if (userDetails.managedArtists) {
+  //         setArtists(userDetails.managedArtists);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to fetch managed artists:", error);
+  //     }
+  //   };
+
+  //   fetchArtists();
+  // }, [userData]);
+
   useEffect(() => {
+    if (!userData?.username) return;
+  
     const fetchArtists = async () => {
-      if (!userData?.username) return;
       try {
-        const userDetails = await fetchUserDetails(userData.username);  // Use userService
+        const userDetails = await fetchUserDetails(userData.username);
         if (userDetails.managedArtists) {
           setArtists(userDetails.managedArtists);
         }
@@ -25,17 +42,39 @@ const ManagerSummary = () => {
         console.error("Failed to fetch managed artists:", error);
       }
     };
-
+  
     fetchArtists();
+    const interval = setInterval(fetchArtists, 60000); // Fetch data every 1 min
+  
+    return () => clearInterval(interval); // Cleanup interval on unmount
   }, [userData]);
+  
 
   // Fetch song data when an artist is selected
+  // useEffect(() => {
+  //   const fetchSongData = async () => {
+  //     if (!selectedArtistId) return;
+  //     setLoading(true);
+  //     try {
+  //       const songs = await SongService.fetchSongsByArtist(selectedArtistId);  // Use songService
+  //       setSongData(songs);
+  //     } catch (error) {
+  //       console.error("Failed to fetch song data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchSongData();
+  // }, [selectedArtistId]);
+
   useEffect(() => {
+    if (!selectedArtistId) return;
+  
     const fetchSongData = async () => {
-      if (!selectedArtistId) return;
-      setLoading(true);
       try {
-        const songs = await SongService.fetchSongsByArtist(selectedArtistId);  // Use songService
+        setLoading(true);
+        const songs = await SongService.fetchSongsByArtist(selectedArtistId);
         setSongData(songs);
       } catch (error) {
         console.error("Failed to fetch song data:", error);
@@ -43,9 +82,13 @@ const ManagerSummary = () => {
         setLoading(false);
       }
     };
-
+  
     fetchSongData();
+    const interval = setInterval(fetchSongData, 60000); // Fetch data every 1 min
+  
+    return () => clearInterval(interval); // Cleanup interval on unmount
   }, [selectedArtistId]);
+  
 
   // Calculate the total royalty and top artist
   const totalRoyalty = artists.reduce((sum, artist) => sum + artist.fullRoyalty, 0);

@@ -8,9 +8,24 @@ const ArtistSummary = () => {
   const { userData } = useAuth();
   const [songData, setSongData] = useState([]);
 
+  // useEffect(() => {
+  //   const fetchSongData = async () => {
+  //     if (!userData?._id) return;
+  //     try {
+  //       const fetchedSongs = await SongService.fetchSongsByArtist(userData._id);
+  //       setSongData(fetchedSongs);
+  //     } catch (error) {
+  //       console.error("Failed to fetch song data:", error);
+  //     }
+  //   };
+
+  //   fetchSongData();
+  // }, [userData]);
+
   useEffect(() => {
+    if (!userData?._id) return;
+  
     const fetchSongData = async () => {
-      if (!userData?._id) return;
       try {
         const fetchedSongs = await SongService.fetchSongsByArtist(userData._id);
         setSongData(fetchedSongs);
@@ -18,8 +33,11 @@ const ArtistSummary = () => {
         console.error("Failed to fetch song data:", error);
       }
     };
-
+  
     fetchSongData();
+    const interval = setInterval(fetchSongData, 60000); // Fetch data every 1 min
+  
+    return () => clearInterval(interval);
   }, [userData]);
 
   // Compute Summary Data

@@ -64,6 +64,11 @@ export const ArtistsManagersProvider = ({ children }) => {
         };
 
         fetchData();
+
+        const interval = setInterval(fetchData, 60000); // Fetch every 1 min
+
+        return () => clearInterval(interval); // Cleanup on unmount
+
     }, [token]); // Ensure it runs when token changes
 
     // Listen for token changes

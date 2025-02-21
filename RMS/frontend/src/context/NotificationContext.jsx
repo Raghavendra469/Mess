@@ -11,8 +11,17 @@ export const NotificationProvider = ({ children }) => {
   const token = sessionStorage.getItem("token");
 
 
+  // useEffect(() => {
+  //   if (user) fetchNotifications();
+  // }, [user]);
+
   useEffect(() => {
-    if (user) fetchNotifications();
+    if (user) {
+      fetchNotifications(); // Initial fetch
+      // Set up interval to refresh notifications every 5 seconds
+      const interval = setInterval(fetchNotifications, 5000);
+      return () => clearInterval(interval); // Cleanup interval on unmount
+    }
   }, [user]);
 
   const fetchNotifications = async () => {

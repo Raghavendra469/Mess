@@ -22,8 +22,8 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
             fetchTransactions(selectedArtist);  // Fetch updated transactions
             fetchRoyaltyByArtist(selectedArtist); // ✅ Ensure royalties update dynamically
 
-            sendNotification(artistId, `Your transaction of $${artistShare} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
-            sendNotification(managerId, `Your transaction of $${managerShare} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
+            sendNotification(artistId, `Your transaction of $${artistShare.toFixed(2)} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
+            sendNotification(managerId, `Your transaction of $${managerShare.toFixed(2)} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
 
 
             // Remove the paid transaction from UI immediately

@@ -80,7 +80,7 @@ const DeleteSong = () => {
 
       {/* ✅ Status Message */}
       {statusMessage && (
-        <div className="text-center text-white font-semibold bg-teal-600 py-3 px-5 rounded-lg shadow-md mb-6 max-w-md mx-auto">
+        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
           {statusMessage}
         </div>
       )}
