@@ -1,0 +1,63 @@
+POST http://localhost:3000/api/transactions
+Content-Type: application/json
+ 
+{
+  "userId": "65b8c1f4a1d3a5b7c6f8e2d1",
+  "royaltyId": "65b8c22c57f8c9a7e3a4b5d2",
+  "transactionAmount": 1500
+}
+ 
+ 
+ 
+###get all transactions
+GET http://localhost:8000/api/transactions
+ 
+###get transaction by ID
+GET http://localhost:8000/api/transactions/:refid
+ 
+###get transaction by userID
+GET http://localhost:8000/api/transactions/user/60b8d69c03f7360f5f0b073e
+ 
+###delete a transactions
+DELETE  http://localhost:8000/api/transactions/679e30d43a93edba5b42ab6c
+ 
+ 
+ 
+ 
+###updated
+POST http://localhost:5000/api/transactions
+Content-Type: application/json
+ 
+{
+  "userId": "60b8d69c03f7360f5f0b073e",  // Example User ObjectId
+  "royaltyId": "6799eee6f880cb9262669285",  // Example Royalty ObjectId
+  "transactionAmount": 1500  // Amount of royalty paid
+}
+ 
+###update payment
+POST http://localhost:5000/api/transactions/pay
+Content-Type: application/json
+ 
+{
+  "transactionId": "60d9e9f6d23e2e74b2cb62bc",  // Example Transaction ObjectId
+  "paymentAmount": 500  // Amount paid to the artist
+}
+ 
+###get all transactions
+GET http://localhost:8000/api/transactions
+ 
+###get transaction by ID
+GET http://localhost:8000/api/transactions/60d9e9f6d23e2e74b2cb62bc
+ 
+###get transaction by userID
+GET http://localhost:8000/api/transactions/60b8d69c03f7360f5f0b073e
+ 
+###delete a transactions
+DELETE http://localhost:5000/api/transactions/60d9e9f6d23e2e74b2cb62bc
+###By royaltyId
+GET http://localhost:8000/api/transactions/export/679f1591920d352e5dd74b0b
+ 
+###By userId
+ 
+GET http://localhost:8000/api/transactions/export/65b8c1f4a1d3a5b7c6f8e2d1
+ 

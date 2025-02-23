@@ -1,0 +1,22 @@
+@basePath = http://localhost:3000
+@apiPath = {{basePath}}/api
+###add new notification
+POST {{apiPath}}/notifications
+content-type: application/json
+
+{
+  "userId": "64b7f9e2fa7a9c001234abcd",
+  "message": "New song has been uploaded.",
+  "isRead": false
+}
+
+###Get notification by id
+GET {{apiPath}}/notifications/64b7f9e2fa7a9c001234abcd
+
+###Mark notification as read
+PUT {{apiPath}}/notifications/6797c7db34948c4fa20be616
+content-type:application/json
+
+{
+    "read": true
+}

@@ -1,0 +1,35 @@
+###update new song
+POST http://localhost:3000/api/songs
+Content-Type: application/json
+
+{
+  "artistId": "67a75d5f7c0154c68fa43050",
+  "artistName": "Guru Pruthvi",
+  "songName": "halamati habibo",
+  "title": "halamati habibo"
+}
+
+
+###get by artsitid
+GET http://localhost:3000/api/songs/artist/67a75d5f7c0154c68fa43050
+
+###get by songName
+GET http://localhost:3000/api/songs/song/mawa-enthaina
+
+
+
+###update a song
+PUT http://localhost:3000/api/songs/melody-of-sun
+Content-Type: application/json
+
+{
+    "title": "Chuttamale",
+    "songName":"Chuttamale",
+    "totalStreams":1209984
+
+}
+
+###delete a song
+DELETE http://localhost:3000/api/songs/halamati-habibo
+
+###
