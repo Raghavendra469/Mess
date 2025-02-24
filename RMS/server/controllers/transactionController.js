@@ -1,85 +1,84 @@
+const { routeHandler } = require('ca-webutils/expressx');
 const TransactionService = require('../services/transactionService');
+const transactionService = new TransactionService();
 
-const transactionService=new TransactionService()
- 
-// Ensure all functions are defined correctly
-exports.createTransaction = async (req, res) => {
-  try {
-    console.log(req.body,"req.body")
-    const { userId, royaltyId, transactionAmount } = req.body;
-    if (!userId || !royaltyId || !transactionAmount) {
-      return res.status(400).json({ error: "Missing required fields: userId, royaltyId, transactionAmount" });
-    }
-    const transaction = await transactionService.createTransaction(req.body);
-    res.status(201).json({ message: "Transaction recorded successfully", transaction });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+const transactionController = {
+    createTransaction: routeHandler(async ({ body }) => {
+        const { userId, royaltyId, transactionAmount } = body;
+        
+        if (!userId || !royaltyId || !transactionAmount) {
+            throw new Error("Missing required fields: userId, royaltyId, transactionAmount");
+        }
+
+        const transaction = await transactionService.createTransaction(body);
+        return { 
+            success: true, 
+            message: "Transaction recorded successfully", 
+            transaction 
+        };
+    }),
+
+    getAllTransactions: routeHandler(async () => {
+        const transactions = await transactionService.getAllTransactions();
+        
+        return { 
+            success: true, 
+            transactions 
+        };
+    }),
+
+    getTransactionById: routeHandler(async ({ params }) => {
+        const { userId } = params;
+        const transaction = await transactionService.getTransactionById(userId);
+        return { 
+            success: true, 
+            transaction 
+        };
+    }),
+
+    getTransactionsByUserId: routeHandler(async ({ params }) => {
+        const { userId, role } = params;
+        const transactions = await transactionService.getTransactionsByUserId(userId, role);
+
+        return transactions 
+        
+    }),
+
+    deleteTransaction: routeHandler(async ({ params }) => {
+        const { id } = params;
+        await transactionService.deleteTransaction(id);
+        return { 
+            success: true, 
+            message: "Transaction deleted successfully" 
+        };
+    }),
+
+    payArtist: routeHandler(async ({ body }) => {
+        const { transactionId, paymentAmount } = body;
+
+        if (!transactionId || !paymentAmount) {
+            throw new Error("Missing required fields: transactionId, paymentAmount");
+        }
+
+        const transaction = await transactionService.payArtist(transactionId, paymentAmount);
+        return { 
+            success: true, 
+            message: "Payment processed successfully", 
+            transaction 
+        };
+    }),
+
+    exportTransactionsPDF: routeHandler(async ({ params, response }) => {
+        const { userId, role } = params;
+        const pdfBuffer = await transactionService.generateTransactionsPDF(userId, role);
+        
+        // Set response headers for PDF download
+        response.setHeader("Content-Type", "application/pdf");
+        response.setHeader("Content-Disposition", 'attachment; filename="transactions.pdf"');
+        
+        // Return the buffer directly since we're handling the response differently
+        return response.send(pdfBuffer);
+    })
 };
- 
-exports.getAllTransactions = async (req, res) => {
-  try {
-    const transactions = await transactionService.getAllTransactions();
-    res.status(200).json(transactions);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
- 
-exports.getTransactionById = async (req, res) => {
-  try {
-    const transaction = await transactionService.getTransactionById(req.params.userId);
-    if (!transaction) {
-      return res.status(404).json({ error: "Transaction not found" });
-    }
-    res.status(200).json(transaction);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
- 
-exports.getTransactionsByUserId = async (req, res) => {
-  try {
-    const transactions = await transactionService.getTransactionsByUserId(req.params.userId,req.params.role);
-    res.status(200).json(transactions);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
- 
-exports.deleteTransaction = async (req, res) => {
-  try {
-    await transactionService.deleteTransaction(req.params.id);
-    res.status(200).json({ message: "Transaction deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
- 
-exports.payArtist = async (req, res) => {
-  try {
-    const { transactionId, paymentAmount } = req.body;
-    console.log(transactionId, paymentAmount,"*******************************");
-    if (!transactionId || !paymentAmount) {
-      return res.status(400).json({ error: "Missing required fields: transactionId, paymentAmount" });
-    }
-    const transaction = await transactionService.payArtist(transactionId, paymentAmount);
-    res.status(200).json({ message: "Payment processed successfully", transaction });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
- 
-exports.exportTransactionsPDF = async (req, res) => {
-  try {
-    const { userId,role } = req.params; // Assuming transactions are user-specific
-    const pdfBuffer = await transactionService.generateTransactionsPDF(userId,role);
-   
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", 'attachment; filename="transactions.pdf"');
-   
-    res.send(pdfBuffer);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+
+module.exports = transactionController;

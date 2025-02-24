@@ -20,7 +20,7 @@ const ArtistsTable = ({ artists = [] }) => {
 
     // Filtering by search term
     const filteredArtists = sortedArtists.filter((artist) =>
-        artist.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
+        artist.fullName?.toLowerCase().includes(searchTerm.toLowerCase()||(!artist.fullName && searchterm===""))
     );
 
     return (

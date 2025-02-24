@@ -1,10 +1,35 @@
 const bcrypt = require('bcrypt');
 const UserRepository = require('../repositories/userRepository');
-
+const nodemailer = require("nodemailer");
 class UserService {
 
   constructor() {
     this.userRepository = new UserRepository();
+  }
+
+
+  async sendEmail(email, fullName) {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER, 
+          pass: process.env.EMAIL_PASS, 
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Account Created Successfully",
+        text: `Hello ${fullName},\n\nYour account has been created successfully!\n\nEnter random password and login to change the password.\n\nBest Regards,\nRMS.`,
+      };
+
+      await transporter.sendMail(mailOptions);
+
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
   }
   // Business logic for creating a user
   async createUser(userData) {
@@ -27,13 +52,14 @@ class UserService {
      
       await this.userRepository.createArtist(artistData);
     }
+    await this.sendEmail(newUser.email, newUser.username);
 
     return newUser;
   }
 
   // Business logic for getting user profile
   async getUserProfileByUsername(username) {
-    console.log(username,"inside userService!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
     const user = await this.userRepository.findUserByUsername(username);
     if (!user) {
       throw new Error('User not found');

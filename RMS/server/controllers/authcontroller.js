@@ -1,13 +1,11 @@
 const jwt =require('jsonwebtoken');
 const User =require('../models/userModel.js');
-const Song =require('../models/songModel.js');
 const bcrypt =require('bcrypt');
 const nodemailer = require('nodemailer')
 const saltRounds = 12; // 2^12 = 4096 rounds
 
 const login = async (req, res) => {
 
-    // console.log("this is auhtController error")
     try {
         const { email, password } = req.body;
 
@@ -69,7 +67,6 @@ const login = async (req, res) => {
 
 
 const verify = (req,res) =>{
-    console.log("verify user--------",req)
     return res.status(200).json({success: true, user: req.user})
 } 
 
@@ -120,7 +117,6 @@ const forgotPassword= async (req, res) => {
  const resetPassword=async (req, res) => {
     const { id, token } = req.params;
     const { password } = req.body;
-    console.log(req.body,'req.body======-----------')
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_KEY);

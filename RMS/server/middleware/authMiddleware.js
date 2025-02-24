@@ -17,14 +17,13 @@ const verifyUser = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_KEY);
 
         // Find user
-        // const user = await User.findById(decoded._id).select('-password');
+
         const user = await User.findById(decoded._id);
         if (!user) {
             return res.status(404).json({ success: false, error: "User not found" });
         }
 
         req.user = user;
-        console.log("user verified")
         next();
     } catch (error) {
         console.error("Auth Middleware Error:", error.message);

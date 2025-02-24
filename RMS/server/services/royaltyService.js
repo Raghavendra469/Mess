@@ -8,7 +8,7 @@ class RoyaltyService {
     async updateArtistFullRoyalty(artistId) {
         try {
             const artistSongs = await this.royaltyRepository.findSongsByArtistId(artistId);
-            console.log(artistSongs,"artistSongs----------------")
+         
             const totalStreams = artistSongs.reduce((sum, song) => sum + (song.totalStreams || 0), 0);
             const totalRoyalty = artistSongs.reduce((sum, song) => sum + (song.totalRoyalty || 0), 0);
             const totalRoyaltyPaid = artistSongs.reduce((sum, song) => sum + (song.royaltyPaid || 0), 0);
@@ -44,7 +44,7 @@ class RoyaltyService {
         if (royalties.length > 0) {
             await this.updateArtistFullRoyalty(artistId);
         }
-        console.log(royalties,"inside service")
+  
         return royalties;
     }
 }

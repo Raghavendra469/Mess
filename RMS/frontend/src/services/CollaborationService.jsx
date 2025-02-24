@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000/api/collaborations";
+const API_BASE_URL = "https://localhost:5004/api/collaborations";
 
 // Fetch collaboration requests for a manager
 export const fetchCollaborationRequests = async (managerId) => {
@@ -106,13 +106,14 @@ export const handleCancellationResponse = async (collaborationId, response) => {
 // Fetch collaborations by userId and role
 export const fetchCollaborationsByUserAndRole = async (userId, role) => {
   try {
+    // console.log(userId, role)
     const response = await axios.get(`${API_BASE_URL}/${userId}/${role}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     });
-    // console.log(response.data.collaborations)
+    console.log("shdiwahdi",response.data.collaborations)
     return response.data.collaborations || [];
   } catch (error) {
     console.error("Error fetching collaborations:", error);

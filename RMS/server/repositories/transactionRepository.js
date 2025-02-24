@@ -9,12 +9,12 @@ class TransactionRepository {
   }
 
   async findAllTransactions() {
-    return await Transaction.find().populate("userId").populate("royaltyId");
+    return await Transaction.find().populate("userId").populate("royaltyId").exec();
   }
 
   async findTransactionsByUserId(userId, role) {
     if (role === "artist") {
-      return Transaction.find({ userId }).populate('royaltyId').populate('songId').populate('userId').populate({path:'userId',populate:{path:'manager'}});
+      return Transaction.find({ userId }).populate('royaltyId').populate('songId').populate('userId').populate({path:'userId',populate:{path:'manager'}}).exec();
     } else if (role === "manager") {
       const artists = await Artist.find({ manager: userId }).select("_id");
       // if (!artists.length) throw new Error("No artists found under this manager.");

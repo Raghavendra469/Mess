@@ -14,10 +14,13 @@ const ViewMyManager = () => {
   const reasonBoxRef = useRef(null);
 
   useEffect(() => {
+    // console.log("Collaboration",userData)
     const getCollaborationData = async () => {
       if (!userData?._id) return;
       try {
+        // console.log("Collaboration",userData._id)
         const collaborations = await fetchCollaborationsByUserAndRole(userData._id, "Artist");
+        // console.log("Collaboration",collaborations)
         if (collaborations.length > 0) {
           setCollaborationId(collaborations[0]._id);
           setStatus(collaborations[0].status);

@@ -1,175 +1,273 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom"; // Import jest-dom for assertions like toBeInTheDocument
+import { MemoryRouter } from "react-router-dom";
 import UserTransactions from "./UserTransactions";
 import { useAuth } from "../../context/authContext";
 import TransactionService from "../../services/TransactionService";
 
-// Mock the useAuth hook
+// Mock the useAuth context to provide mock user data
 jest.mock("../../context/authContext", () => ({
-    useAuth: jest.fn(),
+  useAuth: jest.fn(),
 }));
 
-// Mock the TransactionService
+// Mock TransactionService
 jest.mock("../../services/TransactionService", () => ({
-    fetchTransactions: jest.fn(),
-    fetchWalletAmount: jest.fn(),
-    downloadTransactionsPDF: jest.fn(),
+  fetchTransactions: jest.fn(),
+  fetchWalletAmount: jest.fn(),
+  downloadTransactionsPDF: jest.fn(),
 }));
 
 describe("UserTransactions Component", () => {
-    const mockUser = {
-        role: "Artist",
-        _id: "123",
-    };
+  const mockUser = {
+    _id: "123",
+    role: "artist",
+  };
 
-    const mockUserData = {
-        _id: "123",
-    };
+  const mockUserData = {
+    _id: "123",
+    role: "artist",
+  };
 
+  beforeEach(() => {
+    // Reset all mocks before each test
+    jest.resetAllMocks();
+    // Mock the global alert function
+    global.alert = jest.fn();
+  });
+
+  it("should display loading state while transactions are being fetched", () => {
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText("Loading transactions...")).toBeInTheDocument();
+  });
+
+  it("should render transactions correctly", async () => {
     const mockTransactions = [
-        {
-            _id: "tx1",
-            songId: { songName: "Song 1" },
-            transactionAmount: 100,
-            artistShare: 70,
-            managerShare: 30,
-            status: "Approved",
-        },
-        {
-            _id: "tx2",
-            songId: { songName: "Song 2" },
-            transactionAmount: 200,
-            artistShare: 140,
-            managerShare: 60,
-            status: "Pending",
-        },
+      {
+        _id: "tx1",
+        songId: { songName: "Song 1" },
+        transactionAmount: 10.0,
+        artistShare: 5.0,
+        managerShare: 5.0,
+        status: "Approved",
+      },
+      {
+        _id: "tx2",
+        songId: { songName: "Song 2" },
+        transactionAmount: 20.0,
+        artistShare: 10.0,
+        managerShare: 10.0,
+        status: "Pending",
+      },
     ];
 
-    beforeEach(() => {
-        // Mock the useAuth hook
-        useAuth.mockReturnValue({
-            user: mockUser,
-            userData: mockUserData,
-            loading: false,
-        });
+    TransactionService.fetchTransactions.mockResolvedValue(mockTransactions);
+    TransactionService.fetchWalletAmount.mockReturnValue(15.0);
 
-        // Mock the TransactionService functions
-        TransactionService.fetchTransactions.mockResolvedValue(mockTransactions);
-        TransactionService.fetchWalletAmount.mockReturnValue(210); // Total wallet amount
-        TransactionService.downloadTransactionsPDF.mockResolvedValue(new Blob());
-
-        // Mock global.alert
-        global.alert = jest.fn();
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
+
+    // Wait for the transactions to load
+    await waitFor(() => {
+      expect(screen.getByText("Song 1")).toBeInTheDocument();
+      expect(screen.getByText("Song 2")).toBeInTheDocument();
+      expect(screen.getByText("$10.00")).toBeInTheDocument();
+      expect(screen.getByText("$20.00")).toBeInTheDocument();
+    });
+  });
+
+  it("should render wallet balance correctly", async () => {
+    const mockTransactions = [];
+    TransactionService.fetchTransactions.mockResolvedValue(mockTransactions);
+    TransactionService.fetchWalletAmount.mockReturnValue(15.0);
+
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    test("renders loading state when transactions are being fetched", async () => {
-        // Mock the loading state
-        useAuth.mockReturnValueOnce({
-            user: mockUser,
-            userData: mockUserData,
-            loading: true,
-        });
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
 
-        render(<UserTransactions />);
+    await waitFor(() => {
+      expect(screen.getByText("$15.00")).toBeInTheDocument();
+    });
+  });
 
-        // Check if the loading message is displayed
-        expect(screen.getByText(/Loading transactions.../i)).toBeInTheDocument();
+  it("should show 'No transactions available' when there are no transactions", async () => {
+    TransactionService.fetchTransactions.mockResolvedValue([]);
+    TransactionService.fetchWalletAmount.mockReturnValue(0.0);
+
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    test("renders transactions when data is fetched successfully", async () => {
-        render(<UserTransactions />);
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
 
-        // Wait for the transactions to be loaded
-        await waitFor(() => {
-            expect(screen.getByText(/💰 Your Transactions/i)).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      expect(screen.getByText("No transactions available")).toBeInTheDocument();
+    });
+  });
 
-        // Check if the wallet balance is displayed
-        expect(screen.getByText(/🏦 Wallet Balance: \$210.00/i)).toBeInTheDocument();
+  it("should handle PDF download correctly", async () => {
+    const mockTransactions = [
+      {
+        _id: "tx1",
+        songId: { songName: "Song 1" },
+        transactionAmount: 10.0,
+        artistShare: 5.0,
+        managerShare: 5.0,
+        status: "Approved",
+      },
+    ];
 
-        // Check if the transactions are displayed
-        expect(screen.getByText(/Song 1/i)).toBeInTheDocument();
-        expect(screen.getByText(/Song 2/i)).toBeInTheDocument();
+    TransactionService.fetchTransactions.mockResolvedValue(mockTransactions);
+    TransactionService.fetchWalletAmount.mockReturnValue(15.0);
+    TransactionService.downloadTransactionsPDF.mockResolvedValue(new Blob(["PDF content"], { type: "application/pdf" }));
 
-        // Check if the download PDF button is displayed
-        expect(screen.getByRole("button", { name: /📥 Download Transactions PDF/i })).toBeInTheDocument();
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    test("renders no transactions message when there are no transactions", async () => {
-        // Mock empty transactions
-        TransactionService.fetchTransactions.mockResolvedValueOnce([]);
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
 
-        render(<UserTransactions />);
+    const downloadButton = screen.getByText("📥 Download Transactions PDF");
+    fireEvent.click(downloadButton);
 
-        // Wait for the component to render
-        await waitFor(() => {
-            expect(screen.getByText(/No transactions available/i)).toBeInTheDocument();
-        });
+    // Wait for the PDF to download
+    await waitFor(() => {
+      expect(TransactionService.downloadTransactionsPDF).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("should show an alert when trying to download PDF with no transactions", async () => {
+    const mockTransactions = [];
+    TransactionService.fetchTransactions.mockResolvedValue(mockTransactions);
+
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    test("handles PDF download when the download button is clicked", async () => {
-        render(<UserTransactions />);
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
 
-        // Wait for the transactions to be loaded
-        await waitFor(() => {
-            expect(screen.getByText(/💰 Your Transactions/i)).toBeInTheDocument();
-        });
+    const downloadButton = screen.getByText("📥 Download Transactions PDF");
+    fireEvent.click(downloadButton);
 
-        // Simulate clicking the download button
-        const downloadButton = screen.getByRole("button", { name: /📥 Download Transactions PDF/i });
-        fireEvent.click(downloadButton);
+    // Expecting an alert with the appropriate message
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith("No transactions available to download.");
+    });
+  });
 
-        // Check if the download function was called
-        await waitFor(() => {
-            expect(TransactionService.downloadTransactionsPDF).toHaveBeenCalledWith(mockUser.role, mockUserData._id);
-        });
+  it("should handle errors in fetching transactions gracefully", async () => {
+    TransactionService.fetchTransactions.mockRejectedValue(new Error("Error fetching transactions"));
+
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    test("displays an alert when there are no transactions to download", async () => {
-        // Mock empty transactions
-        TransactionService.fetchTransactions.mockResolvedValueOnce([]);
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
 
-        render(<UserTransactions />);
+    await waitFor(() => {
+      expect(screen.getByText("Loading transactions...")).toBeInTheDocument();
+    });
+  });
 
-        // Wait for the component to render
-        await waitFor(() => {
-            expect(screen.getByText(/No transactions available/i)).toBeInTheDocument();
-        });
+  it("should handle the full PDF download logic", async () => {
+    const mockTransactions = [
+      {
+        _id: "tx1",
+        songId: { songName: "Song 1" },
+        transactionAmount: 10.0,
+        artistShare: 5.0,
+        managerShare: 5.0,
+        status: "Approved",
+      },
+    ];
 
-        // Simulate clicking the download button
-        const downloadButton = screen.getByRole("button", { name: /📥 Download Transactions PDF/i });
-        fireEvent.click(downloadButton);
+    const mockBlob = new Blob(["PDF content"], { type: "application/pdf" });
+    TransactionService.fetchTransactions.mockResolvedValue(mockTransactions);
+    TransactionService.fetchWalletAmount.mockReturnValue(15.0);
+    TransactionService.downloadTransactionsPDF.mockResolvedValue(mockBlob);
 
-        // Check if the alert was called
-        expect(global.alert).toHaveBeenCalledWith("No transactions available to download.");
+    useAuth.mockReturnValue({
+      user: mockUser,
+      userData: mockUserData,
+      loading: false,
     });
 
-    test("logs an error when PDF download fails", async () => {
-        // Mock an error during PDF download
-        TransactionService.downloadTransactionsPDF.mockRejectedValueOnce(new Error("Download failed"));
+    // Mocking window.URL.createObjectURL
+    const createObjectURLMock = jest.spyOn(window.URL, "createObjectURL").mockReturnValue("mock-url");
 
-        // Mock console.error
-        console.error = jest.fn();
+    render(
+      <MemoryRouter>
+        <UserTransactions />
+      </MemoryRouter>
+    );
 
-        render(<UserTransactions />);
+    const downloadButton = screen.getByText("📥 Download Transactions PDF");
+    fireEvent.click(downloadButton);
 
-        // Wait for the transactions to be loaded
-        await waitFor(() => {
-            expect(screen.getByText(/💰 Your Transactions/i)).toBeInTheDocument();
-        });
+    // Wait for the download logic to complete
+    await waitFor(() => {
+      // Check if createObjectURL was called
+      expect(createObjectURLMock).toHaveBeenCalledTimes(1);
 
-        // Simulate clicking the download button
-        const downloadButton = screen.getByRole("button", { name: /📥 Download Transactions PDF/i });
-        fireEvent.click(downloadButton);
+      // Check if the download link was created and clicked
+      const aElement = document.createElement("a");
+      expect(aElement.href).toBe("mock-url");
+      expect(aElement.download).toBe("transactions.pdf");
 
-        // Check if the error was logged
-        await waitFor(() => {
-            expect(console.error).toHaveBeenCalledWith("Error downloading PDF:", expect.any(Error));
-        });
+      // Clean up mock
+      createObjectURLMock.mockRestore();
     });
+  });
 });

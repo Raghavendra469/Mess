@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Collaboration = require('../models/collaborationModel');
 const Manager = require('../models/managerModel');
 const Artist = require('../models/artistModel');
-const Song = require('../models/songModel');
  
 class CollaborationRepository {
     // Create a new collaboration

@@ -15,14 +15,20 @@ class NotificationRepository {
 
   // Mark notification as read and delete it
   async markAsReadAndDelete(notificationId) {
+    try{
     const notification = await Notification.findByIdAndUpdate(
       notificationId,
       { isRead: true },
       { new: true }
     );
-    await Notification.findOneAndDelete(notificationId); // Delete after marking as read
+    if(!notification) return null;
+    await Notification.findOneAndDelete({_id:notificationId}); // Delete after marking as read
     return notification; // Return the updated notification
   }
-}
 
+  catch(error){
+    throw new Error(`${error.message}`);
+  }
+}
+}
 module.exports = NotificationRepository;

@@ -9,8 +9,7 @@ const calculateRoyaltyForStreams = (royalty) => {
     const totalRoyalty = calculateRoyalty(royalty.totalStreams);
     royalty.totalRoyalty = totalRoyalty;
     royalty.royaltyDue = totalRoyalty - royalty.royaltyPaid; // Calculate pending royalty
-    console.log('before calculate royalty save')
-    console.log('after calculate royalty save')
+
     return royalty;
 };
 

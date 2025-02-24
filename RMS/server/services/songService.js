@@ -38,16 +38,16 @@ class SongService {
   async deleteSong(songId) {
     // Get the song before deletion to ensure it's removed from Artist and Royalty
     const song = await this.songRepository.findSongById(songId);
-    console.log(song,"insideservice")
+
     if (!song) throw new Error('Song not found');
 
     const artistId = song.artistId;
-    console.log(artistId,"insideservice222222222222222222222")
+
     // Remove song from artist and delete royalty
     const removedArtist=await this.songRepository.removeSongFromArtist(song.artistId, song._id);
-    console.log(removedArtist,"removed from Artist")
+
     const deletedroyalty=await this.songRepository.deleteRoyalty(song._id);
-    console.log(deletedroyalty,"deleted from Royalty")
+
     
     return await this.songRepository.removeSong(songId);
   }

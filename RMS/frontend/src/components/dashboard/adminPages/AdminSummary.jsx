@@ -8,7 +8,7 @@ import SummaryCard from "../../commonComponents/SummaryCard";
 
 
 const AdminSummary = () => {
-    const { artists = [], managerStats = [] ,managers} = useArtistsManagers();
+    const { artists = [], managerStats = [] ,managers=[]} = useArtistsManagers();
 
     return (
         <div className="p-4 md:p-6 lg:p-8">

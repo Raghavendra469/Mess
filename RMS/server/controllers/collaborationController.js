@@ -25,16 +25,16 @@ const collaborationController = {
     cancelCollaboration: routeHandler(async ({ params, body }) => {
         const { collaborationId } = params;
         const { reason } = body;
-        console.log(collaborationId,"CASAJKJA")
+
         const collaboration = await collaborationService.requestCancellation(collaborationId, reason);
         return { success: true, collaboration };
     }),
  
     handleCancellationResponse: routeHandler(async ({ params, body }) => {
         const { collaborationId } = params;
-        console.log(collaborationId,"vvvv")
+
         const { response } = body;
-        console.log(response,"xxx")
+
         const collaboration = await collaborationService.handleCancellationResponse(collaborationId, response);
         return { success: true, collaboration };
     }),

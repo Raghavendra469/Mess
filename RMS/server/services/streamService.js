@@ -8,7 +8,7 @@ const generateRandomStreams = async () => {
         const royalties = await Royalty.find();
 
         if (!royalties.length) {
-            console.log('No royalties found to update.');
+        
             return;
         }
 
@@ -18,12 +18,12 @@ const generateRandomStreams = async () => {
 
             // Recalculate royalty
             const updatedRoyalty = calculateRoyaltyForStreams(royalty);
-            // console.log(updatedRoyalty,'updatedroyalty')
+       
 
             // Save updated royalty record
             await updatedRoyalty.save();
 
-            console.log(`Updated streams for royalty ${royalty.royaltyId}: +${randomStreams} streams, Total Royalty: $${updatedRoyalty.totalRoyalty}`);
+      
 
             // **Update the corresponding Song record**
             await Song.findOneAndUpdate(
@@ -32,8 +32,7 @@ const generateRandomStreams = async () => {
                 { new: true }
             );
 
-            console.log(`Updated totalStreams in Song collection for songId: ${royalty.songId}`);
-            // console.log(`Updated totalRoyalty in Song collection for songId: ${royalty.songId}`);
+         
         }
     } catch (error) {
         console.error('Error generating random streams:', error.message);
