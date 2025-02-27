@@ -1,129 +1,221 @@
 import React from "react";
+
 import { render, screen, fireEvent } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import AdminSidebar from "./AdminSidebar"; // Adjust path accordingly
+
+import { MemoryRouter } from "react-router-dom";
+
 import "@testing-library/jest-dom";
 
-// Mock toggleSidebar function
-const mockToggleSidebar = jest.fn();
+import { expect, describe, it, beforeEach, vi } from "vitest";
+ 
+import AdminSidebar from "./AdminSidebar"; // Adjust path accordingly
+ 
+// Mock lucide-react icons based on what's actually used in AdminSidebar component
 
+vi.mock("lucide-react", () => ({
+
+  Home: () => <svg>Home Icon</svg>,
+
+  UserPlus: () => <svg>UserPlus Icon</svg>,
+
+  Users: () => <svg>Users Icon</svg>,
+
+  DollarSign: () => <svg>DollarSign Icon</svg>, // Changed from CreditCard to DollarSign
+
+  User: () => <svg>User Icon</svg>,
+
+  // Add any other icons used in AdminSidebar.jsx
+
+}));
+ 
 describe("AdminSidebar Component", () => {
-  test("renders sidebar with correct links", () => {
-    render(
-      <BrowserRouter>
-        <AdminSidebar isOpen={true} toggleSidebar={mockToggleSidebar} />
-      </BrowserRouter>
-    );
 
+  let toggleSidebarMock;
+ 
+  beforeEach(() => {
+
+    toggleSidebarMock = vi.fn();
+
+    vi.clearAllMocks();
+
+  });
+ 
+  it("renders sidebar with correct links", () => {
+
+    render(
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
+</MemoryRouter>
+
+    );
+ 
     // Check if all links are present
+
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
+
     expect(screen.getByText("Create User Account")).toBeInTheDocument();
+
     expect(screen.getByText("Manage Users")).toBeInTheDocument();
+
     expect(screen.getByText("Payments")).toBeInTheDocument();
+
     expect(screen.getByText("View My Profile")).toBeInTheDocument();
-  });
 
-  test("calls toggleSidebar on mobile when a link is clicked", () => {
+  });
+ 
+  it("calls toggleSidebar on mobile when a link is clicked", () => {
+
     global.innerWidth = 768; // Simulate mobile screen
+
     render(
-      <BrowserRouter>
-        <AdminSidebar isOpen={true} toggleSidebar={mockToggleSidebar} />
-      </BrowserRouter>
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
+</MemoryRouter>
+
     );
-
+ 
     fireEvent.click(screen.getByText("Dashboard"));
-    expect(mockToggleSidebar).toHaveBeenCalled();
-  });
 
-  test("does not call toggleSidebar on desktop when a link is clicked", () => {
+    expect(toggleSidebarMock).toHaveBeenCalled();
+
+  });
+ 
+  it("does not call toggleSidebar on desktop when a link is clicked", () => {
+
     global.innerWidth = 1024; // Simulate desktop screen
+
     render(
-      <BrowserRouter>
-        <AdminSidebar isOpen={true} toggleSidebar={mockToggleSidebar} />
-      </BrowserRouter>
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
+</MemoryRouter>
+
     );
-
+ 
     fireEvent.click(screen.getByText("Dashboard"));
-    expect(mockToggleSidebar).not.toHaveBeenCalled();
-  });
 
-  test("clicking a link closes sidebar on mobile", () => {
-    const toggleSidebarMock = jest.fn();
+    expect(toggleSidebarMock).not.toHaveBeenCalled();
+
+  });
+ 
+  it("clicking a link closes sidebar on mobile", () => {
 
     // Mock window.innerWidth < 1024 (simulate mobile)
+
     global.innerWidth = 768;
+
     window.dispatchEvent(new Event("resize"));
-
+ 
     render(
-      <BrowserRouter>
-        <AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
-      </BrowserRouter>
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
+</MemoryRouter>
+
     );
-
+ 
     // Click on a link
+
     fireEvent.click(screen.getByText("Dashboard"));
-
+ 
     // Ensure toggleSidebar is called on mobile
-    expect(toggleSidebarMock).toHaveBeenCalled();
-  });
 
-  test("clicking a link does NOT close sidebar on desktop", () => {
-    const toggleSidebarMock = jest.fn();
+    expect(toggleSidebarMock).toHaveBeenCalled();
+
+  });
+ 
+  it("clicking a link does NOT close sidebar on desktop", () => {
 
     // Mock window.innerWidth >= 1024 (simulate desktop)
+
     global.innerWidth = 1280;
+
     window.dispatchEvent(new Event("resize"));
-
+ 
     render(
-      <BrowserRouter>
-        <AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
-      </BrowserRouter>
-    );
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
+</MemoryRouter>
 
+    );
+ 
     // Click on a link
+
     fireEvent.click(screen.getByText("Dashboard"));
-
+ 
     // Ensure toggleSidebar is NOT called on desktop
+
     expect(toggleSidebarMock).not.toHaveBeenCalled();
+
   });
+ 
+  it("sidebar has correct styling and structure", () => {
 
-//   test("sidebar visibility changes based on isOpen prop", () => {
-//     const { rerender } = render(
-//       <BrowserRouter>
-//         <AdminSidebar isOpen={false} toggleSidebar={() => {}} />
-//       </BrowserRouter>
-//     );
-
-//     // Select the sidebar container using a role-based query
-//     const sidebar = screen.getByRole("navigation");
-
-//     // Check if sidebar is hidden
-//     expect(sidebar).toHaveClass("-translate-x-full");
-
-//     // Re-render with isOpen = true
-//     rerender(
-//       <BrowserRouter>
-//         <AdminSidebar isOpen={true} toggleSidebar={() => {}} />
-//       </BrowserRouter>
-//     );
-
-//     // Check if sidebar is visible
-//     expect(sidebar).toHaveClass("translate-x-0");
-//   });
-
-  test("sidebar has correct styling and structure", () => {
     render(
-      <BrowserRouter>
-        <AdminSidebar isOpen={true} toggleSidebar={() => {}} />
-      </BrowserRouter>
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={() => {}} />
+</MemoryRouter>
+
     );
-
+ 
     // Ensure sidebar header is present
-    expect(screen.getByText("RMS")).toBeInTheDocument();
 
+    expect(screen.getByText("RMS")).toBeInTheDocument();
+ 
     // Ensure sidebar contains correct number of links
+
     expect(screen.getAllByRole("link").length).toBe(5);
+
+  });
+ 
+  it("displays icons correctly", () => {
+
+    render(
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={toggleSidebarMock} />
+</MemoryRouter>
+
+    );
+ 
+    // Check if the icons are displayed correctly
+
+    expect(screen.getByText("Home Icon")).toBeInTheDocument();
+
+    expect(screen.getByText("UserPlus Icon")).toBeInTheDocument();
+
+    expect(screen.getByText("Users Icon")).toBeInTheDocument();
+
+    expect(screen.getByText("DollarSign Icon")).toBeInTheDocument(); // Updated to match the mock
+
+    expect(screen.getByText("User Icon")).toBeInTheDocument();
+
+  });
+ 
+  it("sidebar visibility changes based on isOpen prop", () => {
+
+    const { container, rerender } = render(
+<MemoryRouter>
+<AdminSidebar isOpen={false} toggleSidebar={() => {}} />
+</MemoryRouter>
+
+    );
+ 
+    // Check if sidebar is hidden
+
+    expect(container.firstChild).toHaveClass("-translate-x-full");
+ 
+    // Re-render with isOpen = true
+
+    rerender(
+<MemoryRouter>
+<AdminSidebar isOpen={true} toggleSidebar={() => {}} />
+</MemoryRouter>
+
+    );
+ 
+    // Check if sidebar is visible
+
+    expect(container.firstChild).toHaveClass("translate-x-0");
+
   });
 
-  
 });
+ 

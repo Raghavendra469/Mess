@@ -1,10 +1,11 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { describe, it, expect, vi } from "vitest";
 import TopArtistsChart from "./TopArtistChart";
+import "@testing-library/jest-dom";
 
 // Mocking Recharts components
-jest.mock("recharts", () => ({
+vi.mock("recharts", () => ({
   BarChart: (props) => <div data-testid="bar-chart" {...props} />,
   Bar: (props) => <div data-testid="bar" {...props} />,
   LineChart: (props) => <div data-testid="line-chart" {...props} />,
@@ -22,29 +23,30 @@ const mockData = [
 ];
 
 describe("TopArtistsChart Component", () => {
-  test("renders 'No Artist Data Available' when data is empty", () => {
+  it("renders 'No Artist Data Available' when data is empty", () => {
     render(<TopArtistsChart data={[]} />);
     expect(screen.getByText("No Artist Data Available")).toBeInTheDocument();
   });
 
-  test("renders headings", () => {
+  it("renders headings", () => {
     render(<TopArtistsChart data={mockData} />);
     expect(screen.getByText("Top Artists Performance")).toBeInTheDocument();
     expect(screen.getByText("Total Streams")).toBeInTheDocument();
     expect(screen.getByText("Full Royalty Earned")).toBeInTheDocument();
   });
 
-  test("renders BarChart and LineChart components", () => {
+  it("renders BarChart and LineChart components", () => {
     render(<TopArtistsChart data={mockData} />);
     expect(screen.getByTestId("bar-chart")).toBeInTheDocument();
     expect(screen.getByTestId("line-chart")).toBeInTheDocument();
   });
 
-//   test("renders artist data correctly", () => {
-//     render(<TopArtistsChart data={mockData} />);
-//     expect(screen.getByTestId("x-axis")).toBeInTheDocument();
-//     expect(screen.getByTestId("y-axis")).toBeInTheDocument();
-//     expect(screen.getByTestId("bar")).toBeInTheDocument();
-//     expect(screen.getByTestId("line")).toBeInTheDocument();
-//   });
+  // Uncomment if you need to test axis and bars
+  // it("renders artist data correctly", () => {
+  //   render(<TopArtistsChart data={mockData} />);
+  //   expect(screen.getByTestId("x-axis")).toBeInTheDocument();
+  //   expect(screen.getByTestId("y-axis")).toBeInTheDocument();
+  //   expect(screen.getByTestId("bar")).toBeInTheDocument();
+  //   expect(screen.getByTestId("line")).toBeInTheDocument();
+  // });
 });

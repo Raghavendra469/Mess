@@ -1,22 +1,24 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { vi } from "vitest";
+import "@testing-library/jest-dom/vitest"; // Needed for matchers in Vitest
 import ManagerArtists from "../../../components/dashboard/managerPages/ManagerArtists";
 import { useAuth } from "../../../context/authContext";
 import { fetchUserDetails } from "../../../services/userService";
 import userEvent from "@testing-library/user-event";
 
-jest.mock("../../../services/userService", () => ({
-  fetchUserDetails: jest.fn(),
+vi.mock("../../../services/userService", () => ({
+  fetchUserDetails: vi.fn(),
 }));
 
-jest.mock("../../../context/authContext", () => ({
-  useAuth: jest.fn(),
+vi.mock("../../../context/authContext", () => ({
+  useAuth: vi.fn(),
 }));
 
 describe("ManagerArtists Component", () => {
   const mockUserData = { username: "manager123" };
 
   beforeEach(() => {
+    vi.clearAllMocks(); // Clears all mocks before each test
     useAuth.mockReturnValue({ userData: mockUserData });
   });
 
@@ -87,7 +89,7 @@ describe("ManagerArtists Component", () => {
       expect(screen.getByText("Artist Two")).toBeInTheDocument();
     });
 
-    userEvent.type(searchInput, "Artist One");
+    await userEvent.type(searchInput, "Artist One");
 
     await waitFor(() => {
       expect(screen.getByText("Artist One")).toBeInTheDocument();
@@ -97,12 +99,11 @@ describe("ManagerArtists Component", () => {
 
   test("does not fetch artists if userData is missing", async () => {
     useAuth.mockReturnValue({ userData: null });
-  
+
     render(<ManagerArtists />);
-  
+
     await waitFor(() => {
       expect(fetchUserDetails).not.toHaveBeenCalled();
     });
   });
-      
 });

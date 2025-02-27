@@ -1,33 +1,33 @@
 import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import "@testing-library/jest-dom";
 import CollaborationCancellation from "./CollaborationCancellation";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
 import { fetchCollaborationsByUserAndRole, handleCancellationResponse } from "../../../services/CollaborationService";
-import "@testing-library/jest-dom";
 
-
-jest.mock("../../../context/authContext", () => ({
-  useAuth: jest.fn()
+vi.mock("../../../context/authContext", () => ({
+  useAuth: vi.fn(),
 }));
 
-jest.mock("../../../context/NotificationContext", () => ({
-  useNotifications: jest.fn()
+vi.mock("../../../context/NotificationContext", () => ({
+  useNotifications: vi.fn(),
 }));
 
-jest.mock("../../../services/CollaborationService", () => ({
-  fetchCollaborationsByUserAndRole: jest.fn(),
-  handleCancellationResponse: jest.fn()
+vi.mock("../../../services/CollaborationService", () => ({
+  fetchCollaborationsByUserAndRole: vi.fn(),
+  handleCancellationResponse: vi.fn(),
 }));
 
 describe("CollaborationCancellation Component", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders loading state initially", () => {
     useAuth.mockReturnValue({ userData: { _id: "123" } });
-    useNotifications.mockReturnValue({ sendNotification: jest.fn() });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
     fetchCollaborationsByUserAndRole.mockResolvedValue([]);
 
     render(<CollaborationCancellation />);
@@ -36,7 +36,7 @@ describe("CollaborationCancellation Component", () => {
 
   it("renders no cancellation request message when no request is found", async () => {
     useAuth.mockReturnValue({ userData: { _id: "123" } });
-    useNotifications.mockReturnValue({ sendNotification: jest.fn() });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
     fetchCollaborationsByUserAndRole.mockResolvedValue([]);
 
     render(<CollaborationCancellation />);
@@ -45,14 +45,14 @@ describe("CollaborationCancellation Component", () => {
 
   it("renders a pending cancellation request", async () => {
     useAuth.mockReturnValue({ userData: { _id: "123" } });
-    useNotifications.mockReturnValue({ sendNotification: jest.fn() });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
     fetchCollaborationsByUserAndRole.mockResolvedValue([
       {
         _id: "collab123",
         status: "cancel_requested",
         artistId: { fullName: "Artist Name", email: "artist@example.com", artistId: "artist123" },
-        cancellationReason: "Personal reasons"
-      }
+        cancellationReason: "Personal reasons",
+      },
     ]);
 
     render(<CollaborationCancellation />);
@@ -66,14 +66,14 @@ describe("CollaborationCancellation Component", () => {
 
   it("approves a cancellation request", async () => {
     useAuth.mockReturnValue({ userData: { _id: "123" } });
-    useNotifications.mockReturnValue({ sendNotification: jest.fn() });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
     fetchCollaborationsByUserAndRole.mockResolvedValue([
       {
         _id: "collab123",
         status: "cancel_requested",
         artistId: { fullName: "Artist Name", email: "artist@example.com", artistId: "artist123" },
-        cancellationReason: "Personal reasons"
-      }
+        cancellationReason: "Personal reasons",
+      },
     ]);
 
     render(<CollaborationCancellation />);
@@ -85,14 +85,14 @@ describe("CollaborationCancellation Component", () => {
 
   it("declines a cancellation request", async () => {
     useAuth.mockReturnValue({ userData: { _id: "123" } });
-    useNotifications.mockReturnValue({ sendNotification: jest.fn() });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
     fetchCollaborationsByUserAndRole.mockResolvedValue([
       {
         _id: "collab123",
         status: "cancel_requested",
         artistId: { fullName: "Artist Name", email: "artist@example.com", artistId: "artist123" },
-        cancellationReason: "Personal reasons"
-      }
+        cancellationReason: "Personal reasons",
+      },
     ]);
 
     render(<CollaborationCancellation />);

@@ -5,25 +5,31 @@ import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../services/AuthServices";
 import ForgotPassword from "../pages/ForgotPassword";
 import "@testing-library/jest-dom";
+import { describe, it, vi, beforeEach, expect } from "vitest";
 
-jest.mock("../services/AuthServices", () => ({
-  forgotPassword: jest.fn(),
+// Mock forgotPassword service
+vi.mock("../services/AuthServices", () => ({
+  forgotPassword: vi.fn(),
 }));
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: jest.fn(),
-}));
+// Mock useNavigate from react-router-dom
+vi.mock("react-router-dom", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
+});
 
 describe("ForgotPassword Component", () => {
-  const mockNavigate = jest.fn();
+  const mockNavigate = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     useNavigate.mockReturnValue(mockNavigate);
   });
 
-  test("renders Forgot Password form correctly", () => {
+  it("renders Forgot Password form correctly", () => {
     render(<ForgotPassword />, { wrapper: MemoryRouter });
 
     expect(screen.getByLabelText(/Email Address/i)).toBeInTheDocument();
@@ -35,20 +41,7 @@ describe("ForgotPassword Component", () => {
     ).toBeInTheDocument();
   });
 
-//   test("displays error when email is invalid", async () => {
-//     render(<ForgotPassword />, { wrapper: MemoryRouter });
-
-//     fireEvent.change(screen.getByLabelText(/Email Address/i), {
-//       target: { value: "invalid-email" },
-//     });
-//     fireEvent.click(screen.getByRole("button", { name: /Send Reset Link/i }));
-
-//     await waitFor(() => {
-//       expect(screen.queryByText(/invalid email/i)).not.toBeNull();
-//     });
-//   });
-
-  test("handles successful password reset request", async () => {
+  it("handles successful password reset request", async () => {
     forgotPassword.mockResolvedValue({ success: true });
 
     render(<ForgotPassword />, { wrapper: MemoryRouter });
@@ -63,22 +56,7 @@ describe("ForgotPassword Component", () => {
     });
   });
 
-//   test("handles failed password reset request", async () => {
-//     forgotPassword.mockRejectedValue({ message: "Error sending reset link" });
-
-//     render(<ForgotPassword />, { wrapper: MemoryRouter });
-
-//     fireEvent.change(screen.getByLabelText(/Email Address/i), {
-//       target: { value: "test@example.com" },
-//     });
-//     fireEvent.click(screen.getByRole("button", { name: /Send Reset Link/i }));
-
-//     await waitFor(() => {
-//       expect(screen.queryByText(/Error sending reset link/i)).not.toBeNull();
-//     });
-//   });
-
-  test("navigates back to login page when 'Back to Login' is clicked", () => {
+  it("navigates back to login page when 'Back to Login' is clicked", () => {
     render(<ForgotPassword />, { wrapper: MemoryRouter });
 
     fireEvent.click(screen.getByRole("button", { name: /Back to Login/i }));

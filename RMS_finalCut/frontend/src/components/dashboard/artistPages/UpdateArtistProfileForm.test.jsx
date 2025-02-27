@@ -1,19 +1,20 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { expect, describe, test, beforeEach, vi, spyOn } from "vitest";
 import UpdateArtistProfileForm from "./updateArtistProfileForm";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
 import { fetchUserDetails, updateUserProfile } from "../../../services/userService";
  
 // Mock dependencies
-jest.mock("../../../context/authContext");
-jest.mock("../../../context/NotificationContext");
-jest.mock("../../../services/userService");
+vi.mock("../../../context/authContext");
+vi.mock("../../../context/NotificationContext");
+vi.mock("../../../services/userService");
  
 describe("UpdateArtistProfileForm - Alternative Methods", () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
  
     const mockUser = { username: "testuser" };
@@ -27,20 +28,16 @@ describe("UpdateArtistProfileForm - Alternative Methods", () => {
  
     test("shows loading state initially", async () => {
         useAuth.mockReturnValue({ user: mockUser, userData: null, loading: true });
-        useNotifications.mockReturnValue({ sendNotification: jest.fn() }); // Ensure it's defined
-   
+        useNotifications.mockReturnValue({ sendNotification: vi.fn() }); // Ensure it's defined
         render(<UpdateArtistProfileForm />);
-   
         // Check if "Loading..." is rendered
         expect(screen.getByText("Loading...")).toBeInTheDocument();
     });
-   
- 
     test("submits updated profile and sends notification", async () => {
         useAuth.mockReturnValue({ user: mockUser, userData: mockUserData, loading: false });
-        jest.spyOn(fetchUserDetails, "mockResolvedValue").mockResolvedValue(mockUserData);
-        jest.spyOn(updateUserProfile, "mockResolvedValue").mockResolvedValue();
-        const sendNotificationMock = jest.fn();
+        fetchUserDetails.mockResolvedValue(mockUserData);
+        updateUserProfile.mockResolvedValue({ success: true });
+        const sendNotificationMock = vi.fn();
         useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
  
         await act(async () => render(<UpdateArtistProfileForm />));
@@ -61,9 +58,9 @@ describe("UpdateArtistProfileForm - Alternative Methods", () => {
     test("does not send notification when manager is missing", async () => {
         const userDataWithoutManager = { ...mockUserData, manager: null };
         useAuth.mockReturnValue({ user: mockUser, userData: userDataWithoutManager, loading: false });
-        jest.spyOn(fetchUserDetails, "mockResolvedValue").mockResolvedValue(userDataWithoutManager);
-        jest.spyOn(updateUserProfile, "mockResolvedValue").mockResolvedValue();
-        const sendNotificationMock = jest.fn();
+        fetchUserDetails.mockResolvedValue(userDataWithoutManager);
+        updateUserProfile.mockResolvedValue({ success: true });
+        const sendNotificationMock = vi.fn();
         useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
  
         await act(async () => render(<UpdateArtistProfileForm />));

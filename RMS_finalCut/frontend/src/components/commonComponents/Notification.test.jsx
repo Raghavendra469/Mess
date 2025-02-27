@@ -1,22 +1,22 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import Notifications from "./Notification";
 import { useNotifications } from "../../context/NotificationContext";
 
 // Mock the useNotifications hook
-jest.mock("../../context/NotificationContext", () => ({
-  useNotifications: jest.fn(),
+vi.mock("../../context/NotificationContext", () => ({
+  useNotifications: vi.fn(),
 }));
 
 describe("Notifications Component", () => {
-  const mockMarkAsRead = jest.fn();
+  const mockMarkAsRead = vi.fn();
 
   beforeEach(() => {
-    // Reset the mock implementation before each test
-    mockMarkAsRead.mockClear();
+    vi.clearAllMocks();
   });
 
-  test("renders loading state when notifications are loading", () => {
+  it("renders loading state when notifications are loading", () => {
     // Mock the loading state
     useNotifications.mockReturnValue({
       notifications: [],
@@ -30,7 +30,7 @@ describe("Notifications Component", () => {
     expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
   });
 
-  test("renders no notifications message when there are no notifications", () => {
+  it("renders no notifications message when there are no notifications", () => {
     // Mock the empty notifications state
     useNotifications.mockReturnValue({
       notifications: [],
@@ -44,7 +44,7 @@ describe("Notifications Component", () => {
     expect(screen.getByText(/No new notifications/i)).toBeInTheDocument();
   });
 
-  test("renders notifications when notifications are available", () => {
+  it("renders notifications when notifications are available", () => {
     // Mock the notifications state with some data
     useNotifications.mockReturnValue({
       notifications: [
@@ -66,7 +66,7 @@ describe("Notifications Component", () => {
     expect(markAsReadButtons).toHaveLength(2);
   });
 
-  test("calls markAsRead when the 'Mark as Read' button is clicked", () => {
+  it("calls markAsRead when the 'Mark as Read' button is clicked", () => {
     // Mock the notifications state with some data
     useNotifications.mockReturnValue({
       notifications: [{ _id: "1", message: "Test notification 1" }],

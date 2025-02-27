@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { describe, it, expect } from "vitest";
 import SummaryCard from "./SummaryCard";
 
 describe("SummaryCard Component", () => {
-  test("renders the SummaryCard with title and value", () => {
+  it("renders the SummaryCard with title and value", () => {
     const title = "Total Users";
     const value = "1,234";
 
@@ -22,7 +23,7 @@ describe("SummaryCard Component", () => {
     expect(valueElement).toHaveClass("text-xl", "md:text-2xl", "font-bold", "truncate");
   });
 
-  test("renders the SummaryCard with long title and value", () => {
+  it("renders the SummaryCard with long title and value", () => {
     const longTitle = "This is a very long title that should be truncated";
     const longValue = "This is a very long value that should be truncated";
 
@@ -36,6 +37,4 @@ describe("SummaryCard Component", () => {
     expect(titleElement).toHaveClass("truncate");
     expect(valueElement).toHaveClass("truncate");
   });
-
-
 });

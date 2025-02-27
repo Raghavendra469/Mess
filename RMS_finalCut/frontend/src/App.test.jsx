@@ -1,17 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom"; 
 import App from "./App";
- 
+import { describe, it, expect, vi } from "vitest";
 // Mock react-router-dom
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   BrowserRouter: ({ children }) => <div data-testid="browser-router">{children}</div>,
 }));
- 
 // Mock AppRoutes
-jest.mock("./routes/AppRoutes", () => () => <div>App Routes</div>);
- 
+vi.mock("./routes/AppRoutes", () => ({
+  default: () => <div>App Routes</div>
+}));
 describe("App Component", () => {
-  test("renders without crashing", () => {
+  it("renders without crashing", () => {
     render(<App />);
     expect(screen.getByText("App Routes")).toBeInTheDocument();
   });

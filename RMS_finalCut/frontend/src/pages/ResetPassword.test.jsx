@@ -1,27 +1,29 @@
-import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { vi, describe, beforeEach, test, expect } from "vitest";
 import { useNavigate, useParams } from "react-router-dom";
 import { resetPassword } from "../services/AuthServices";
 import ResetPassword from "../pages/ResetPassword";
 import "@testing-library/jest-dom";
 
-
-jest.mock("../services/AuthServices", () => ({
-  resetPassword: jest.fn(),
+vi.mock("../services/AuthServices", () => ({
+  resetPassword: vi.fn(),
 }));
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: jest.fn(),
-  useParams: jest.fn(),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+    useParams: vi.fn(),
+  };
+});
 
 describe("ResetPassword Component", () => {
-  const mockNavigate = jest.fn();
+  const mockNavigate = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     useNavigate.mockReturnValue(mockNavigate);
     useParams.mockReturnValue({ id: "123", token: "fakeToken" });
   });
@@ -64,18 +66,18 @@ describe("ResetPassword Component", () => {
     }, { timeout: 2500 });
   });
 
-//   test("handles failed password reset", async () => {
-//     resetPassword.mockRejectedValueOnce({ message: "Error resetting password" });
+  // test("handles failed password reset", async () => {
+  //   resetPassword.mockRejectedValueOnce(new Error("Error resetting password")); // Fix: Ensure error has a `message` property
 
-//     render(<ResetPassword />, { wrapper: MemoryRouter });
+  //   render(<ResetPassword />, { wrapper: MemoryRouter });
 
-//     fireEvent.change(screen.getByLabelText(/New Password/i), { target: { value: "password123" } });
-//     fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "password123" } });
-//     fireEvent.click(screen.getByRole("button", { name: /Reset Password/i }));
+  //   fireEvent.change(screen.getByLabelText(/New Password/i), { target: { value: "password123" } });
+  //   fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "password123" } });
+  //   fireEvent.click(screen.getByRole("button", { name: /Reset Password/i }));
 
-//     await waitFor(() => {
-//       expect(resetPassword).toHaveBeenCalledWith("123", "fakeToken", "password123");
-//       expect(screen.getByText(/Error resetting password/i)).toBeInTheDocument();
-//     });
-//   });
+  //   await waitFor(() => {
+  //     expect(resetPassword).toHaveBeenCalledWith("123", "fakeToken", "password123");
+  //     expect(screen.getByText(/Error resetting password/i)).toBeInTheDocument();
+  //   });
+  // });
 });

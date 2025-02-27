@@ -1,34 +1,42 @@
-import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import AdminSummary from "./AdminSummary";
 import { useArtistsManagers } from "../../../context/ArtistsManagersContext";
 import "@testing-library/jest-dom";
 
 // Mock Context
-jest.mock("../../../context/ArtistsManagersContext", () => ({
-  useArtistsManagers: jest.fn(),
+vi.mock("../../../context/ArtistsManagersContext", () => ({
+  useArtistsManagers: vi.fn(),
 }));
 
 // Mock Components
-jest.mock("./TopArtistChart", () => ({ data }) =>
-  data.length > 0 ? <div data-testid="top-artists-chart" /> : null
-);
+vi.mock("./TopArtistChart", () => ({
+  default: ({ data }) => (data.length > 0 ? <div data-testid="top-artists-chart" /> : null),
+}));
 
-jest.mock("./TopManagerCharts", () => ({ data }) =>
-  data.length > 0 ? <div data-testid="top-managers-chart" /> : null
-);
+vi.mock("./TopManagerCharts", () => ({
+  default: ({ data }) => (data.length > 0 ? <div data-testid="top-managers-chart" /> : null),
+}));
 
-jest.mock("./ArtistTable", () => () => <div data-testid="artists-table" />);
-jest.mock("./ManagerTable", () => () => <div data-testid="managers-table" />);
-jest.mock("../../commonComponents/SummaryCard", () => ({ title, value }) => (
-  <div data-testid={`summary-card-${title.toLowerCase().replace(" ", "-")}`}>{
-    title
-  }: {value}</div>
-));
+vi.mock("./ArtistTable", () => ({
+  default: () => <div data-testid="artists-table" />,
+}));
+
+vi.mock("./ManagerTable", () => ({
+  default: () => <div data-testid="managers-table" />,
+}));
+
+vi.mock("../../commonComponents/SummaryCard", () => ({
+  default: ({ title, value }) => (
+    <div data-testid={`summary-card-${title.toLowerCase().replace(" ", "-")}`}>
+      {title}: {value}
+    </div>
+  ),
+}));
 
 describe("AdminSummary Component", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders the admin dashboard title", () => {
@@ -122,6 +130,5 @@ describe("AdminSummary Component", () => {
       expect(screen.getByTestId("summary-card-total-artists")).toHaveTextContent("Total Artists: 0");
       expect(screen.getByTestId("summary-card-total-managers")).toHaveTextContent("Total Managers: 0");
     });
-});
-
+  });
 });

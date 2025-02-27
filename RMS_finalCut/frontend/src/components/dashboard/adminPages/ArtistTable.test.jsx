@@ -19,7 +19,7 @@ describe("ArtistsTable Component", () => {
     });
 
     test("renders error message if invalid artists prop is passed", () => {
-        console.error = jest.fn();
+        console.error = vi.fn();
         render(<ArtistsTable artists={null} />);
         expect(screen.getByText("Error: Invalid artist data")).toBeInTheDocument();
     });

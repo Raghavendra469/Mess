@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import SearchBar from "../../commonComponents/SearchBar";
-
+ 
 const ManagersTable = ({ managers }) => {
     const [searchTerm, setSearchTerm] = useState("");
-
+ 
     const filteredManagers = managers.filter((manager) =>
         manager.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
+ 
     return (
         <div className="mt-8">
             <h3 className="text-lg font-bold mb-2">All Managers</h3>
@@ -22,18 +22,26 @@ const ManagersTable = ({ managers }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredManagers.map((manager, index) => (
-                            <tr key={index} className="border border-gray-300">
-                                <td className="border px-4 py-2">{manager.name}</td>
-                                <td className="border px-4 py-2">{manager.totalStreams}</td>
-                                <td className="border px-4 py-2">{`$ ${manager.totalRoyalty.toFixed(2)}`}</td>
+                        {filteredManagers.length > 0 ? (
+                            filteredManagers.map((manager, index) => (
+                                <tr key={index} className="border border-gray-300">
+                                    <td className="border px-4 py-2">{manager.name}</td>
+                                    <td className="border px-4 py-2">{manager.totalStreams}</td>
+                                    <td className="border px-4 py-2">{`$ ${manager.totalRoyalty.toFixed(2)}`}</td>
+                                </tr>
+                            ))
+                            ):(
+                            <tr>
+                                <td colSpan="3" className="text-center py-2">
+                                    No manager found
+                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
         </div>
     );
 };
-
+ 
 export default ManagersTable;

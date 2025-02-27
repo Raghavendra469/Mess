@@ -1,34 +1,35 @@
 import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { vi } from "vitest";
 import CollaborationRequests from "./CollaborationRequests";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
-import "@testing-library/jest-dom";
-
 import {
   fetchCollaborationRequests,
   acceptCollaborationRequest,
   rejectCollaborationRequest,
 } from "../../../services/CollaborationService";
+import "@testing-library/jest-dom/vitest"; // Needed for matchers in Vitest
 
-jest.mock("../../../context/authContext", () => ({
-  useAuth: jest.fn(),
+vi.mock("../../../context/authContext", () => ({
+  useAuth: vi.fn(),
 }));
 
-jest.mock("../../../context/NotificationContext", () => ({
-  useNotifications: jest.fn(),
+vi.mock("../../../context/NotificationContext", () => ({
+  useNotifications: vi.fn(),
 }));
 
-jest.mock("../../../services/CollaborationService", () => ({
-  fetchCollaborationRequests: jest.fn(),
-  acceptCollaborationRequest: jest.fn(),
-  rejectCollaborationRequest: jest.fn(),
+vi.mock("../../../services/CollaborationService", () => ({
+  fetchCollaborationRequests: vi.fn(),
+  acceptCollaborationRequest: vi.fn(),
+  rejectCollaborationRequest: vi.fn(),
 }));
 
 describe("CollaborationRequests Component", () => {
   beforeEach(() => {
+    vi.clearAllMocks(); // Clears all mocks between tests
     useAuth.mockReturnValue({ userData: { _id: "manager123", fullName: "Test Manager" } });
-    useNotifications.mockReturnValue({ sendNotification: jest.fn() });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
   });
 
   it("renders 'No collaboration requests found' when there are no requests", async () => {
@@ -41,30 +42,6 @@ describe("CollaborationRequests Component", () => {
     });
   });
 
-//   it("renders pending collaboration requests", async () => {
-//     fetchCollaborationRequests.mockResolvedValue([
-//       {
-//         _id: "req1",
-//         status: "Pending",
-//         artistId: { artistId: "artist123", fullName: "Artist One", email: "artist1@example.com", mobileNo: "1234567890" },
-//       },
-//     ]);
-
-//     render(<CollaborationRequests />);
-
-//     await waitFor(() => {
-//       expect(screen.getByText("Artist One")).toBeInTheDocument();
-//       expect(
-//         screen.getByText((content, element) => 
-//           element.textContent.includes("Email: artist1@example.com")
-//         )
-//       ).toBeInTheDocument();
-//       expect(screen.getByText("Mobile No: 1234567890")).toBeInTheDocument();
-//       expect(screen.getByText("Accept")).toBeInTheDocument();
-//       expect(screen.getByText("Reject")).toBeInTheDocument();
-//     });
-//   });
-
   it("handles accept request correctly", async () => {
     fetchCollaborationRequests.mockResolvedValue([
       {
@@ -74,7 +51,7 @@ describe("CollaborationRequests Component", () => {
       },
     ]);
     acceptCollaborationRequest.mockResolvedValue({});
-    const sendNotificationMock = jest.fn();
+    const sendNotificationMock = vi.fn();
     useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
 
     render(<CollaborationRequests />);
@@ -104,7 +81,7 @@ describe("CollaborationRequests Component", () => {
       },
     ]);
     rejectCollaborationRequest.mockResolvedValue({});
-    const sendNotificationMock = jest.fn();
+    const sendNotificationMock = vi.fn();
     useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
 
     render(<CollaborationRequests />);
@@ -126,38 +103,39 @@ describe("CollaborationRequests Component", () => {
   });
 
   it("does not fetch requests when userData is missing", async () => {
-    useAuth.mockReturnValue({ userData: null }); // Mock userData as null
-  
+    useAuth.mockReturnValue({ userData: null });
+
     render(<CollaborationRequests />);
-  
+
     expect(fetchCollaborationRequests).not.toHaveBeenCalled();
   });
-  
+
   it("logs an error when fetching requests fails", async () => {
-    const consoleErrorMock = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorMock = vi.spyOn(console, "error").mockImplementation(() => {});
     fetchCollaborationRequests.mockRejectedValue(new Error("Network Error"));
-  
+
     render(<CollaborationRequests />);
-    await waitFor(() => expect(consoleErrorMock).toHaveBeenCalledWith("Error fetching requests:", expect.any(Error)));
-  
+    
+    await waitFor(() => {
+      expect(consoleErrorMock).toHaveBeenCalledWith("Error fetching requests:", expect.any(Error));
+    });
+
     consoleErrorMock.mockRestore();
   });
 
   it("removes a request from UI after acceptance", async () => {
     useAuth.mockReturnValue({ userData: { _id: "manager123", fullName: "Manager" } });
-  
+
     fetchCollaborationRequests.mockResolvedValue([
       { _id: "request1", artistId: { artistId: "artist123", fullName: "Artist One", email: "artist1@example.com" }, status: "Pending" },
     ]);
-  
+
     render(<CollaborationRequests />);
-  
+
     await waitFor(() => expect(screen.getByText("Artist One")).toBeInTheDocument());
-  
+
     fireEvent.click(screen.getByText("Accept"));
-  
+
     await waitFor(() => expect(screen.queryByText("Artist One")).not.toBeInTheDocument());
   });
-  
-  
 });

@@ -4,33 +4,36 @@ import AdminDashboard from "./AdminDashboard";
 import { useAuth } from "../context/authContext";
 import { BrowserRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
+import { vi } from "vitest";
  
- 
-// ✅ Mock dependencies
-jest.mock("../context/authContext", () => ({
-  useAuth: jest.fn(),
+//  Mock dependencies
+vi.mock("../context/authContext", () => ({
+  useAuth: vi.fn(),
 }));
  
-jest.mock("../components/commonComponents/Navbar", () => ({
+vi.mock("../components/commonComponents/Navbar", () => ({
   __esModule: true,
   default: ({ toggleSidebar }) => (
-    <div data-testid="navbar">
-      <button onClick={toggleSidebar}>Toggle Sidebar</button>
-    </div>
+<div data-testid="navbar">
+<button onClick={toggleSidebar}>Toggle Sidebar</button>
+</div>
   ),
 }));
  
-jest.mock("../components/dashboard/AdminSidebar", () => ({
+vi.mock("../components/dashboard/AdminSidebar", () => ({
   __esModule: true,
   default: ({ isOpen }) => (
-    <div data-testid="admin-sidebar">{isOpen ? "Sidebar Open" : "Sidebar Closed"}</div>
+<div data-testid="admin-sidebar">{isOpen ? "Sidebar Open" : "Sidebar Closed"}</div>
   ),
 }));
  
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  Outlet: () => <div data-testid="outlet">Outlet Content</div>,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    Outlet: () => <div data-testid="outlet">Outlet Content</div>,
+  };
+});
  
 describe("AdminDashboard Component", () => {
   beforeEach(() => {
@@ -38,15 +41,15 @@ describe("AdminDashboard Component", () => {
   });
  
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
  
-  // ✅ Test: Renders without crashing
+  // Test: Renders without crashing
   test("renders AdminDashboard correctly", () => {
     render(
-      <BrowserRouter>
-        <AdminDashboard />
-      </BrowserRouter>
+<BrowserRouter>
+<AdminDashboard />
+</BrowserRouter>
     );
  
     expect(screen.getByTestId("navbar")).toBeInTheDocument();
@@ -54,12 +57,12 @@ describe("AdminDashboard Component", () => {
     expect(screen.getByTestId("outlet")).toBeInTheDocument();
   });
  
-  // ✅ Test: Sidebar toggles when button is clicked
+  //  Test: Sidebar toggles when button is clicked
   test("toggles sidebar when button is clicked", () => {
     render(
-      <BrowserRouter>
-        <AdminDashboard />
-      </BrowserRouter>
+<BrowserRouter>
+<AdminDashboard />
+</BrowserRouter>
     );
  
     const toggleButton = screen.getByText("Toggle Sidebar");
@@ -76,14 +79,14 @@ describe("AdminDashboard Component", () => {
     expect(screen.getByText("Sidebar Closed")).toBeInTheDocument();
   });
  
-  // ✅ Test: Works without user context
+  // Test: Works without user context
   test("renders without user context", () => {
     useAuth.mockReturnValue({ user: null });
  
     render(
-      <BrowserRouter>
-        <AdminDashboard />
-      </BrowserRouter>
+<BrowserRouter>
+<AdminDashboard />
+</BrowserRouter>
     );
  
     expect(screen.getByTestId("navbar")).toBeInTheDocument();

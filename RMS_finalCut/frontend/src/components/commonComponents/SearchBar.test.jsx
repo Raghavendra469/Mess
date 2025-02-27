@@ -1,10 +1,17 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import SearchBar from "./SearchBar";
 
 describe("SearchBar Component", () => {
-  test("renders the search input with a placeholder", () => {
-    const mockOnSearch = jest.fn();
+  let mockOnSearch;
+
+  beforeEach(() => {
+    mockOnSearch = vi.fn();
+    vi.clearAllMocks();
+  });
+
+  it("renders the search input with a placeholder", () => {
     render(<SearchBar onSearch={mockOnSearch} />);
 
     // Check if the input is rendered with the correct placeholder
@@ -12,8 +19,7 @@ describe("SearchBar Component", () => {
     expect(inputElement).toBeInTheDocument();
   });
 
-  test("updates the input value as the user types", () => {
-    const mockOnSearch = jest.fn();
+  it("updates the input value as the user types", () => {
     render(<SearchBar onSearch={mockOnSearch} />);
 
     // Simulate typing in the input
@@ -24,8 +30,7 @@ describe("SearchBar Component", () => {
     expect(inputElement.value).toBe("test");
   });
 
-  test("calls the onSearch function with the correct value when the input changes", () => {
-    const mockOnSearch = jest.fn();
+  it("calls the onSearch function with the correct value when the input changes", () => {
     render(<SearchBar onSearch={mockOnSearch} />);
 
     // Simulate typing in the input
@@ -37,8 +42,7 @@ describe("SearchBar Component", () => {
     expect(mockOnSearch).toHaveBeenCalledWith("test");
   });
 
-  test("clears the input value when the user deletes the text", () => {
-    const mockOnSearch = jest.fn();
+  it("clears the input value when the user deletes the text", () => {
     render(<SearchBar onSearch={mockOnSearch} />);
 
     // Simulate typing in the input

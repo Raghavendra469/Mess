@@ -4,18 +4,19 @@ import UpdateManagerProfileForm from "../../../components/dashboard/managerPages
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
 import { fetchUserDetails, updateUserProfile } from "../../../services/userService";
+import { describe, it, vi, beforeEach, expect } from "vitest";
 
-jest.mock("../../../context/authContext", () => ({
-  useAuth: jest.fn(),
+vi.mock("../../../context/authContext", () => ({
+  useAuth: vi.fn(),
 }));
 
-jest.mock("../../../context/NotificationContext", () => ({
-  useNotifications: jest.fn(),
+vi.mock("../../../context/NotificationContext", () => ({
+  useNotifications: vi.fn(),
 }));
 
-jest.mock("../../../services/userService", () => ({
-  fetchUserDetails: jest.fn(),
-  updateUserProfile: jest.fn(),
+vi.mock("../../../services/userService", () => ({
+  fetchUserDetails: vi.fn(),
+  updateUserProfile: vi.fn(),
 }));
 
 describe("UpdateManagerProfileForm Component", () => {
@@ -32,15 +33,15 @@ describe("UpdateManagerProfileForm Component", () => {
   let sendNotificationMock;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    sendNotificationMock = jest.fn(); // Define sendNotificationMock before using it
+    vi.clearAllMocks(); // Vitest equivalent of jest.clearAllMocks()
+    sendNotificationMock = vi.fn(); // Define sendNotificationMock before using it
 
     useAuth.mockReturnValue({ user: mockUser, userData: mockUserData, loading: false });
     useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
     fetchUserDetails.mockResolvedValue(mockProfileData);
   });
 
-  test("renders the update profile form with fetched data", async () => {
+  it("renders the update profile form with fetched data", async () => {
     render(<UpdateManagerProfileForm />);
     
     expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -54,7 +55,7 @@ describe("UpdateManagerProfileForm Component", () => {
     });
   });
 
-  test("updates form input values on change", async () => {
+  it("updates form input values on change", async () => {
     render(<UpdateManagerProfileForm />);
     
     await waitFor(() => expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument());
@@ -65,7 +66,7 @@ describe("UpdateManagerProfileForm Component", () => {
     expect(nameInput.value).toBe("Jane Doe");
   });
 
-  test("submits updated profile data and sends notifications", async () => {
+  it("submits updated profile data and sends notifications", async () => {
     updateUserProfile.mockResolvedValue({ success: true });
 
     render(<UpdateManagerProfileForm />);
@@ -80,7 +81,7 @@ describe("UpdateManagerProfileForm Component", () => {
     });
   });
 
-  test("displays an error message when fetching user details fails", async () => {
+  it("displays an error message when fetching user details fails", async () => {
     fetchUserDetails.mockRejectedValue(new Error("Network error"));
   
     render(<UpdateManagerProfileForm />);
@@ -90,7 +91,7 @@ describe("UpdateManagerProfileForm Component", () => {
     });
   });
 
-  test("does not send notifications if manager has no artists", async () => {
+  it("does not send notifications if manager has no artists", async () => {
     useAuth.mockReturnValue({ user: mockUser, userData: { managedArtists: [] }, loading: false });
 
     render(<UpdateManagerProfileForm />);
