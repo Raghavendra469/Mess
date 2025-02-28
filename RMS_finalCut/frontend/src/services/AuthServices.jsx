@@ -1,9 +1,13 @@
 import axios from "axios";
+import {getPublicIp} from "../utils/public-ip"
+
+
 
 const API_URL = "http://18.204.221.88:5001/api/auth";
 
 export const loginUser = async (email, password) => {
     try {
+        console.log("public ip",await getPublicIp())
         const response = await axios.post(`${API_URL}/login`, { email, password });
         return response.data; 
     } catch (error) {
