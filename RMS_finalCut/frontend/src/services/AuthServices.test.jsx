@@ -4,7 +4,7 @@ import { loginUser, resetPassword, forgotPassword } from "./AuthServices";
 import { expect, describe, it, afterEach, vi } from "vitest";
  
 const mock = new MockAdapter(axios);
-const API_URL = "https://localhost:5001/api/auth";
+const API_URL = "http://localhost:5001/api/auth";
  
 describe("Auth API", () => {
     afterEach(() => {

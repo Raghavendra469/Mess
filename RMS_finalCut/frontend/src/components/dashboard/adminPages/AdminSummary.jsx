@@ -11,8 +11,8 @@ const AdminSummary = () => {
     const { artists = [], managerStats = [] ,managers=[]} = useArtistsManagers();
 
     return (
-        <div className="p-4 md:p-6 lg:p-8">
-            <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
+        <div className="p-1 md:p-6 lg:p-6">
+            <h2 className="text-2xl font-bold mb-4 p-3">Admin Dashboard</h2>
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">

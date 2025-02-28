@@ -14,7 +14,6 @@ const Payments = () => {
     const [statusMessage, setStatusMessage] = useState({ type: "", text: "" });
 
     
-
     const handleArtistChange = (event) => {
         const artistId = event.target.value;
         setSelectedArtist(artistId || "");
@@ -40,6 +39,7 @@ const Payments = () => {
         if (selectedArtist) {
             fetchRoyaltyByArtist(selectedArtist);
             loadTransactions(selectedArtist);
+            setSelectedRoyalty(null);
         }
     }, [selectedArtist]);
 
@@ -61,7 +61,7 @@ const Payments = () => {
                 </div>
             )}
 
-            {selectedArtist && royalties.length > 0 && (
+            {selectedArtist && royalties.length > 0 ? (
                 <table className="mt-4 w-full border-collapse border border-gray-300">
                     <thead>
                         <tr className="bg-gray-200">
@@ -87,7 +87,12 @@ const Payments = () => {
                         ))}
                     </tbody>
                 </table>
-            )}
+            ): (
+                <div className="mt-4 p-4 text-center text-gray-500">
+                    No songs available to pay royalty.
+                </div>
+            )
+        }
 
             {selectedRoyalty && (
                 <CreateTransactionForm 
@@ -104,7 +109,7 @@ const Payments = () => {
                 fetchTransactions={loadTransactions} 
                 setStatusMessage={setStatusMessage} 
                 selectedArtist={selectedArtist} 
-                fetchRoyaltyByArtist={fetchRoyaltyByArtist} // ✅ Pass the function
+                fetchRoyaltyByArtist={fetchRoyaltyByArtist} // Pass the function
             />
         </div>
     );

@@ -113,7 +113,7 @@ describe("Login Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Login" }));
 
     await waitFor(() => {
-      expect(window.location.pathname).toBe("/reset-password");
+      expect(window.location.pathname).toBe("/forgot-password");
     });
   });
 

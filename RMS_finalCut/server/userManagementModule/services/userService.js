@@ -24,6 +24,7 @@ class UserService {
         subject: "Account Created Successfully",
         text: `Hello ${fullName},\n\nYour account has been created successfully!\n\nEnter random password and login to change the password.\n\nBest Regards,\nRMS.`,
       };
+      console.log(mailOptions,"email sent succesfully")
 
       await transporter.sendMail(mailOptions);
 

@@ -67,17 +67,19 @@ const transactionController = {
         };
     }),
 
-    exportTransactionsPDF: routeHandler(async ({ params, response }) => {
-        const { userId, role } = params;
-        const pdfBuffer = await transactionService.generateTransactionsPDF(userId, role);
-        
-        // Set response headers for PDF download
-        response.setHeader("Content-Type", "application/pdf");
-        response.setHeader("Content-Disposition", 'attachment; filename="transactions.pdf"');
-        
-        // Return the buffer directly since we're handling the response differently
-        return response.send(pdfBuffer);
-    })
+    exportTransactionsPDF : async (req, res) => {
+        try {
+          const { userId,role } = req.params; // Assuming transactions are user-specific
+          const pdfBuffer = await transactionService.generateTransactionsPDF(userId,role);
+         
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader("Content-Disposition", 'attachment; filename="transactions.pdf"');
+         
+          res.send(pdfBuffer);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      },
 };
 
 module.exports = transactionController;
