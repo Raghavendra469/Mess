@@ -39,7 +39,7 @@ describe("UserService API Tests", () => {
     const result = await createUser(mockUser);
  
     expect(result).toEqual({ success: true, user: mockUser });
-    expect(axios.post).toHaveBeenCalledWith("http://localhost:5005/api/users", expect.any(Object), headers);
+    expect(axios.post).toHaveBeenCalledWith("http://54.234.135.241:5005/api/users", expect.any(Object), headers);
   });
  
   // Test createUser failure - API error
@@ -63,7 +63,7 @@ describe("UserService API Tests", () => {
     const result = await fetchUserDetails("testUser");
  
     expect(result).toEqual(mockUser);
-    expect(axios.get).toHaveBeenCalledWith("http://localhost:5005/api/users/testUser", headers);
+    expect(axios.get).toHaveBeenCalledWith("http://54.234.135.241:5005/api/users/testUser", headers);
   });
  
   // Test fetchUserDetails failure - Network issue
@@ -80,7 +80,7 @@ describe("UserService API Tests", () => {
     const result = await updateUserProfile("testUser", mockUser);
  
     expect(result).toEqual({ success: true, user: mockUser });
-    expect(axios.put).toHaveBeenCalledWith("http://localhost:5005/api/users/testUser", mockUser, headers);
+    expect(axios.put).toHaveBeenCalledWith("http://54.234.135.241:5005/api/users/testUser", mockUser, headers);
   });
  
   // Test fetchUsersByRole success
@@ -90,7 +90,7 @@ describe("UserService API Tests", () => {
     const result = await fetchUsersByRole("manager");
  
     expect(result).toEqual([mockUser]);
-    expect(axios.get).toHaveBeenCalledWith("http://localhost:5005/api/users/role/manager", headers);
+    expect(axios.get).toHaveBeenCalledWith("http://54.234.135.241:5005/api/users/role/manager", headers);
   });
  
   // Test fetchUsersByRole failure - No users found
@@ -109,7 +109,7 @@ describe("UserService API Tests", () => {
     const result = await toggleUserStatus(1, true);
  
     expect(result).toEqual(mockUser);
-    expect(axios.put).toHaveBeenCalledWith("http://localhost:5005/api/users/toggle/1", { isActive: true }, headers);
+    expect(axios.put).toHaveBeenCalledWith("http://54.234.135.241:5005/api/users/toggle/1", { isActive: true }, headers);
   });
  
   // Test toggleUserStatus success - Deactivate user
@@ -119,7 +119,7 @@ describe("UserService API Tests", () => {
     const result = await toggleUserStatus(1, false);
  
     expect(result).toEqual(mockUser);
-    expect(axios.put).toHaveBeenCalledWith("http://localhost:5005/api/users/toggle/1", { isActive: false }, headers);
+    expect(axios.put).toHaveBeenCalledWith("http://54.234.135.241:5005/api/users/toggle/1", { isActive: false }, headers);
   });
  
   // Test fetchUserDetails failure - User not found

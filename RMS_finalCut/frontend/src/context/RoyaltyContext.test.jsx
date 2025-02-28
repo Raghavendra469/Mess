@@ -76,7 +76,7 @@ describe("RoyaltyContext", () => {
     getByText("Fetch Royalties").click();
  
     await waitFor(() => expect(getByTestId("royalties-count").textContent).toBe("2"));
-    expect(axios.get).toHaveBeenCalledWith("http://localhost:5003/api/royalty/artists/artist123", expect.any(Object));
+    expect(axios.get).toHaveBeenCalledWith("http://54.234.135.241:5003/api/royalty/artists/artist123", expect.any(Object));
   });
  
   it("handles API error when fetching royalties", async () => {
