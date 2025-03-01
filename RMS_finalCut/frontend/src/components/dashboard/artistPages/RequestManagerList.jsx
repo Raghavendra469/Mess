@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
 import { useArtistsManagers } from "../../../context/ArtistsManagersContext";
-import { sendCollaborationRequest } from "../../../services/CollaborationService";
+import { sendCollaborationRequest, fetchCollaborationsByUserAndRole } from "../../../services/CollaborationService";
 import SearchBar from "../../commonComponents/SearchBar";
 
 const RequestManagerList = () => {
@@ -10,32 +10,41 @@ const RequestManagerList = () => {
   const { managers } = useArtistsManagers();
   const { sendNotification } = useNotifications();
   const [loading, setLoading] = useState(false);
-  const [requestStatus, setRequestStatus] = useState({});
-  const [alreadyHasManager, setAlreadyHasManager] = useState(false);
-  const [message, setMessage] = useState("");
+  const [pendingRequest, setPendingRequest] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [alreadyHasManager, setAlreadyHasManager] = useState(false);
 
   useEffect(() => {
     if (userData.manager) {
       setAlreadyHasManager(true);
-      setMessage("You already have a manager! You cannot send a new request.");
     }
   }, [userData]);
 
-  const handleSendRequest = async (managerId, notifyManager) => {
-    if (alreadyHasManager) {
-      alert("You already have a manager! You cannot send a new request.");
-      return;
+  useEffect(() => {
+    if (!alreadyHasManager) {
+      const fetchPendingRequest = async () => {
+        try {
+          setLoading(true);
+          const collaborations = await fetchCollaborationsByUserAndRole(userData._id, "artist");
+          const pending = collaborations.find(collab => collab.status === "Pending");
+          setPendingRequest(pending || null);
+        } catch (error) {
+          console.error("Error fetching collaboration requests:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPendingRequest();
     }
+  }, [userData, alreadyHasManager]);
+
+  const handleSendRequest = async (managerId, notifyManager) => {
+    if (pendingRequest || alreadyHasManager) return;
 
     try {
       const response = await sendCollaborationRequest(userData._id, managerId);
       if (response.success) {
-        setRequestStatus((prevStatus) => ({
-          ...prevStatus,
-          [managerId]: "Request Sent",
-        }));
-
+        setPendingRequest({ managerId, status: "Pending" });
         await sendNotification(
           notifyManager,
           `${userData.fullName} requested you for collaboration.`,
@@ -43,14 +52,10 @@ const RequestManagerList = () => {
         );
       }
     } catch (error) {
-      setRequestStatus((prevStatus) => ({
-        ...prevStatus,
-        [managerId]: "Request Failed",
-      }));
+      console.error("Error sending collaboration request:", error);
     }
   };
 
-  // 🔹 **Filter managers based on search term**
   const filteredManagers = managers.filter((manager) =>
     manager.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -61,12 +66,21 @@ const RequestManagerList = () => {
         Available Managers
       </h1>
 
-      {/* 🔹 **Search Bar for Filtering** */}
       <div className="flex justify-center mb-6">
         <SearchBar onSearch={setSearchTerm} />
       </div>
 
-      {message && <p className="mb-4 text-red-600 font-semibold text-center">{message}</p>}
+      {alreadyHasManager && (
+        <p className="mb-4 text-red-600 font-semibold text-center">
+          You already have a manager! You cannot send new requests.
+        </p>
+      )}
+
+      {pendingRequest && !alreadyHasManager && (
+        <p className="mb-4 text-red-600 font-semibold text-center">
+          You already have a pending request. Wait for the manager to respond before sending another request.
+        </p>
+      )}
 
       {loading ? (
         <p className="text-center text-gray-600">Loading managers...</p>
@@ -93,29 +107,24 @@ const RequestManagerList = () => {
 
                 {!alreadyHasManager && (
                   <div className="mt-6 flex flex-col items-center">
-                    <button
-                      onClick={() => handleSendRequest(manager._id, manager.managerId)}
-                      className={`w-full px-4 py-2 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer
-                      ${
-                        requestStatus[manager._id] === "Request Sent"
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
-                      disabled={requestStatus[manager._id] === "Request Sent"}
-                    >
-                      {requestStatus[manager._id] === "Request Sent"
-                        ? "Request Sent"
-                        : "Send Request"}
-                    </button>
-
-                    {requestStatus[manager._id] && (
-                      <p className={`mt-3 font-semibold ${
-                        requestStatus[manager._id] === "Request Sent"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}>
-                        {requestStatus[manager._id]}
-                      </p>
+                    {!pendingRequest && (
+                      <button
+                        onClick={() => handleSendRequest(manager._id, manager.managerId)}
+                        className="w-full px-4 py-2 text-white font-semibold rounded-lg transition-all duration-200 bg-blue-600 hover:bg-blue-700"
+                      >
+                        Send Request
+                      </button>
+                    )}
+                    {pendingRequest && pendingRequest.managerId !== manager._id && (
+                      <button
+                        className="w-full px-4 py-2 text-white font-semibold rounded-lg bg-gray-400 cursor-not-allowed"
+                        disabled
+                      >
+                        Send Request
+                      </button>
+                    )}
+                    {pendingRequest && pendingRequest.managerId === manager._id && (
+                      <p className="mt-3 font-semibold text-green-600">Request Sent to this Manager</p>
                     )}
                   </div>
                 )}

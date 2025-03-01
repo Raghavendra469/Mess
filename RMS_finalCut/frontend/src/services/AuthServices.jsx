@@ -3,7 +3,7 @@ import {getPublicIp} from "../utils/public-ip"
 
 
 
-const API_URL = "http://18.204.221.88:5001/api/auth";
+const API_URL = "http://3.95.245.208:5001/api/auth";
 
 export const loginUser = async (email, password) => {
     try {

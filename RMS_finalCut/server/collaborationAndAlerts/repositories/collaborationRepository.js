@@ -25,8 +25,15 @@ class CollaborationRepository {
    
       // Update collaboration status
       async updateCollaborationStatus(collaborationId, status) {
+        if(status === 'Approved'){
+            return await Collaboration.findByIdAndUpdate(collaborationId, { status }, { new: true });
+        }
+        else{
+            await Collaboration.findByIdAndUpdate(collaborationId, { status }, { new: true });
+            await Collaboration.findByIdAndDelete(collaborationId);
+            return true;
+        }
 
-          return await Collaboration.findByIdAndUpdate(collaborationId, { status }, { new: true });
       }
    
       async updateManagerManagedArtists(managerId, artistId) {

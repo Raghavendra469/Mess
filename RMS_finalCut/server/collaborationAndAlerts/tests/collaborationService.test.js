@@ -189,8 +189,8 @@ describe('CollaborationService', () => {
 
       await collaborationService.updateCollaborationStatus(collaborationId, status);
 
-      expect(updateStatusStub).to.have.been.calledWith(collaborationId, { status });
-      expect(updateStatusStub.firstCall.args[1]).to.deep.equal({ status: 'Rejected' });
+      expect(updateStatusStub).to.have.been.calledWith(collaborationId, status );
+      expect(updateStatusStub.firstCall.args[1]).to.deep.equal('Rejected');
     });
   });
 

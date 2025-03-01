@@ -20,7 +20,7 @@ describe("Notification Controller Unit Tests", function () {
     
     // Replace the service methods in the controller's service instance
     const realService = notificationController.notificationService || 
-                        require("../../services/notificationService").prototype;
+                        require("../../../server/collaborationAndAlerts/services/notificationService").prototype;
     
     sandbox.stub(realService, "createNotification").callsFake(mockService.createNotification);
     sandbox.stub(realService, "getNotificationsByUser").callsFake(mockService.getNotificationsByUser);

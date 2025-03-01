@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
         const token = sessionStorage.getItem("token");
         if (token) {
             try {
-                const response = await axios.get("http://18.204.221.88:5001/api/auth/verify", {
+                const response = await axios.get("http://3.95.245.208:5001/api/auth/verify", {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
  
     const fetchRoleData = async (loggedInUser) => {
         try {
-            const response = await axios.get(`http://18.204.221.88:5005/api/users/${loggedInUser.username}`,{
+            const response = await axios.get(`http://3.95.245.208:5005/api/users/${loggedInUser.username}`,{
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${sessionStorage.getItem("token")}`,

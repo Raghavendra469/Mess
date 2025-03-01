@@ -82,7 +82,7 @@ describe("NotificationContext", () => {
     markReadButton.click();
     await waitFor(() => expect(axios.put).toHaveBeenCalledTimes(1));
     expect(axios.put).toHaveBeenCalledWith(
-      `http://18.204.221.88:5004/api/notifications/notif123`,
+      `http://3.95.245.208:5004/api/notifications/notif123`,
       { isRead: true },
       expect.any(Object)
     );
@@ -112,7 +112,7 @@ describe("NotificationContext", () => {
     sendNotificationButton.click();
     await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
     expect(axios.post).toHaveBeenCalledWith(
-      "http://18.204.221.88:5004/api/notifications/",
+      "http://3.95.245.208:5004/api/notifications/",
       { userId: "user456", message: "Test Message", type: "info" },
       expect.any(Object)
     );
