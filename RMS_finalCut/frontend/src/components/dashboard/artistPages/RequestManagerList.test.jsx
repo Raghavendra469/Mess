@@ -153,7 +153,7 @@ describe('RequestManagerList Component', () => {
     render(<RequestManagerList />);
     // Check for the pending message
     await waitFor(() => {
-      expect(screen.getByText('You already have a pending request. Wait for the manager to respond before sending another request.')).toBeTruthy();
+      expect(screen.getByText('You already have a pending request. Wait for the manager to respond before sending another request. If there is no response for two days contact admin')).toBeTruthy();
     });
     // The button for manager1 should show "Request Sent to this Manager"
     await waitFor(() => {

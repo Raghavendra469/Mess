@@ -41,8 +41,8 @@ const login = async (req, res) => {
                 email:user.email,
                 role: user.role,
                 isActive:user.isActive,
-                isFirstLogin:user.isFirstLogin,
-                password:user.password },
+                isFirstLogin:user.isFirstLogin
+            },
             process.env.JWT_KEY,
             { expiresIn: '1h' }
         );

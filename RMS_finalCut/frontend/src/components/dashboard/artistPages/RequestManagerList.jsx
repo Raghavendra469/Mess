@@ -78,7 +78,7 @@ const RequestManagerList = () => {
 
       {pendingRequest && !alreadyHasManager && (
         <p className="mb-4 text-red-600 font-semibold text-center">
-          You already have a pending request. Wait for the manager to respond before sending another request.
+          You already have a pending request. Wait for the manager to respond before sending another request. If there is no response for two days contact admin
         </p>
       )}
 

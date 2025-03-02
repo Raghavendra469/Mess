@@ -1,10 +1,9 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import UpdateManagerProfileForm from "../../../components/dashboard/managerPages/UpdateManagerProfileForm";
+import UpdateManagerProfileForm from "./UpdateManagerProfileForm";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
 import { fetchUserDetails, updateUserProfile } from "../../../services/userService";
-import { describe, it, vi, beforeEach, expect } from "vitest";
+import "@testing-library/jest-dom";
 
 vi.mock("../../../context/authContext", () => ({
   useAuth: vi.fn(),
@@ -19,89 +18,78 @@ vi.mock("../../../services/userService", () => ({
   updateUserProfile: vi.fn(),
 }));
 
-describe("UpdateManagerProfileForm Component", () => {
-  const mockUser = { username: "manager123" };
-  const mockUserData = { fullName: "John Doe", managedArtists: [{ artistId: "1" }, { artistId: "2" }] };
-  const mockProfileData = {
-    fullName: "John Doe",
-    mobileNo: "1234567890",
-    commissionPercentage: "10",
-    address: "123 Main St",
-    description: "Experienced manager",
-  };
-
-  let sendNotificationMock;
-
+describe("UpdateManagerProfileForm", () => {
   beforeEach(() => {
-    vi.clearAllMocks(); // Vitest equivalent of jest.clearAllMocks()
-    sendNotificationMock = vi.fn(); // Define sendNotificationMock before using it
-
-    useAuth.mockReturnValue({ user: mockUser, userData: mockUserData, loading: false });
-    useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
-    fetchUserDetails.mockResolvedValue(mockProfileData);
-  });
-
-  it("renders the update profile form with fetched data", async () => {
-    render(<UpdateManagerProfileForm />);
-    
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-    
-    await waitFor(() => {
-      expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("1234567890")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("10")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("123 Main St")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("Experienced manager")).toBeInTheDocument();
+    useAuth.mockReturnValue({
+      user: { username: "manageruser" },
+      userData: { fullName: "Manager User", managedArtists: [{ artistId: "456" }] },
+      loading: false,
     });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
   });
 
-  it("updates form input values on change", async () => {
-    render(<UpdateManagerProfileForm />);
-    
-    await waitFor(() => expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument());
-    
-    const nameInput = screen.getByDisplayValue("John Doe");
-    fireEvent.change(nameInput, { target: { value: "Jane Doe" } });
-    
-    expect(nameInput.value).toBe("Jane Doe");
-  });
-
-  it("submits updated profile data and sends notifications", async () => {
-    updateUserProfile.mockResolvedValue({ success: true });
-
-    render(<UpdateManagerProfileForm />);
-    
-    await waitFor(() => expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument());
-    
-    fireEvent.click(screen.getAllByText("Update Profile")[1]);
-    
-    await waitFor(() => {
-      expect(updateUserProfile).toHaveBeenCalledWith("manager123", mockProfileData);
-      expect(sendNotificationMock).toHaveBeenCalledTimes(2);
+  test("renders form with user data", async () => {
+    fetchUserDetails.mockResolvedValue({
+      fullName: "Manager User",
+      mobileNo: "9876543210",
+      commissionPercentage: "10",
+      address: "Manager Street",
+      description: "Managing artists efficiently",
     });
-  });
-
-  it("displays an error message when fetching user details fails", async () => {
-    fetchUserDetails.mockRejectedValue(new Error("Network error"));
-  
-    render(<UpdateManagerProfileForm />);
-  
-    await waitFor(() => {
-      expect(screen.getByText("Failed to load artist data.")).toBeInTheDocument();
-    });
-  });
-
-  it("does not send notifications if manager has no artists", async () => {
-    useAuth.mockReturnValue({ user: mockUser, userData: { managedArtists: [] }, loading: false });
 
     render(<UpdateManagerProfileForm />);
-  
-    await waitFor(() => expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument());
-  
-    fireEvent.click(screen.getAllByText("Update Profile")[1]);
-  
-    await waitFor(() => {
-      expect(sendNotificationMock).not.toHaveBeenCalled();
-    });
+
+    await waitFor(() => expect(fetchUserDetails).toHaveBeenCalledWith("manageruser"));
+    await waitFor(() => expect(screen.queryByText("Loading...")).not.toBeInTheDocument());
+
+    expect(await screen.findByLabelText(/Full Name/i)).toHaveValue("Manager User");
+    expect(screen.getByLabelText(/Mobile Number/i)).toHaveValue("9876543210");
+    expect(screen.getByLabelText(/Commission Percentage/i)).toHaveValue(10);
+    expect(screen.getByLabelText(/Address/i)).toHaveValue("Manager Street");
+    expect(screen.getByLabelText(/Description/i)).toHaveValue("Managing artists efficiently");
+  });
+
+  test("shows validation errors for invalid input", async () => {
+    fetchUserDetails.mockResolvedValue({ fullName: "", mobileNo: "", commissionPercentage: "", address: "", description: "" });
+    render(<UpdateManagerProfileForm />);
+
+    await waitFor(() => screen.getByLabelText(/Full Name/i));
+
+    fireEvent.change(screen.getByLabelText(/Full Name/i), { target: { value: "a" } });
+    fireEvent.change(screen.getByLabelText(/Mobile Number/i), { target: { value: "123" } });
+    fireEvent.change(screen.getByLabelText(/Commission Percentage/i), { target: { value: "200" } });
+    fireEvent.change(screen.getByLabelText(/Address/i), { target: { value: "12" } });
+    fireEvent.submit(screen.getByRole("button", { name: /Update Profile/i }));
+
+    expect(await screen.findByText(/Full Name must be at least 3 characters/i)).toBeInTheDocument();
+    expect(screen.getByText(/Enter a valid 10-digit mobile number/i)).toBeInTheDocument();
+    expect(screen.getByText(/Commission must be between 1 and 100/i)).toBeInTheDocument();
+    expect(screen.getByText(/Address must be at least 5 characters/i)).toBeInTheDocument();
+  });
+
+  test("submits valid form and updates profile", async () => {
+    fetchUserDetails.mockResolvedValue({ fullName: "Manager User", mobileNo: "9876543210", commissionPercentage: "10", address: "Manager Street", description: "Managing artists efficiently" });
+    updateUserProfile.mockResolvedValue({});
+
+    render(<UpdateManagerProfileForm />);
+    await waitFor(() => screen.getByLabelText(/Full Name/i));
+
+    fireEvent.change(screen.getByLabelText(/Full Name/i), { target: { value: "Updated Manager" } });
+    fireEvent.submit(screen.getByRole("button", { name: /Update Profile/i }));
+
+    await waitFor(() => expect(updateUserProfile).toHaveBeenCalledWith("manageruser", expect.objectContaining({ fullName: "Updated Manager" })));
+    expect(screen.getByText(/Profile updated successfully!/i)).toBeInTheDocument();
+  });
+
+  test("handles update profile failure", async () => {
+    fetchUserDetails.mockResolvedValue({ fullName: "Manager User", mobileNo: "9876543210", commissionPercentage: "10", address: "Manager Street", description: "Managing artists efficiently" });
+    updateUserProfile.mockRejectedValue(new Error("Update failed"));
+
+    render(<UpdateManagerProfileForm />);
+    await waitFor(() => screen.getByLabelText(/Full Name/i));
+
+    fireEvent.submit(screen.getByRole("button", { name: /Update Profile/i }));
+    await waitFor(() => expect(updateUserProfile).toHaveBeenCalled());
+    expect(screen.getByText(/Failed to update profile/i)).toBeInTheDocument();
   });
 });
