@@ -4,7 +4,7 @@ import TransactionService from "./TransactionService";
 import { expect, describe, it, beforeEach, afterEach } from "vitest";
  
 const mock = new MockAdapter(axios);
-const API_BASE_URL = "http://3.95.245.208:5003/api/transactions";
+const API_BASE_URL = "http://3.223.75.62:5003/api/transactions";
 const token = "mocked_token";
  
 beforeEach(() => {

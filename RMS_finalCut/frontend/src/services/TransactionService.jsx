@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://3.95.245.208:5003/api/transactions";
+const API_BASE_URL = "http://3.223.75.62:5003/api/transactions";
 
 const TransactionService = {
     fetchTransactions: async (role, id) => {
