@@ -28,7 +28,7 @@ describe("SongService API", () => {
  
   it("addSong should throw an error if the song already exists (409 Conflict)", async () => {
     const newSong = { title: "Duplicate Song", artistId: 1 };
-    mock.onPost(API_URL).reply(409);
+    mock.onPost(API_URL).reply(400);
     await expect(SongService.addSong(newSong)).rejects.toThrow(
       "A song with the same name already exists."
     );

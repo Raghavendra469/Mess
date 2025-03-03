@@ -22,8 +22,8 @@ export const ArtistsManagersProvider = ({ children }) => {
                 };
 
                 const [artistsRes, managersRes] = await Promise.all([
-                    axios.get("http://3.95.245.208:5005/api/users/role/Artist", { headers }),
-                    axios.get("http://3.95.245.208:5005/api/users/role/Manager", { headers })
+                    axios.get("http://localhost:5005/api/users/role/Artist", { headers }),
+                    axios.get("http://localhost:5005/api/users/role/Manager", { headers })
                 ]);
 
                
@@ -31,7 +31,12 @@ export const ArtistsManagersProvider = ({ children }) => {
                 const fetchedArtists = artistsRes.data?.users || [];
                 const fetchedManagers = managersRes.data?.users || [];
 
-                setArtists(fetchedArtists);
+                const formattedArtists = Object.values(fetchedArtists).sort((a, b) => {
+                    if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.totalStreams;
+                    return b.totalRoyalty - a.totalRoyalty;
+                });
+
+                setArtists(formattedArtists);
                 setManagers(fetchedManagers);
 
                 // Initialize and calculate manager statistics
@@ -55,6 +60,8 @@ export const ArtistsManagersProvider = ({ children }) => {
                     if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.totalStreams;
                     return b.totalRoyalty - a.totalRoyalty;
                 });
+
+                
 
                 setManagerStats(formattedManagerStats);
             } catch (error) {

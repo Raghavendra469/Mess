@@ -14,7 +14,7 @@ const SongService = {
       });
       return response.data;
     } catch (error) {
-      if (error.response?.status === 409) {
+      if (error.response?.status === 400) {
         throw new Error("A song with the same name already exists.");
       } else {
         console.error("Failed to add song:", error);

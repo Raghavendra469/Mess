@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.53% </span>
+                <span class="strong">91.54% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/67</span>
+                <span class='fraction'>65/71</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.19% </span>
+                <span class="strong">73.91% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>16/21</span>
+                <span class='fraction'>17/23</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.53% </span>
+                <span class="strong">91.54% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>62/67</span>
+                <span class='fraction'>65/71</span>
             </div>
         
             
@@ -157,7 +157,14 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -188,6 +195,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -214,6 +226,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -275,8 +289,8 @@ export const ArtistsManagersProvider = ({ children }) =&gt; {
                 };
 &nbsp;
                 const [artistsRes, managersRes] = await Promise.all([
-                    axios.get("http://3.95.245.208:5005/api/users/role/Artist", { headers }),
-                    axios.get("http://3.95.245.208:5005/api/users/role/Manager", { headers })
+                    axios.get("http://localhost:5005/api/users/role/Artist", { headers }),
+                    axios.get("http://localhost:5005/api/users/role/Manager", { headers })
                 ]);
 &nbsp;
                
@@ -284,7 +298,12 @@ export const ArtistsManagersProvider = ({ children }) =&gt; {
                 const fetchedArtists = artistsRes.data?.<span class="branch-0 cbranch-no" title="branch not covered" >users || [];</span>
                 const fetchedManagers = managersRes.data?.<span class="branch-0 cbranch-no" title="branch not covered" >users || [];</span>
 &nbsp;
-                setArtists(fetchedArtists);
+                const formattedArtists = Object.values(fetchedArtists).sort((a, b) =&gt; {
+                    if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.<span class="branch-0 cbranch-no" title="branch not covered" >totalStreams;</span>
+<span class="cstat-no" title="statement not covered" >                    return b.totalRoyalty - a.totalRoyalty;</span>
+                });
+&nbsp;
+                setArtists(formattedArtists);
                 setManagers(fetchedManagers);
 &nbsp;
                 // Initialize and calculate manager statistics
@@ -308,6 +327,8 @@ export const ArtistsManagersProvider = ({ children }) =&gt; {
                     if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.<span class="branch-0 cbranch-no" title="branch not covered" >totalStreams;</span>
 <span class="cstat-no" title="statement not covered" >                    return b.totalRoyalty - a.totalRoyalty;</span>
                 });
+&nbsp;
+                
 &nbsp;
                 setManagerStats(formattedManagerStats);
             } catch (error) {
@@ -352,7 +373,7 @@ export const useArtistsManagers = () =&gt; useContext(ArtistsManagersContext);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-02T14:32:59.208Z
+                at 2025-03-03T15:39:15.300Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
