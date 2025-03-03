@@ -8,4 +8,4 @@ app.get('*',(request,response)=>{
     response.sendFile(path.join(path.join(process.cwd(),'dist')))
 })
  
-app.listen(80,()=>console.log("server is started on : http://localhost:80"));
+app.listen(80,()=>console.log("server is started on : http://3.223.75.62:80"));
