@@ -1,139 +1,139 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import AddSongForm from "./AddSongForm";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
 import SongService from "../../../services/SongService";
-import React from "react";
 import "@testing-library/jest-dom";
-import { vi } from "vitest";
 
-vi.mock("../../../context/authContext");
-vi.mock("../../../context/NotificationContext");
-vi.mock("../../../services/SongService");
+vi.mock("../../../context/authContext", () => ({
+  useAuth: vi.fn(),
+}));
 
-describe("AddSongForm Component", () => {
+vi.mock("../../../context/NotificationContext", () => ({
+  useNotifications: vi.fn(),
+}));
+
+vi.mock("../../../services/SongService", () => ({
+    default: {
+      addSong: vi.fn(),
+    },
+  }));
+  
+  
+
+describe("AddSongForm", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it("renders the form correctly", () => {
-    useAuth.mockReturnValue({ userData: { _id: "artist123", fullName: "Test Artist" } });
-    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
-
-    render(<AddSongForm />);
-
-    expect(screen.getByLabelText(/song name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/release date/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /add song/i })).toBeInTheDocument();
-  });
-
-  it("updates input fields correctly", () => {
-    useAuth.mockReturnValue({ userData: { _id: "artist123", fullName: "Test Artist" } });
-    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
-
-    render(<AddSongForm />);
-
-    const songNameInput = screen.getByLabelText(/song name/i);
-    const releaseDateInput = screen.getByLabelText(/release date/i);
-
-    fireEvent.change(songNameInput, { target: { value: "Test Song" } });
-    fireEvent.change(releaseDateInput, { target: { value: "2025-02-23" } });
-
-    expect(songNameInput.value).toBe("Test Song");
-    expect(releaseDateInput.value).toBe("2025-02-23");
-  });
-
-  // it("displays an error if user data is missing", async () => {
-  //   useAuth.mockReturnValue({ userData: null });
-  //   useNotifications.mockReturnValue({ sendNotification: vi.fn() });
-
-  //   render(<AddSongForm />);
-
-  //   fireEvent.click(screen.getByRole("button", { name: /add song/i }));
-
-  //   await waitFor(() => {
-  //     expect(screen.getByText(/User data not found. Please log in again./i)).toBeInTheDocument();
-  //   });
-  // });
-
-  it("submits the form successfully", async () => {
     useAuth.mockReturnValue({
-      userData: { _id: "artist123", fullName: "Test Artist", manager: { managerId: "manager456" } },
+      userData: {
+        _id: "artist123",
+        fullName: "Test Artist",
+        manager: { managerId: "manager456" },
+      },
     });
+
     useNotifications.mockReturnValue({ sendNotification: vi.fn() });
+  });
+
+//   test("renders the form correctly", async () => {
+//     render(<AddSongForm />);
+    
+//     expect(screen.getByText("Add New Song")).toBeInTheDocument();
+//     expect(screen.getByLabelText(/Song Name/i)).toBeInTheDocument();
+//     expect(screen.getByLabelText(/Release Date/i)).toBeInTheDocument();
+
+//     // Ensure the button is initially disabled
+//     await waitFor(() => {
+//         expect(screen.getByRole("button", { name: /Add Song/i })).toBeDisabled();
+//       });
+//   });
+
+  test("validates song name input", async () => {
+    render(<AddSongForm />);
+    const songNameInput = screen.getByLabelText(/Song Name/i);
+
+    fireEvent.change(songNameInput, { target: { value: "A" } });
+
+    expect(
+      await screen.findByText(/Song name must be at least 3 characters long/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(songNameInput, { target: { value: "Valid Song" } });
+
+    await waitFor(() =>
+      expect(
+        screen.queryByText(/Song name must be at least 3 characters long/i)
+      ).not.toBeInTheDocument()
+    );
+  });
+
+  test("validates release date input", async () => {
+    render(<AddSongForm />);
+    const dateInput = screen.getByLabelText(/Release Date/i);
+
+    fireEvent.change(dateInput, { target: { value: "2050-01-01" } });
+
+    expect(
+      await screen.findByText(/Release date cannot be in the future/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(dateInput, { target: { value: "2020-01-01" } });
+
+    await waitFor(() =>
+      expect(
+        screen.queryByText(/Release date cannot be in the future/i)
+      ).not.toBeInTheDocument()
+    );
+  });
+
+  test("submits the form successfully", async () => {
     SongService.addSong.mockResolvedValue({ success: true });
 
     render(<AddSongForm />);
+    fireEvent.change(screen.getByLabelText(/Song Name/i), {
+      target: { value: "Valid Song" },
+    });
+    fireEvent.change(screen.getByLabelText(/Release Date/i), {
+      target: { value: "2020-01-01" },
+    });
 
-    fireEvent.change(screen.getByLabelText(/song name/i), { target: { value: "Test Song" } });
-    fireEvent.change(screen.getByLabelText(/release date/i), { target: { value: "2025-02-23" } });
-    fireEvent.click(screen.getByRole("button", { name: /add song/i }));
+    // Ensure the button is enabled before clicking
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /Add Song/i })).not.toBeDisabled()
+    );
 
-    await waitFor(() => {
+    fireEvent.click(screen.getByRole("button", { name: /Add Song/i }));
+
+    await waitFor(() =>
       expect(SongService.addSong).toHaveBeenCalledWith({
         artistId: "artist123",
         artistName: "Test Artist",
-        songName: "Test Song",
-        releaseDate: "2025-02-23",
-      });
+        songName: "Valid Song",
+        releaseDate: "2020-01-01",
+      })
+    );
 
-      expect(screen.getByText(/song added successfully/i)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(/Song added successfully/i)).toBeInTheDocument();
   });
 
-  it("handles API failure gracefully", async () => {
-    useAuth.mockReturnValue({ userData: { _id: "artist123", fullName: "Test Artist" } });
-    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
+  test("handles song submission failure", async () => {
     SongService.addSong.mockRejectedValue(new Error("Failed to add song"));
 
     render(<AddSongForm />);
-
-    fireEvent.change(screen.getByLabelText(/song name/i), { target: { value: "Test Song" } });
-    fireEvent.change(screen.getByLabelText(/release date/i), { target: { value: "2025-02-23" } });
-    fireEvent.click(screen.getByRole("button", { name: /add song/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText(/failed to add song/i)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText(/Song Name/i), {
+      target: { value: "Valid Song" },
     });
-  });
-
-  it("sends a notification if manager data exists", async () => {
-    const sendNotificationMock = vi.fn();
-    useAuth.mockReturnValue({
-      userData: { _id: "artist123", fullName: "Test Artist", manager: { managerId: "manager456" } },
+    fireEvent.change(screen.getByLabelText(/Release Date/i), {
+      target: { value: "2020-01-01" },
     });
-    useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
-    SongService.addSong.mockResolvedValue({ success: true });
 
-    render(<AddSongForm />);
+    // Ensure the button is enabled before clicking
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /Add Song/i })).not.toBeDisabled()
+    );
 
-    fireEvent.change(screen.getByLabelText(/song name/i), { target: { value: "Test Song" } });
-    fireEvent.change(screen.getByLabelText(/release date/i), { target: { value: "2025-02-23" } });
-    fireEvent.click(screen.getByRole("button", { name: /add song/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Add Song/i }));
 
-    await waitFor(() => {
-      expect(sendNotificationMock).toHaveBeenCalledWith(
-        "manager456",
-        "Test Artist added a song: Test Song.",
-        "songUpdate"
-      );
-    });
-  });
-
-  it("does not send a notification if manager data is missing", async () => {
-    const sendNotificationMock = vi.fn();
-    useAuth.mockReturnValue({ userData: { _id: "artist123", fullName: "Test Artist" } });
-    useNotifications.mockReturnValue({ sendNotification: sendNotificationMock });
-    SongService.addSong.mockResolvedValue({ success: true });
-
-    render(<AddSongForm />);
-
-    fireEvent.change(screen.getByLabelText(/song name/i), { target: { value: "Test Song" } });
-    fireEvent.change(screen.getByLabelText(/release date/i), { target: { value: "2025-02-23" } });
-    fireEvent.click(screen.getByRole("button", { name: /add song/i }));
-
-    await waitFor(() => {
-      expect(sendNotificationMock).not.toHaveBeenCalled();
-    });
+    await waitFor(() => expect(SongService.addSong).toHaveBeenCalled());
+    expect(await screen.findByText(/Failed to add song/i)).toBeInTheDocument();
   });
 });

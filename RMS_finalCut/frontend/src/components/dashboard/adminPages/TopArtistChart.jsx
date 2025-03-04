@@ -6,10 +6,10 @@ const TopArtistsChart = ({ data = [] }) => {
     return <div className="p-6 bg-white rounded-lg shadow-lg text-center text-gray-700">No Artist Data Available</div>;
   }
 
-  // Function to abbreviate long names (e.g., "Johnathan Smith" → "J. Smith")
+  // Function to abbreviate long names 
   const formatName = (name) => {
     const parts = name.split(" ");
-    return parts.length > 1 ? `${parts[0][0]}. ${parts[1]}` : name; // "J. Smith"
+    return parts.length > 1 ? `${parts[0][0]}. ${parts[1]}` : name; 
   };
 
   return (

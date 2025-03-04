@@ -6,8 +6,8 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true }, // Encrypted password
   email:{type: String, required:true, unique: true},
   role: { type: String, enum: ['Admin', 'Artist', 'Manager'], required: true },
-isFirstLogin: { type: Boolean, default: true },
-isActive:{type:Boolean, default:true}
+  isFirstLogin: { type: Boolean, default: true },
+  isActive:{type:Boolean, default:true}
 });
 
 module.exports = mongoose.model('User', UserSchema,'User');

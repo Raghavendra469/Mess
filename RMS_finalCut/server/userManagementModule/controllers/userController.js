@@ -1,5 +1,4 @@
 const { routeHandler } = require('ca-webutils/expressx');
-const User = require('../models/userModel.js');
 const UserService = require('../services/userService');
 const userService=new UserService();
  

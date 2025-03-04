@@ -38,7 +38,7 @@ const Login = () => {
                 else if (data?.user.role === "Manager") navigate("/manager-dashboard");
                 else if (data?.user?.role === "Artist") navigate("/artist-dashboard");
             } else if (data?.loginStatus?.status === "first time login") {
-                navigate("/forgot-password");
+                navigate(`/reset-password/${data.user._id}/${data.token}`);
             }
         } catch (errorMessage) {
             setError(errorMessage);

@@ -30,13 +30,14 @@ class CollaborationService {
    
           // Update artist's manager reference
           await this.collaborationRepository.updateArtistManager(artistId, collaboration.managerId);
+          return await this.collaborationRepository.findCollaborationById(collaborationId);
         } else {
 
           // Just update status if not "Approved"
-          await this.collaborationRepository.updateCollaborationStatus(collaborationId, { status });
+          return await this.collaborationRepository.updateCollaborationStatus(collaborationId, status );
         }
    
-        return await this.collaborationRepository.findCollaborationById(collaborationId);
+       
       }
    
  

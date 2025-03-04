@@ -12,8 +12,40 @@ const CreateUserForm = () => {
     address: "",
   });
 
+  const [errors, setErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState("");
   const [statusType, setStatusType] = useState("");
+
+  const validateForm = () => {
+    let validationErrors = {};
+    const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
+    const fullNameRegex = /^[a-zA-Z ]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[0-9]).{6,}$/;
+    const mobileRegex = /^[0-9]{10}$/;
+
+    if (!usernameRegex.test(formData.username)) {
+      validationErrors.username = "Username must be at least 3 characters and contain no special characters.";
+    }
+    if (!fullNameRegex.test(formData.fullName)) {
+      validationErrors.fullName = "Full Name must contain only letters and spaces.";
+    }
+    if (!emailRegex.test(formData.email)) {
+      validationErrors.email = "Invalid email format.";
+    }
+    if (!passwordRegex.test(formData.password)) {
+      validationErrors.password = "Password must be at least 6 characters and contain a number.";
+    }
+    if (!mobileRegex.test(formData.mobileNo)) {
+      validationErrors.mobileNo = "Mobile number must be exactly 10 digits.";
+    }
+    if (formData.address.trim() === "") {
+      validationErrors.address = "Address cannot be empty.";
+    }
+
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -24,6 +56,11 @@ const CreateUserForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const response = await createUser(formData);
       setStatusMessage(response.message || "User created successfully!");
@@ -39,6 +76,7 @@ const CreateUserForm = () => {
         role: "Artist",
         address: "",
       });
+      setErrors({});
     } catch (error) {
       setStatusMessage(error.message || "Error creating user");
       setStatusType("error");
@@ -67,6 +105,7 @@ const CreateUserForm = () => {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder={`Enter ${field}`}
               />
+              {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
             </div>
           ))}
 

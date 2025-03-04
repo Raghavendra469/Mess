@@ -5,21 +5,8 @@ import SearchBar from "../../commonComponents/SearchBar";
 const ArtistsTable = ({ artists = [] }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
-    if (!Array.isArray(artists)) {
-        console.error("ArtistsTable received invalid data:", artists);
-        return <p>Error: Invalid artist data</p>;
-    }
-
-    // Sorting artists in descending order by totalStreams (if equal, sort by fullRoyalty)
-    const sortedArtists = [...artists].sort((a, b) => {
-        if ((b.totalStreams || 0) !== (a.totalStreams || 0)) {
-            return (b.totalStreams || 0) - (a.totalStreams || 0);
-        }
-        return (b.fullRoyalty || 0) - (a.fullRoyalty || 0);
-    });
-
     // Filtering by search term
-    const filteredArtists = sortedArtists.filter((artist) =>
+    const filteredArtists = artists.filter((artist) =>
         artist.fullName?.toLowerCase().includes(searchTerm.toLowerCase())|| (!artist.fullName && searchTerm === "")
     );
 

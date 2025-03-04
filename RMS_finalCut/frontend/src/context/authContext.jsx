@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.removeItem("token");
     };
  
-    // Verify the user on mount or token change
+    // Verify the user on mount
     useEffect(() => {
         verifyUser();
     }, []);

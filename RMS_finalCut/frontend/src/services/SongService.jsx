@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:5002/api/songs/";
 
 const SongService = {
-  // 🔹 Add a new song
+  //  Add a new song
   addSong: async (newSong) => {
     try {
       const response = await axios.post(API_URL, newSong, {
@@ -14,7 +14,7 @@ const SongService = {
       });
       return response.data;
     } catch (error) {
-      if (error.response?.status === 409) {
+      if (error.response?.status === 400) {
         throw new Error("A song with the same name already exists.");
       } else {
         console.error("Failed to add song:", error);
@@ -23,7 +23,7 @@ const SongService = {
     }
   },
 
-  // 🔹 Fetch songs by artist
+  // Fetch songs by artist
   fetchSongsByArtist: async (artistId) => {
     try {
       const response = await axios.get(`${API_URL}artist/${artistId}`, {
@@ -39,7 +39,7 @@ const SongService = {
     }
   },
 
-  // 🔹 Delete a song by ID
+  //  Delete a song by ID
   deleteSong: async (songId) => {
     try {
       const response = await axios.delete(`${API_URL}${songId}`, {

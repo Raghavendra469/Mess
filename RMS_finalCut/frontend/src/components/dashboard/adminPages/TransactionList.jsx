@@ -20,7 +20,7 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
 
         if (response.success) {
             fetchTransactions(selectedArtist);  // Fetch updated transactions
-            fetchRoyaltyByArtist(selectedArtist); // ✅ Ensure royalties update dynamically
+            fetchRoyaltyByArtist(selectedArtist); // Ensure royalties update dynamically
 
             sendNotification(artistId, `Your transaction of $${artistShare.toFixed(2)} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
             sendNotification(managerId, `Your transaction of $${managerShare.toFixed(2)} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
