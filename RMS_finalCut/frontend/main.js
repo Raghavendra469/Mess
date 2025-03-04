@@ -9,7 +9,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(staticPath, 'index.html'))
 })
  
-app.listen(80, () => {
-    console.log('listening on port http://localhost:80')
+app.listen(82, () => {
+    console.log('listening on port http://localhost:82')
 })
  
