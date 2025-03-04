@@ -11,7 +11,7 @@ export const RoyaltyProvider = ({ children }) => {
         const token = sessionStorage.getItem("token");
         try {
 
-            const res = await axios.get(`http://3.223.75.62:5003/api/royalty/artists/${artistId}`,{
+            const res = await axios.get(`http://54.163.10.39:5003/api/royalty/artists/${artistId}`,{
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,

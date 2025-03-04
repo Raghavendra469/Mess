@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://3.223.75.62:5002/api/songs/";
+const API_URL = "http://54.163.10.39:5002/api/songs/";
 
 const SongService = {
   // 🔹 Add a new song

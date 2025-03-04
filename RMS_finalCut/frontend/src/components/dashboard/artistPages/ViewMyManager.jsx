@@ -14,6 +14,7 @@ const ViewMyManager = () => {
   const reasonBoxRef = useRef(null);
 
   useEffect(() => {
+    //to get collaboration data and status of the artist
     const getCollaborationData = async () => {
       if (!userData?._id) return;
       try {
@@ -56,7 +57,7 @@ const ViewMyManager = () => {
   const handleReasonChange = (e) => {
     setCancelReason(e.target.value);
   };
-
+  //make cancel collab api call and set states for all required fields 
   const handleSubmit = async () => {
     if (!cancelReason.trim() || !collaborationId) return;
     setIsSubmitting(true);
@@ -68,7 +69,7 @@ const ViewMyManager = () => {
         "cancelCollaboration"
       );
 
-      setStatus("cancel-requested"); // Update UI to reflect request sent
+      setStatus("cancel-requested"); // Updates UI to reflect request sent
       setShowReasonBox(false);
       setCancelReason("");
     } catch (error) {
@@ -106,13 +107,15 @@ const ViewMyManager = () => {
             <strong>Number of Artists Managed:</strong> {managedArtists.length}
           </p>
         </div>
-
+        {/*Display message after request sent(i.e., status:cancel-requested) */}
+        {/* if there is a collaboration then shown cancel button */}
         <div className="mt-6 flex flex-col items-center">
           {status === "cancel-requested" ? (
             <p className="mt-4 text-center font-semibold text-orange-600">
               Request sent for cancellation.
             </p>
-          ) : status === "Approved" ? (
+          ):
+           status === "Approved" ? (
             !showReasonBox && (
               <button
                 onClick={handleCancelClick}
@@ -122,6 +125,7 @@ const ViewMyManager = () => {
               </button>
             )
           ) : null}
+
 
           {showReasonBox && (
             <div ref={reasonBoxRef} className="mt-4 w-full">

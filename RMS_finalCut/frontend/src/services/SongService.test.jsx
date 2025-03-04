@@ -4,7 +4,7 @@ import SongService from "./SongService";
 import { expect, describe, it, beforeEach, afterEach, vi } from "vitest";
  
 const mock = new MockAdapter(axios);
-const API_URL = "http://3.223.75.62:5002/api/songs/";
+const API_URL = "http://54.163.10.39:5002/api/songs/";
 const token = "mocked_token";
  
 beforeEach(() => {

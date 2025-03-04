@@ -22,8 +22,8 @@ export const ArtistsManagersProvider = ({ children }) => {
                 };
 
                 const [artistsRes, managersRes] = await Promise.all([
-                    axios.get("http://3.223.75.62:5005/api/users/role/Artist", { headers }),
-                    axios.get("http://3.223.75.62:5005/api/users/role/Manager", { headers })
+                    axios.get("http://54.163.10.39:5005/api/users/role/Artist", { headers }),
+                    axios.get("http://54.163.10.39:5005/api/users/role/Manager", { headers })
                 ]);
 
                

@@ -156,60 +156,6 @@ describe("ArtistsManagersContext", () => {
         expect(axios.get).not.toHaveBeenCalled();
 
     });
- 
-    // it("detects token updates and refetches data", async () => {
-
-    //     const mockArtists = [{ _id: "artist1", fullName: "Artist One" }];
-
-    //     axios.get.mockResolvedValueOnce({ data: { users: mockArtists } });
-
-    //     const { getByTestId, rerender } = render(
-
-    //         <ArtistsManagersProvider>
-
-    //             <MockChild />
-
-    //         </ArtistsManagersProvider>
-
-    //     );
-
-    //     // Initially, manager-stats should be 0
-
-    //     await waitFor(() => {
-
-    //         expect(getByTestId("manager-stats-count").textContent).toBe("0");
-
-    //     });
-
-    //     // Update sessionStorage token
-
-    //     act(() => {
-
-    //         sessionStorage.setItem("token", "newMockToken");
-
-    //     });
-
-    //     // Rerender to reflect the token change
-
-    //     rerender(
-
-    //         <ArtistsManagersProvider>
-
-    //             <MockChild />
-
-    //         </ArtistsManagersProvider>
-
-    //     );
-
-    //     // Wait for the new data to load
-
-    //     await waitFor(() => {
-
-    //         expect(getByTestId("manager-stats-count").textContent).toBe("0"); // Expected updated value
-
-    //     });
-
-    // });
 
 });
  

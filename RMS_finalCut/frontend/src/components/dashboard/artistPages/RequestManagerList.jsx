@@ -14,17 +14,19 @@ const RequestManagerList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [alreadyHasManager, setAlreadyHasManager] = useState(false);
 
+  //check for the manager 
   useEffect(() => {
     if (userData.manager) {
       setAlreadyHasManager(true);
     }
   }, [userData]);
-
+  //Check for pending request
   useEffect(() => {
     if (!alreadyHasManager) {
       const fetchPendingRequest = async () => {
         try {
           setLoading(true);
+          //check for colaborations of artist with pending status
           const collaborations = await fetchCollaborationsByUserAndRole(userData._id, "artist");
           const pending = collaborations.find(collab => collab.status === "Pending");
           setPendingRequest(pending || null);
@@ -67,15 +69,16 @@ const RequestManagerList = () => {
       </h1>
 
       <div className="flex justify-center mb-6">
+        {/*setSearchTerm sets the state of searchTerm and used for filteredManagers*/}
         <SearchBar onSearch={setSearchTerm} />
       </div>
-
+      {/*display message for artists already having manager*/}
       {alreadyHasManager && (
         <p className="mb-4 text-red-600 font-semibold text-center">
           You already have a manager! You cannot send new requests.
         </p>
       )}
-
+      {/*display message for artists without manager but having pending request*/}
       {pendingRequest && !alreadyHasManager && (
         <p className="mb-4 text-red-600 font-semibold text-center">
           You already have a pending request. Wait for the manager to respond before sending another request. If there is no response for two days contact admin
@@ -104,7 +107,7 @@ const RequestManagerList = () => {
                   <p><strong>Managed Artists:</strong> {manager.managedArtists.length}</p>
                   <p><strong>Description:</strong> {manager.description}</p>
                 </div>
-
+                {/*If artist dont have manager and pendingRequest show sendRequest button*/}
                 {!alreadyHasManager && (
                   <div className="mt-6 flex flex-col items-center">
                     {!pendingRequest && (
@@ -115,6 +118,7 @@ const RequestManagerList = () => {
                         Send Request
                       </button>
                     )}
+                    {/*If there is a pending request then for other managers other than requested manager disable the button*/}
                     {pendingRequest && pendingRequest.managerId !== manager._id && (
                       <button
                         className="w-full px-4 py-2 text-white font-semibold rounded-lg bg-gray-400 cursor-not-allowed"
@@ -123,6 +127,7 @@ const RequestManagerList = () => {
                         Send Request
                       </button>
                     )}
+                    {/*Display message for requested manager*/}
                     {pendingRequest && pendingRequest.managerId === manager._id && (
                       <p className="mt-3 font-semibold text-green-600">Request Sent to this Manager</p>
                     )}

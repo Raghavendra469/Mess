@@ -12,7 +12,7 @@ import {
 import { expect, describe, it, beforeEach, afterEach, vi } from "vitest";
  
 const mock = new MockAdapter(axios);
-const API_BASE_URL = "http://3.223.75.62:5004/api/collaborations";
+const API_BASE_URL = "http://54.163.10.39:5004/api/collaborations";
 const token = "mocked_token";
  
 beforeEach(() => {

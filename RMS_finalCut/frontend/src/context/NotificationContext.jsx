@@ -24,7 +24,7 @@ export const NotificationProvider = ({ children }) => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(`http://3.223.75.62:5004/api/notifications/${user._id}`,{
+      const response = await axios.get(`http://54.163.10.39:5004/api/notifications/${user._id}`,{
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ export const NotificationProvider = ({ children }) => {
 
   const markAsRead = async (notificationId) => {
     try {
-      await axios.put(`http://3.223.75.62:5004/api/notifications/${notificationId}`, { isRead: true },{
+      await axios.put(`http://54.163.10.39:5004/api/notifications/${notificationId}`, { isRead: true },{
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ export const NotificationProvider = ({ children }) => {
       type: msgType,
     };
     try{
-      await axios.post("http://3.223.75.62:5004/api/notifications/", notificationData,{
+      await axios.post("http://54.163.10.39:5004/api/notifications/", notificationData,{
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

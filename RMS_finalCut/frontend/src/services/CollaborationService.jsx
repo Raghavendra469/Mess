@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://3.223.75.62:5004/api/collaborations";
+const API_BASE_URL = "http://54.163.10.39:5004/api/collaborations";
 
 // Fetch collaboration requests for a manager
 export const fetchCollaborationRequests = async (managerId) => {

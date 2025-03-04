@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 
-const API_URL = "http://3.223.75.62:5001/api/auth";
+const API_URL = "http://54.163.10.39:5001/api/auth";
 
 export const loginUser = async (email, password) => {
     try {
