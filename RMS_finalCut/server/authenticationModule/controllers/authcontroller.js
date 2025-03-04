@@ -93,7 +93,7 @@ const forgotPassword= async (req, res) => {
             }
         });
   
-        const resetLink = `http://localhost:5173/reset-password/${user._id}/${token}`;
+        const resetLink = `http://54.163.10.39/:5173/reset-password/${user._id}/${token}`;
   
         const mailOptions = {
             from: process.env.EMAIL_USER,
