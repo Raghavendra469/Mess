@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -77,21 +77,7 @@
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a>
-<a name='L16'></a><a href='#L16'>16</a>
-<a name='L17'></a><a href='#L17'>17</a>
-<a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -105,56 +91,28 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import dotenv from 'dotenv';</span></span></span>
-<span class="cstat-no" title="statement not covered" >import { httpx, expressx } from 'ca-webutils'</span>
-<span class="cstat-no" title="statement not covered" >import express from 'express';</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import express from 'express'</span></span></span>
+<span class="cstat-no" title="statement not covered" > </span>
+<span class="cstat-no" title="statement not covered" >const app = express()</span>
+<span class="cstat-no" title="statement not covered" > </span>
 <span class="cstat-no" title="statement not covered" >import path from 'path'</span>
-<span class="cstat-no" title="statement not covered" >import { createRequestHandler } from 'react-router-dom';</span>
-<span class="cstat-no" title="statement not covered" >import { publicIpv4 } from 'public-ip';</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >dotenv.config();</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const app = express();</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >let staticPath = path.join(process.cwd(), 'dist');</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >app.use(express.static(staticPath));</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >app.get('/ip', async (req, res) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    let ip = await publicIpv4();</span>
-<span class="cstat-no" title="statement not covered" >    res.json({ ip });</span>
+<span class="cstat-no" title="statement not covered" >const staticPath = path.join(process.cwd(),'dist')</span>
+<span class="cstat-no" title="statement not covered" >app.use(express.static(staticPath))</span>
+<span class="cstat-no" title="statement not covered" >app.get('*', (req, res) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    res.sendFile(path.join(staticPath, 'index.html'))</span>
 <span class="cstat-no" title="statement not covered" >})</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >app.get('*', async (req, res) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    res.sendFile(path.join(staticPath, 'index.html'));</span>
-<span class="cstat-no" title="statement not covered" >});</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >httpx.runApp({</span>
-<span class="cstat-no" title="statement not covered" >    requestHandler: app</span>
-<span class="cstat-no" title="statement not covered" >});</span>
-&nbsp;
-&nbsp;</pre></td></tr></table></pre>
+<span class="cstat-no" title="statement not covered" > </span>
+<span class="cstat-no" title="statement not covered" >app.listen(82, () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    console.log('listening on port http://localhost:82')</span>
+<span class="cstat-no" title="statement not covered" >})</span>
+ </pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-03T15:39:15.300Z
+                at 2025-03-05T11:20:08.001Z
             </div>
         <script src="../prettify.js"></script>
         <script>

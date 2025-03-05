@@ -23,10 +23,7 @@ const login = async (req, res) => {
             return res.status(403).json({ success: false, error: 'User is not active' });
         }
 
-        // Check if the user is loging for the 1st time
-        if(user.isFirstLogin){
-            return res.status(200).json({ success: false, loginStatus: {status: 'first time login'} });
-        }
+        
 
         // Compare the provided password with the stored hash
         const isMatch = await bcrypt.compare(password, user.password); // Don't forget the 'await' here
@@ -42,10 +39,15 @@ const login = async (req, res) => {
                 role: user.role,
                 isActive:user.isActive,
                 isFirstLogin:user.isFirstLogin
-            },
+             },
             process.env.JWT_KEY,
             { expiresIn: '1h' }
         );
+
+        // Check if the user is loging for the 1st time
+        if(user.isFirstLogin){
+            return res.status(200).json({ success: false, loginStatus: {status: 'first time login'},user,token });
+        }
 
         // Send the response with the token and user details
         return res.status(200).json({
@@ -58,7 +60,6 @@ const login = async (req, res) => {
                 role: user.role,
                 isActive:user.isActive,
                 isFirstLogin:user.isFirstLogin,
-               
             },
         });
     } catch (error) {
@@ -93,7 +94,7 @@ const forgotPassword= async (req, res) => {
             }
         });
   
-        const resetLink = `http://54.163.10.39/:5173/reset-password/${user._id}/${token}`;
+        const resetLink = `http://localhost:5173/reset-password/${user._id}/${token}`;
   
         const mailOptions = {
             from: process.env.EMAIL_USER,
