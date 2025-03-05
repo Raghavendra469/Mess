@@ -8,7 +8,7 @@ class UserService {
   }
 
 
-  async sendEmail(email, fullName) {
+  async sendEmail(email, fullName,password) {
     try {
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -22,7 +22,7 @@ class UserService {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Account Created Successfully",
-        text: `Hello ${fullName},\n\nYour account has been created successfully!\n\nEnter random password and login to change the password.\n\nBest Regards,\nRMS.`,
+        text: `Hello ${fullName},\n\nYour account has been created successfully!\n\nEnter ${password} as password and login to change the password.\n\nBest Regards,\nRMS.`,
       };
       console.log(mailOptions,"email sent succesfully")
 
@@ -53,7 +53,7 @@ class UserService {
      
       await this.userRepository.createArtist(artistData);
     }
-    await this.sendEmail(newUser.email, newUser.username);
+    await this.sendEmail(newUser.email, newUser.username,password);
 
     return newUser;
   }
