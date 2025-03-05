@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/8</span>
+                <span class='fraction'>5/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -148,16 +148,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,24 +165,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,42 +212,42 @@ const songSchema = new mongoose.Schema({
 });
 &nbsp;
 // Middleware to update fullRoyalty in Artist when a song is saved or updated
-songSchema.post('save', <span class="fstat-no" title="function not covered" >as</span>ync function (doc) {
-<span class="cstat-no" title="statement not covered" >  try {</span>
-<span class="cstat-no" title="statement not covered" >    await updateArtistRoyalty(doc.artistId);</span>
+songSchema.post('save', async function (doc) {
+  try {
+    await updateArtistRoyalty(doc.artistId);
   } catch (error) {
   }
 });
 &nbsp;
-songSchema.post('findOneAndUpdate', <span class="fstat-no" title="function not covered" >as</span>ync function (doc) {
-<span class="cstat-no" title="statement not covered" >  if (doc) {</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      await updateArtistRoyalty(doc.artistId);</span>
+songSchema.post('findOneAndUpdate', async function (doc) {
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (doc) {
+    try {
+      await updateArtistRoyalty(doc.artistId);
     } catch (error) {
     }
   }
 });
 &nbsp;
 // Function to update fullRoyalty in Artist
-const updateArtistRoyalty = <span class="fstat-no" title="function not covered" >as</span>ync (artistId) =&gt; {
-  const totalRoyalty = <span class="cstat-no" title="statement not covered" >await mongoose.model('Song').aggregate([</span>
+const updateArtistRoyalty = async (artistId) =&gt; {
+  const totalRoyalty = await mongoose.model('Song').aggregate([
     { $match: { artistId: new mongoose.Types.ObjectId(artistId) } },
     { $group: { _id: null, totalRoyalty: { $sum: "$totalRoyalty" } } },
     
 &nbsp;
 &nbsp;
   ]);
-  const totalStreams = <span class="cstat-no" title="statement not covered" >await mongoose.model('Song').aggregate([</span>
+  const totalStreams = await mongoose.model('Song').aggregate([
     { $match: { artistId: new mongoose.Types.ObjectId(artistId) } },
     { $group: { _id: null, totalStreams: { $sum: "$totalStreams" } } }
 &nbsp;
   ]);
 &nbsp;
 &nbsp;
-  const newRoyalty = <span class="cstat-no" title="statement not covered" >totalRoyalty.length &gt; 0 ? totalRoyalty[0].totalRoyalty : 0;</span>
-  const newStreams = <span class="cstat-no" title="statement not covered" >totalRoyalty.length &gt; 0 ? totalStreams[0].totalStreams : 0;</span>
+  const newRoyalty = totalRoyalty.length &gt; 0 ? totalRoyalty[0].totalRoyalty : <span class="branch-1 cbranch-no" title="branch not covered" >0;</span>
+  const newStreams = totalRoyalty.length &gt; 0 ? totalStreams[0].totalStreams : <span class="branch-1 cbranch-no" title="branch not covered" >0;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  await Artist.findByIdAndUpdate(</span>
+  await Artist.findByIdAndUpdate(
     artistId,
     { $set: { fullRoyalty: newRoyalty, totalStreams: newStreams } },
     { new: true }
@@ -265,7 +265,7 @@ module.exports =  mongoose.models.Song || mongoose.model('Song', songSchema,'Son
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-02-25T12:14:36.934Z
+                at 2025-03-04T20:47:03.165Z
             </div>
         <script src="../prettify.js"></script>
         <script>

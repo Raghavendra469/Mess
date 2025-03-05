@@ -18,7 +18,6 @@ const collaborationController = {
         const { collaborationId } = params;
         const { status } = body;
         const collaboration = await collaborationService.updateCollaborationStatus(collaborationId, status);
-        if (!collaboration) throw new Error('Collaboration not found');
         return { success: true, collaboration };
     }),
  

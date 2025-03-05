@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Royalty = require('../models/royaltyModel');
 const Song = require('../models/songModel');
 
 const RoyaltySchema = new mongoose.Schema({

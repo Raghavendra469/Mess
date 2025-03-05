@@ -87,7 +87,8 @@ class CollaborationRepository {
         } else if (decision === "declined") {
             // Simply reset the status to "Approved" if the request is declined
             collaboration.status = "Approved";
-            return await collaboration.save();
+            await collaboration.save();
+            return collaboration;
 
         }
     }

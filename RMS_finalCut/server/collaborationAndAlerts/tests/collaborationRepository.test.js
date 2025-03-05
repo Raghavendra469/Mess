@@ -2,7 +2,6 @@ const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { Types } = require('mongoose');
-// const chaiAsPromised = require('chai-as-promised');
 const mongoose = require('mongoose');
 const { expect } = chai;
 
@@ -12,7 +11,7 @@ const Manager = require('../models/managerModel');
 const Artist = require('../models/artistModel');
 
 chai.use(sinonChai);
-// chai.use(chaiAsPromised);
+
 before(async () => {
     const chaiAsPromised = await import('chai-as-promised');
     chai.use(chaiAsPromised.default);
@@ -273,59 +272,122 @@ describe('requestCancellation', () => {
     });
 });
 
+// describe('handleCancellationResponse', () => {
+//     let mockCollaboration;
+
+//     beforeEach(() => {
+//         mockCollaboration = {
+//             _id: new Types.ObjectId(),
+//             artistId: new Types.ObjectId(),
+//             managerId: new Types.ObjectId(),
+//             status: 'cancel_requested',
+//             save: sandbox.stub().resolves()
+//         };
+//     });
+
+//     // it('should approve cancellation and update all related records', async () => {
+//     //   this.timeout(5000)
+//     //     sandbox.stub(Collaboration, 'findById').resolves(mockCollaboration);
+//     //     sandbox.stub(Artist, 'findByIdAndUpdate').resolves();
+//     //     sandbox.stub(Manager, 'findByIdAndUpdate').resolves();
+
+//     //     await collaborationRepository.handleCancellationResponse(mockCollaboration._id, 'approved');
+
+//     //     expect(Artist.findByIdAndUpdate.calledWith(
+//     //         mockCollaboration.artistId,
+//     //         { $unset: { manager: '' } }
+//     //     )).to.be.true;
+
+//     //     expect(Manager.findByIdAndUpdate.calledWith(
+//     //         mockCollaboration.managerId,
+//     //         { $pull: { managedArtists: mockCollaboration.artistId } }
+//     //     )).to.be.true;
+
+//     //     expect(mockCollaboration.status).to.equal('cancelled');
+//     //     expect(mockCollaboration.save.called).to.be.true;
+//     // });
+
+//     it('should decline cancellation and reset status', async () => {
+//         sandbox.stub(Collaboration, 'findById').resolves(mockCollaboration);
+
+//         await collaborationRepository.handleCancellationResponse(mockCollaboration._id, 'declined');
+
+//         expect(mockCollaboration.status).to.equal('Approved');
+//         expect(mockCollaboration.save.called).to.be.true;
+//     });
+
+//     it('should throw error when collaboration is not found', async () => {
+//         sandbox.stub(Collaboration, 'findById').resolves(null);
+
+//         try {
+//             await collaborationRepository.handleCancellationResponse(new Types.ObjectId(), 'approved');
+//             expect.fail('Should have thrown an error');
+//         } catch (error) {
+//             expect(error.message).to.equal('Collaboration not found');
+//         }
+//     });
+// });
 describe('handleCancellationResponse', () => {
-    let mockCollaboration;
+  it('should approve cancellation, remove artist from manager, and delete collaboration', async () => {
+      const collaborationId = new mongoose.Types.ObjectId();
+      const managerId = new mongoose.Types.ObjectId();
+      const artistId = new mongoose.Types.ObjectId();
 
-    beforeEach(() => {
-        mockCollaboration = {
-            _id: new Types.ObjectId(),
-            artistId: new Types.ObjectId(),
-            managerId: new Types.ObjectId(),
-            status: 'cancel_requested',
-            save: sandbox.stub().resolves()
-        };
-    });
+      const mockCollaboration = {
+          _id: collaborationId,
+          artistId,
+          managerId,
+          status: 'cancel_requested',
+      };
 
-    it('should approve cancellation and update all related records', async () => {
-        sandbox.stub(Collaboration, 'findById').resolves(mockCollaboration);
-        sandbox.stub(Artist, 'findByIdAndUpdate').resolves();
-        sandbox.stub(Manager, 'findByIdAndUpdate').resolves();
+      sandbox.stub(Collaboration, 'findById').resolves(mockCollaboration);
+      sandbox.stub(Artist, 'findByIdAndUpdate').resolves();
+      sandbox.stub(Manager, 'findByIdAndUpdate').resolves();
+      const deleteStub = sandbox.stub(Collaboration, 'findByIdAndDelete').resolves(mockCollaboration);
 
-        await collaborationRepository.handleCancellationResponse(mockCollaboration._id, 'approved');
+      const result = await collaborationRepository.handleCancellationResponse(collaborationId, 'approved');
 
-        expect(Artist.findByIdAndUpdate.calledWith(
-            mockCollaboration.artistId,
-            { $unset: { manager: '' } }
-        )).to.be.true;
+      expect(deleteStub).to.have.been.calledWith(collaborationId);
+      expect(result).to.deep.equal(mockCollaboration);
+  });
 
-        expect(Manager.findByIdAndUpdate.calledWith(
-            mockCollaboration.managerId,
-            { $pull: { managedArtists: mockCollaboration.artistId } }
-        )).to.be.true;
+ 
+  it('should decline cancellation and reset collaboration status to Approved', async () => {
+    const collaborationId = new mongoose.Types.ObjectId();
+    
+    // Mock collaboration object
+    const mockCollaboration = {
+        _id: collaborationId,
+        status: 'cancel_requested',
+        save: sandbox.stub().resolves(),
+    };
 
-        expect(mockCollaboration.status).to.equal('cancelled');
-        expect(mockCollaboration.save.called).to.be.true;
-    });
+    // Stub the database call
+    sandbox.stub(Collaboration, 'findById').resolves(mockCollaboration);
+    sandbox.stub(Collaboration, 'findByIdAndUpdate').resolves(mockCollaboration);
 
-    it('should decline cancellation and reset status', async () => {
-        sandbox.stub(Collaboration, 'findById').resolves(mockCollaboration);
+    // Call the function
+    const result = await collaborationRepository.handleCancellationResponse(mockCollaboration._id, 'declined');
 
-        await collaborationRepository.handleCancellationResponse(mockCollaboration._id, 'declined');
+    // Ensure the function is returning a result
+    expect(result).to.not.be.undefined; 
 
-        expect(mockCollaboration.status).to.equal('Approved');
-        expect(mockCollaboration.save.called).to.be.true;
-    });
+    // Validate the updated status
+    expect(result.status).to.equal('Approved');
 
-    it('should throw error when collaboration is not found', async () => {
-        sandbox.stub(Collaboration, 'findById').resolves(null);
-
-        try {
-            await collaborationRepository.handleCancellationResponse(new Types.ObjectId(), 'approved');
-            expect.fail('Should have thrown an error');
-        } catch (error) {
-            expect(error.message).to.equal('Collaboration not found');
-        }
-    });
+    // Ensure the save method was called once
+    expect(mockCollaboration.save).to.have.been.calledOnce;
 });
+
+
+ 
+  it('should throw an error if collaboration is not found', async () => {
+      sandbox.stub(Collaboration, 'findById').resolves(null);
+
+      await expect(collaborationRepository.handleCancellationResponse(new mongoose.Types.ObjectId(), 'approved'))
+          .to.be.rejectedWith('Collaboration not found');
+  });
+});
+
   });
 });

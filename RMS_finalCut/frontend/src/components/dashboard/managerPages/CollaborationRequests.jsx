@@ -21,7 +21,6 @@ const CollaborationRequests = () => {
           (collab) => collab.status === "Pending"
         );
         setRequests(pendingRequests);
-        // setRequests(fetchedRequests);
       } catch (error) {
         console.error("Error fetching requests:", error);
       }

@@ -151,7 +151,6 @@ describe('RoyaltyRepository', () => {
 
             // Assert
             expect(findRoyaltyStub).to.have.been.calledWith({ artistId: artistId });
-            expect(consoleLogStub).to.have.been.calledWith(artistId, "inside repository");
             expect(result).to.be.an('array');
             expect(result[0].artistId.name).to.equal('Test Artist');
         });

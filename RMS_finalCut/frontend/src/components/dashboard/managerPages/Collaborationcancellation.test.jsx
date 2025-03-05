@@ -43,24 +43,31 @@ describe("CollaborationCancellation Component", () => {
     await waitFor(() => expect(screen.getByText("No cancellation requests found.")).toBeInTheDocument());
   });
 
-  it("renders a pending cancellation request", async () => {
+  it("renders multiple pending cancellation requests", async () => {
     useAuth.mockReturnValue({ userData: { _id: "123" } });
     useNotifications.mockReturnValue({ sendNotification: vi.fn() });
     fetchCollaborationsByUserAndRole.mockResolvedValue([
       {
         _id: "collab123",
         status: "cancel_requested",
-        artistId: { fullName: "Artist Name", email: "artist@example.com", artistId: "artist123" },
+        artistId: { fullName: "Artist One", email: "artist1@example.com", artistId: "artist123" },
         cancellationReason: "Personal reasons",
+      },
+      {
+        _id: "collab456",
+        status: "cancel_requested",
+        artistId: { fullName: "Artist Two", email: "artist2@example.com", artistId: "artist456" },
+        cancellationReason: "Scheduling conflict",
       },
     ]);
 
     render(<CollaborationCancellation />);
-    
+
     await waitFor(() => {
-      expect(screen.getByText("Artist Name")).toBeInTheDocument();
-      expect(screen.getByText("Email: artist@example.com")).toBeInTheDocument();
-      expect(screen.getByText("Reason: Personal reasons")).toBeInTheDocument();
+      expect(screen.getByText("Artist One")).toBeInTheDocument();
+      expect(screen.getByText("Artist Two")).toBeInTheDocument();
+      expect(screen.getByText((content) => content.includes("Personal reasons"))).toBeInTheDocument();
+      expect(screen.getByText((content) => content.includes("Scheduling conflict"))).toBeInTheDocument();
     });
   });
 
@@ -100,5 +107,27 @@ describe("CollaborationCancellation Component", () => {
 
     fireEvent.click(screen.getByText("Decline"));
     await waitFor(() => expect(handleCancellationResponse).toHaveBeenCalledWith("collab123", "declined"));
+  });
+
+  it("handles error in cancellation response", async () => {
+    useAuth.mockReturnValue({ userData: { _id: "123" } });
+    useNotifications.mockReturnValue({ sendNotification: vi.fn() });
+    fetchCollaborationsByUserAndRole.mockResolvedValue([
+      {
+        _id: "collab123",
+        status: "cancel_requested",
+        artistId: { fullName: "Artist Name", email: "artist@example.com", artistId: "artist123" },
+        cancellationReason: "Personal reasons",
+      },
+    ]);
+
+    handleCancellationResponse.mockRejectedValue(new Error("Network Error"));
+    console.error = vi.fn();
+
+    render(<CollaborationCancellation />);
+    await waitFor(() => screen.getByText("Artist Name"));
+
+    fireEvent.click(screen.getByText("Approve"));
+    await waitFor(() => expect(console.error).toHaveBeenCalledWith("Error handling cancellation response:", expect.any(Error)));
   });
 });

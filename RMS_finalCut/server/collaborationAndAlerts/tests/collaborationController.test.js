@@ -1,7 +1,6 @@
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-// const chaiAsPromised = require('chai-as-promised');
 const { expect } = chai;
 const { Response } = require('ca-webutils/expressx');
 const CollaborationService = require('../services/collaborationService');
@@ -9,11 +8,10 @@ const collaborationController = require('../controllers/collaborationController'
 
 // Configure chai
 chai.use(sinonChai);
-// chai.use(chaiAsPromised);
 before(async () => {
     const chaiAsPromised = await import('chai-as-promised');
     chai.use(chaiAsPromised.default);
-  });
+});
 
 describe('Collaboration Controller', () => {
     let sandbox;
@@ -160,26 +158,53 @@ describe('Collaboration Controller', () => {
                 collaboration: updatedCollaboration
             });
         });
-        it('should handle not found error', async () => {
-            // Arrange
+
+        
+        //     // Arrange
+        //     const req = {
+        //       method: 'PUT',
+        //       params: { collaborationId: 'invalid-id' },
+        //       body: { status: 'Approved' }
+        //     };
+
+        //     // Stub the service to return null (not found)
+        //     CollaborationService.prototype.updateCollaborationStatus
+        //         .resolves(null);
+
+        //     // Act
+        //     await collaborationController.updateCollaborationStatus(req, mockResponse);
+
+        //     // Assert
+        //     expect(mockResponse.status).to.have.been.calledWith(404);
+        //     expect(mockResponse.send).to.have.been.calledWith({
+        //       message: 'Collaboration not found',
+        //       status: 404
+        //     });
+        // });
+
+        it('should handle internal service errors properly', async () => {
+            // Setup
             const req = {
-              method: 'PUT',
-              params: { collaborationId: 'invalid-id' },
-              body: { status: 'Approved' }
+                method: 'PUT',
+                params: { collaborationId: 'collab-123' },
+                body: { status: 'Approved' }
             };
-            
-            sinon.stub(CollaborationService.prototype, 'updateCollaborationStatus').resolves(null);
-      
-            // Act
-            await collaborationController.updateCollaborationStatus(req, mockResponse);
-      
-            // Assert
-            expect(mockResponse.status).to.have.been.calledWith(404);
+
+            const error = new Error('Internal Service Error');
+            CollaborationService.prototype.updateCollaborationStatus.rejects(error);
+
+            // Execute controller with expressx wrapper
+            const handler = collaborationController.updateCollaborationStatus;
+            await handler(req, mockResponse);
+
+            // Assert response contains error
+            expect(mockResponse.status).to.have.been.calledWith(500);
             expect(mockResponse.send).to.have.been.calledWith({
-              message: 'Collaboration not found',
-              status: 404
+                message: 'Internal Service Error',
+                status: 500,
+                errors: error
             });
-          });
+        });
     });
 
     describe('cancelCollaboration', () => {

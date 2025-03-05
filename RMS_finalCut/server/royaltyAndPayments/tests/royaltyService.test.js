@@ -330,32 +330,7 @@ describe('RoyaltyService - getRoyaltyById', () => {
       }
     });
   
-    it('should console.log the royalties', async () => {
-      // Arrange
-      const artistId = new mongoose.Types.ObjectId();
-      const mockRoyalties = [
-        {
-          _id: new mongoose.Types.ObjectId(),
-          artistId: artistId,
-          amount: 100
-        }
-      ];
-      
-      royaltyRepository.findByArtistId.resolves(mockRoyalties);
-      const updateArtistFullRoyaltySpy = sinon.stub(royaltyService, 'updateArtistFullRoyalty').resolves();
-      
-      // Spy on console.log
-      const consoleLogSpy = sinon.spy(console, 'log');
-  
-      // Act
-      const result = await royaltyService.getRoyaltyByArtistId(artistId);
-  
-      // Assert
-      expect(consoleLogSpy.calledWith(mockRoyalties, "inside service")).to.be.true;
-      
-      // Restore console.log
-      consoleLogSpy.restore();
-    });
+   
   });
 
 
