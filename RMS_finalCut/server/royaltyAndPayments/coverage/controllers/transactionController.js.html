@@ -215,6 +215,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<<<<<<< HEAD:RMS_finalCut/server/royaltyAndPayments/coverage/controllers/transactionController.js.html
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -241,6 +242,46 @@ const transactionController = {
         
         if (!userId || !royaltyId || !transactionAmount) {
             throw new Error("Missing required fields: userId, royaltyId, transactionAmount");
+=======
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios";
+ 
+const AuthContext = createContext();
+ 
+export const AuthProvider = ({ children }) =&gt; {
+    const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(null); // Store logged-in user data
+    const [loading, setLoading] = useState(true);
+ 
+    const verifyUser = async () =&gt; {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+            try {
+                const response = await axios.get("http://54.163.10.39:5001/api/auth/verify", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+ 
+                if (response.data.success) {
+                    const loggedInUser = response.data.user;
+                    setUser(loggedInUser);
+ 
+                    if (loggedInUser.role !== "Admin") {
+                        await fetchRoleData(loggedInUser);
+                    }
+                }
+            } catch (error) {
+                console.error("Verification failed:", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            setUser(null);
+            setLoading(false);
+>>>>>>> 262fa1b5f002ac468057390e02524c157682480f:RMS_finalCut/frontend/coverage/lcov-report/frontend/src/context/authContext.jsx.html
         }
 &nbsp;
         const transaction = await transactionService.createTransaction(body);
@@ -302,6 +343,7 @@ const transactionController = {
 &nbsp;
     exportTransactionsPDF : async (req, res) =&gt; {
         try {
+<<<<<<< HEAD:RMS_finalCut/server/royaltyAndPayments/coverage/controllers/transactionController.js.html
           const { userId,role } = req.params; // Assuming transactions are user-specific
           const pdfBuffer = await transactionService.generateTransactionsPDF(userId,role);
          
@@ -313,6 +355,49 @@ const transactionController = {
 <span class="cstat-no" title="statement not covered" >          res.status(500).json({ error: error.message });</span>
         }
       },
+=======
+            const response = await axios.get(`http://54.163.10.39:5005/api/users/${loggedInUser.username}`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                },
+            });
+            if (response.data.success) {
+                setUserData(response.data.user);
+            }
+<span class="branch-0 cbranch-no" title="branch not covered" >        } catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >            console.error("Error fetching role data:", error);</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
+    };
+ 
+    const login = async (data, token) =&gt; {
+        try {
+            sessionStorage.setItem("token", token);
+            setUser(data); // Set user state immediately after login
+            await verifyUser(); // Trigger verification after login
+<span class="branch-0 cbranch-no" title="branch not covered" >        } catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >            console.error("Verification failed:", error);</span>
+<span class="cstat-no" title="statement not covered" >            setUser(null);</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
+    };
+ 
+    const logout = () =&gt; {
+        setUser(null);
+        setUserData(null);
+        sessionStorage.removeItem("token");
+    };
+ 
+    // Verify the user on mount
+    useEffect(() =&gt; {
+        verifyUser();
+    }, []);
+ 
+    return (
+        &lt;AuthContext.Provider value={{ user, userData, login, logout, loading,setUserData }}&gt;
+            {children}
+        &lt;/AuthContext.Provider&gt;
+    );
+>>>>>>> 262fa1b5f002ac468057390e02524c157682480f:RMS_finalCut/frontend/coverage/lcov-report/frontend/src/context/authContext.jsx.html
 };
 &nbsp;
 module.exports = transactionController;</pre></td></tr></table></pre>
@@ -322,7 +407,11 @@ module.exports = transactionController;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+<<<<<<< HEAD:RMS_finalCut/server/royaltyAndPayments/coverage/controllers/transactionController.js.html
                 at 2025-03-04T20:40:35.276Z
+=======
+                at 2025-03-05T11:20:08.001Z
+>>>>>>> 262fa1b5f002ac468057390e02524c157682480f:RMS_finalCut/frontend/coverage/lcov-report/frontend/src/context/authContext.jsx.html
             </div>
         <script src="../prettify.js"></script>
         <script>

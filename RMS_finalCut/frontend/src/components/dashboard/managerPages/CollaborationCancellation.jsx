@@ -30,7 +30,6 @@ const CollaborationCancellation = () => {
   }, [userData]);
 
   const handleDecision = async (collaborationId, artistId, decision) => {
-
     try {
 
       await handleCancellationResponse(collaborationId, decision);
@@ -58,7 +57,6 @@ const CollaborationCancellation = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
         {collaborations.map((collaboration) => (
           <div key={collaboration._id} className="bg-white p-6 shadow-lg rounded-lg border border-gray-200">
             <h3 className="text-xl font-semibold text-gray-800">{collaboration.artistId?.fullName || "Unknown Artist"}</h3>
@@ -66,9 +64,7 @@ const CollaborationCancellation = () => {
             <p className="text-gray-600"><strong>Reason:</strong> {collaboration.cancellationReason || "No reason provided"}</p>
             <div className="mt-4 flex justify-between">
               <button
-
                 onClick={() => handleDecision(collaboration._id, collaboration.artistId.artistId, "approved")}
-
                 className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 cursor-pointer"
               >
                 Approve
@@ -81,7 +77,6 @@ const CollaborationCancellation = () => {
               </button>
             </div>
           </div>
-
         ))}
       </div>
     </div>
@@ -91,4 +86,3 @@ const CollaborationCancellation = () => {
 };
 
 export default CollaborationCancellation;
-
