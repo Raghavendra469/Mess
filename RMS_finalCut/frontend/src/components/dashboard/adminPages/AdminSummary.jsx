@@ -1,9 +1,7 @@
 import React from "react";
 import { useArtistsManagers } from "../../../context/ArtistsManagersContext";
-import TopArtistsChart from "./TopArtistChart";
-import TopManagersChart from "./TopManagerCharts";
-import ArtistsTable from "./ArtistTable";
-import ManagersTable from "./ManagerTable";
+import PerformanceChart from "./PerformanceChart";
+import PerformanceTable from "./PerformanceTable";
 import SummaryCard from "../../commonComponents/SummaryCard";
 
 
@@ -24,19 +22,19 @@ const AdminSummary = () => {
             <div className="flex flex-col gap-8">
                 <div className="bg-white shadow-lg p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2 text-center">Top 5 Artists</h3>
-                    <TopArtistsChart data={artists.slice(0, 5)} />
+                    <PerformanceChart data={artists.slice(0, 5)} />
                 </div>
 
                 <div className="bg-white shadow-lg p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2 text-center">Top 5 Managers</h3>
-                    <TopManagersChart data={managerStats.slice(0, 5)} />
+                    <PerformanceChart data={managerStats.slice(0, 5)} />
                 </div>
             </div>
 
             {/* Tables Section */}
             <div className="mt-8 flex flex-col gap-6">
-                <ArtistsTable artists={artists} />
-                <ManagersTable managers={managerStats} />
+                <PerformanceTable users={artists} />
+                <PerformanceTable users={managerStats} />
             </div>
         </div>
     );

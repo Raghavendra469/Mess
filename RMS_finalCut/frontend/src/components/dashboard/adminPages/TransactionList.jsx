@@ -1,50 +1,53 @@
 import React, { useState, useEffect } from "react";
 import TransactionService from "../../../services/TransactionService";
 import { useNotifications } from "../../../context/NotificationContext";
-
-const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, selectedArtist, fetchRoyaltyByArtist }) => {
+ 
+const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, selectedArtist, fetchRoyaltyByArtist,setPendingSongId }) => {
     const [filteredTransactions, setFilteredTransactions] = useState([]);
     const { sendNotification } = useNotifications();
-
+    const[disable,setDisable]=useState(false);
+ 
     // Filter transactions to exclude those that are "Approved"
     useEffect(() => {
         setFilteredTransactions(transactions.filter(tx => tx.status !== "Approved"));
     }, [transactions]);
-
+ 
     const handlePayTransaction = async (transactionId, paymentAmount,artistShare,managerShare, songName, artistId,managerId) => {
         const confirmPayment = window.confirm("Are you sure you want to proceed with the payment?");
         if (!confirmPayment) return; // Stop if user cancels
-
+ 
         const response = await TransactionService.payTransaction(transactionId, paymentAmount);
         setStatusMessage({ type: response.success ? "success" : "error", text: response.message });
-
+ 
         if (response.success) {
             fetchTransactions(selectedArtist);  // Fetch updated transactions
             fetchRoyaltyByArtist(selectedArtist); // ✅ Ensure royalties update dynamically
-
+ 
             sendNotification(artistId, `Your transaction of $${artistShare.toFixed(2)} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
             sendNotification(managerId, `Your transaction of $${managerShare.toFixed(2)} has been successfully processed for the song: ${songName}.`, "royaltyPayment");
-
-
+ 
+ 
             // Remove the paid transaction from UI immediately
             setFilteredTransactions(prevTransactions =>
                 prevTransactions.filter(tx => tx._id !== transactionId)
             );
+            setPendingSongId("")
         }
     };
-
+ 
     const handleDeleteTransaction = async (transactionId) => {
         const response = await TransactionService.deleteTransaction(transactionId);
         setStatusMessage({ type: response.success ? "success" : "error", text: response.message });
-
+ 
         if (response.success) fetchTransactions(selectedArtist);
+        setPendingSongId("");
     };
-
+ 
     return (
         filteredTransactions.length > 0 && (
             <div className="mt-6">
                 <h3 className="text-lg font-bold mb-2 text-center">Transactions</h3>
-
+ 
                 {/* Table Layout for Larger Screens */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full min-w-max border-collapse border border-gray-300 text-sm">
@@ -65,7 +68,7 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                                     <td className="border p-2">${tx.transactionAmount}</td>
                                     <td className="border p-2">{tx.status}</td>
                                     <td className="border p-2 flex flex-col gap-2 items-center sm:flex-row sm:justify-center">
-                                        <button 
+                                        <button
                                             className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full sm:w-auto cursor-pointer"
                                             onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-((tx.transactionAmount*tx.userId.manager.commissionPercentage)/100)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
                                             Pay
@@ -81,7 +84,7 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                         </tbody>
                     </table>
                 </div>
-
+ 
                 {/* Card Layout for Mobile Screens */}
                 <div className="md:hidden space-y-4">
                     {filteredTransactions.map((tx) => (
@@ -108,7 +111,7 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
                                 </span>
                             </div>
                             <div className="flex gap-2 mt-4">
-                                <button 
+                                <button
                                     className="bg-green-500 text-white text-xs px-3 py-1 rounded w-full cursor-pointer"
                                     onClick={() => handlePayTransaction(tx._id, tx.transactionAmount,(tx.transactionAmount-((tx.transactionAmount*tx.userId.manager.commissionPercentage)/100)),(tx.transactionAmount*tx.userId.manager.commissionPercentage)/100, tx.songId?.songName || "Unknown Song", tx.userId?.artistId,tx.userId?.manager.managerId)}>
                                     Pay
@@ -126,5 +129,5 @@ const TransactionList = ({ transactions, fetchTransactions, setStatusMessage, se
         )
     );
 };
-
+ 
 export default TransactionList;

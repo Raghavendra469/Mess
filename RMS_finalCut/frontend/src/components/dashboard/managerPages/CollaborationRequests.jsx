@@ -6,12 +6,12 @@ import {
   acceptCollaborationRequest,
   rejectCollaborationRequest,
 } from "../../../services/CollaborationService"; // Import service functions
-
+ 
 const CollaborationRequests = () => {
   const { userData } = useAuth();
   const [requests, setRequests] = useState([]);
   const { sendNotification } = useNotifications();
-
+ 
   useEffect(() => {
     const getRequests = async () => {
       if (!userData?._id) return;
@@ -25,10 +25,10 @@ const CollaborationRequests = () => {
         console.error("Error fetching requests:", error);
       }
     };
-
+ 
     getRequests();
   }, [userData]);
-
+ 
   // Handle Accept Request
   const handleAccept = async (requestId, artistId) => {
     try {
@@ -39,7 +39,7 @@ const CollaborationRequests = () => {
       console.error("Error accepting request:", error);
     }
   };
-
+ 
   // Handle Reject Request
   const handleReject = async (requestId, artistId) => {
     try {
@@ -50,13 +50,13 @@ const CollaborationRequests = () => {
       console.error("Error rejecting request:", error);
     }
   };
-
+ 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <header className="bg-white shadow-md py-4 px-6 mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Collaboration Requests</h1>
       </header>
-
+ 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {requests.length > 0 ? (
           requests.map((request) => (
@@ -64,6 +64,8 @@ const CollaborationRequests = () => {
               <h3 className="text-xl font-semibold text-gray-800">{request.artistId?.fullName || "Unknown Artist"}</h3>
               <p className="text-gray-600 mt-2"><strong>Email:</strong> {request.artistId?.email || "N/A"}</p>
               <p className="text-gray-600"><strong>Mobile No:</strong> {request.artistId?.mobileNo || "N/A"}</p>
+              <p className="text-gray-600"><strong>Description:</strong> {request.artistId?.description || "N/A"}</p>
+ 
               <div className="mt-4 flex justify-between">
                 <button
                   onClick={() => handleAccept(request._id, request.artistId.artistId)}
@@ -87,5 +89,5 @@ const CollaborationRequests = () => {
     </div>
   );
 };
-
+ 
 export default CollaborationRequests;

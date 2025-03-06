@@ -1,7 +1,7 @@
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
 
-const TopArtistsChart = ({ data = [] }) => {
+const PerformanceChart = ({ data = [] }) => {
   if (!data.length) {
     return <div className="p-6 bg-white rounded-lg shadow-lg text-center text-gray-700">No Artist Data Available</div>;
   }
@@ -66,4 +66,4 @@ const TopArtistsChart = ({ data = [] }) => {
   );
 };
 
-export default TopArtistsChart;
+export default PerformanceChart;

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://54.163.10.39:5005/api/users";
+const API_BASE_URL = "http://localhost:5005/api/users";
 
 // Create new user
 export const createUser = async (formData) => {

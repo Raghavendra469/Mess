@@ -7,7 +7,7 @@ export const ArtistsManagersProvider = ({ children }) => {
     const [artists, setArtists] = useState([]);
     const [managers, setManagers] = useState([]);
     const [managerStats, setManagerStats] = useState([]);
-    const [token, setToken] = useState(sessionStorage.getItem("token")); // Initialize with sessionStorage
+    // const [token, setToken] = useState(sessionStorage.getItem("token")); // Initialize with sessionStorage
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,8 +22,8 @@ export const ArtistsManagersProvider = ({ children }) => {
                 };
 
                 const [artistsRes, managersRes] = await Promise.all([
-                    axios.get("http://54.163.10.39:5005/api/users/role/Artist", { headers }),
-                    axios.get("http://54.163.10.39:5005/api/users/role/Manager", { headers })
+                    axios.get("http://localhost:5005/api/users/role/Artist", { headers }),
+                    axios.get("http://localhost:5005/api/users/role/Manager", { headers })
                 ]);
 
                
@@ -33,7 +33,7 @@ export const ArtistsManagersProvider = ({ children }) => {
 
                 const formattedArtists = Object.values(fetchedArtists).sort((a, b) => {
                     if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.totalStreams;
-                    return b.totalRoyalty - a.totalRoyalty;
+                    return b.fullRoyalty - a.fullRoyalty;
                 });
 
                 setArtists(formattedArtists);
@@ -42,9 +42,9 @@ export const ArtistsManagersProvider = ({ children }) => {
                 // Initialize and calculate manager statistics
                 const managerData = fetchedManagers.reduce((acc, manager) => {
                     acc[manager._id] = {
-                        name: manager.fullName,
+                        fullName: manager.fullName,
                         totalStreams: 0,
-                        totalRoyalty: 0,
+                        fullRoyalty: 0,
                     };
                     return acc;
                 }, {});
@@ -52,13 +52,13 @@ export const ArtistsManagersProvider = ({ children }) => {
                 fetchedArtists.forEach((artist) => {
                     if (artist.manager && managerData[artist.manager]) {
                         managerData[artist.manager].totalStreams += artist.totalStreams || 0;
-                        managerData[artist.manager].totalRoyalty += artist.fullRoyalty || 0;
+                        managerData[artist.manager].fullRoyalty += artist.fullRoyalty || 0;
                     }
                 });
 
                 const formattedManagerStats = Object.values(managerData).sort((a, b) => {
                     if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.totalStreams;
-                    return b.totalRoyalty - a.totalRoyalty;
+                    return b.fullRoyalty - a.fullRoyalty;
                 });
 
                 
@@ -75,19 +75,19 @@ export const ArtistsManagersProvider = ({ children }) => {
 
         return () => clearInterval(interval); // Cleanup on unmount
 
-    }, [token]); // Ensure it runs when token changes
+    }, []); // Ensure it runs when token changes
 
     // Listen for token changes
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const newToken = sessionStorage.getItem("token");
-            if (newToken !== token) {
-                setToken(newToken);
-            }
-        }, 1000); // Check every second (adjust as needed)
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         const newToken = sessionStorage.getItem("token");
+    //         if (newToken !== token) {
+    //             setToken(newToken);
+    //         }
+    //     }, 1000); // Check every second (adjust as needed)
 
-        return () => clearInterval(interval);
-    }, [token]);
+    //     return () => clearInterval(interval);
+    // }, [token]);
 
     return (
         <ArtistsManagersContext.Provider value={{ artists, managers, managerStats }}>

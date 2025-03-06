@@ -4,49 +4,55 @@ import { useRoyalty } from "../../../context/RoyaltyContext";
 import TransactionService from "../../../services/TransactionService";
 import TransactionList from "./TransactionList";
 import CreateTransactionForm from "./CreateTransactionForm";
-
+ 
 const Payments = () => {
     const { artists } = useArtistsManagers();
     const { royalties = [], selectedArtist, setSelectedArtist, fetchRoyaltyByArtist } = useRoyalty();
-
+ 
     const [selectedRoyalty, setSelectedRoyalty] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [statusMessage, setStatusMessage] = useState({ type: "", text: "" });
-
-    
+    const[pendingSongId,setPendingSongId]=useState("")
+ 
+   
     const handleArtistChange = (event) => {
         const artistId = event.target.value;
         setSelectedArtist(artistId || "");
     };
-
+ 
     const handleCreateTransaction = (royalty) => {
         setSelectedRoyalty(royalty);
         setStatusMessage({ type: "", text: "" });
+       
     };
-
+ 
     const loadTransactions = async (artistId) => {
         if (!artistId) {
             setStatusMessage({ type: "error", text: "No artist selected." });
             return;
         }
-
+ 
         const data = await TransactionService.fetchTransactions("artist", artistId);
         // const data = await TransactionService.fetchTransactions(artistId);
         setTransactions(data);
+        const pending = data.find(pendingtx => pendingtx.status === "Pending");
+     
+        setPendingSongId(pending?.songId.songId)
     };
-
+ 
     useEffect(() => {
         if (selectedArtist) {
             fetchRoyaltyByArtist(selectedArtist);
             loadTransactions(selectedArtist);
             setSelectedRoyalty(null);
         }
-    }, [selectedArtist]);
-
+    }, [selectedArtist,pendingSongId]);
+   
+ 
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">Manage Payments</h2>
-
+ 
             <label className="block mb-2">Select Artist:</label>
             <select className="border p-2 rounded w-full" onChange={handleArtistChange} value={selectedArtist || ""}>
                 <option value="">-- Choose an Artist --</option>
@@ -54,13 +60,15 @@ const Payments = () => {
                     <option key={artist._id} value={artist._id}>{artist.fullName}</option>
                 ))}
             </select>
-
+ 
             {statusMessage.text && (
                 <div className={`mt-4 p-2 text-center rounded ${statusMessage.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                     {statusMessage.text}
                 </div>
             )}
-
+ 
+         
+ 
             {selectedArtist && royalties.length > 0 ? (
                 <table className="mt-4 w-full border-collapse border border-gray-300">
                     <thead>
@@ -78,10 +86,15 @@ const Payments = () => {
                                 <td className="border p-2">${royalty.totalRoyalty?.toFixed(2) || 0}</td>
                                 <td className="border p-2">${royalty.royaltyDue?.toString().split(".")[0] + "." + (royalty.royaltyDue?.toString().split(".")[1] || "00").slice(0, 2) || 0}</td>
                                 <td className="border p-2">
-                                    <button className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer"
+                                    {console.log(royalty.songId,"royalty.songId")}
+                                    {pendingSongId==royalty?.songId.songId&&<button className=" text-white px-3 py-1 rounded bg-gray-400 cursor-not-allowed" disabled
                                         onClick={() => handleCreateTransaction(royalty)}>
                                         Create Transaction
-                                    </button>
+                                    </button>}
+                                    {pendingSongId!=royalty?.songId.songId&&<button className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer"
+                                        onClick={() => handleCreateTransaction(royalty)}>
+                                        Create Transaction
+                                    </button>}
                                 </td>
                             </tr>
                         ))}
@@ -93,26 +106,27 @@ const Payments = () => {
                 </div>
             )
         }
-
+ 
             {selectedRoyalty && (
-                <CreateTransactionForm 
-                    selectedRoyalty={selectedRoyalty} 
-                    setSelectedRoyalty={setSelectedRoyalty} 
-                    fetchTransactions={loadTransactions} 
-                    selectedArtist={selectedArtist} 
-                    setStatusMessage={setStatusMessage} 
+                <CreateTransactionForm
+                    selectedRoyalty={selectedRoyalty}
+                    setSelectedRoyalty={setSelectedRoyalty}
+                    fetchTransactions={loadTransactions}
+                    selectedArtist={selectedArtist}
+                    setStatusMessage={setStatusMessage}
                 />
             )}
-
-            <TransactionList 
-                transactions={transactions} 
-                fetchTransactions={loadTransactions} 
-                setStatusMessage={setStatusMessage} 
-                selectedArtist={selectedArtist} 
+ 
+            <TransactionList
+                transactions={transactions}
+                fetchTransactions={loadTransactions}
+                setStatusMessage={setStatusMessage}
+                selectedArtist={selectedArtist}
                 fetchRoyaltyByArtist={fetchRoyaltyByArtist} // Pass the function
+                setPendingSongId={setPendingSongId}
             />
         </div>
     );
 };
-
+ 
 export default Payments;
