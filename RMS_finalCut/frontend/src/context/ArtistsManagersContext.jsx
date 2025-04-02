@@ -7,7 +7,6 @@ export const ArtistsManagersProvider = ({ children }) => {
     const [artists, setArtists] = useState([]);
     const [managers, setManagers] = useState([]);
     const [managerStats, setManagerStats] = useState([]);
-    // const [token, setToken] = useState(sessionStorage.getItem("token")); // Initialize with sessionStorage
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,7 +30,7 @@ export const ArtistsManagersProvider = ({ children }) => {
                 const fetchedArtists = artistsRes.data?.users || [];
                 const fetchedManagers = managersRes.data?.users || [];
 
-                const formattedArtists = Object.values(fetchedArtists).sort((a, b) => {
+                const formattedArtists = fetchedArtists.sort((a, b) => {
                     if (b.totalStreams !== a.totalStreams) return b.totalStreams - a.totalStreams;
                     return b.fullRoyalty - a.fullRoyalty;
                 });
@@ -75,19 +74,7 @@ export const ArtistsManagersProvider = ({ children }) => {
 
         return () => clearInterval(interval); // Cleanup on unmount
 
-    }, []); // Ensure it runs when token changes
-
-    // Listen for token changes
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         const newToken = sessionStorage.getItem("token");
-    //         if (newToken !== token) {
-    //             setToken(newToken);
-    //         }
-    //     }, 1000); // Check every second (adjust as needed)
-
-    //     return () => clearInterval(interval);
-    // }, [token]);
+    }, []);
 
     return (
         <ArtistsManagersContext.Provider value={{ artists, managers, managerStats }}>

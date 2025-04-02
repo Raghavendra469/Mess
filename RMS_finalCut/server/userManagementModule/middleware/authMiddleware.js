@@ -24,10 +24,8 @@ const verifyUser = async (req, res, next) => {
         }
 
         req.user = user;
-        console.log("user verified Success")
         next();
     } catch (error) {
-        console.error("Auth Middleware Error:", error.message);
         return res.status(500).json({ success: false, error: "Authentication failed" });
     }
 };

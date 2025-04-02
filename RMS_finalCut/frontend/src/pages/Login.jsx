@@ -27,7 +27,7 @@ const Login = () => {
  
         try {
             const data = await loginUser(email, password); // Call API function
-            if (data.success) {
+            if (data?.success) {
                 sessionStorage.setItem("token", data.token); // Store token
  
                 // Trigger context update with login

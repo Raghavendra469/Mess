@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Line
 
 const PerformanceChart = ({ data = [] }) => {
   if (!data.length) {
-    return <div className="p-6 bg-white rounded-lg shadow-lg text-center text-gray-700">No Artist Data Available</div>;
+    return <div className="p-6 bg-white rounded-lg shadow-lg text-center text-gray-700">No {data[0].manager?"Artist":"Manager"} Data Available</div>;
   }
 
   // Function to abbreviate long names (e.g., "Johnathan Smith" → "J. Smith")
@@ -14,7 +14,7 @@ const PerformanceChart = ({ data = [] }) => {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Top Artists Performance</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Top {data[0].manager?"Artists":"Managers"} Performance</h2>
 
       {/* Side-by-Side Layout for Charts */}
       <div className="grid md:grid-cols-2 gap-8">

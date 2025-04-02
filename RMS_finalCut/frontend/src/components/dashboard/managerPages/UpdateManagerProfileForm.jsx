@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/authContext";
 import { useNotifications } from "../../../context/NotificationContext";
-import { fetchUserDetails, updateUserProfile } from "../../../services/userService";
+import { updateUserProfile } from "../../../services/userService";
 
 const UpdateManagerProfileForm = () => {
-    const { user, userData, loading: authLoading } = useAuth();
+    const { user, userData } = useAuth();
     const [formData, setFormData] = useState({
         fullName: "",
         mobileNo: "",
@@ -13,32 +13,22 @@ const UpdateManagerProfileForm = () => {
         description: "",
     });
     const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(true);
     const { sendNotification } = useNotifications();
 
     useEffect(() => {
-        if (!authLoading && user) {
-            const loadUserDetails = async () => {
-                try {
-                    const userDetails = await fetchUserDetails(user.username);
-                    setFormData({
-                        fullName: userDetails.fullName || "",
-                        mobileNo: userDetails.mobileNo || "",
-                        commissionPercentage: userDetails.commissionPercentage || "",
-                        address: userDetails.address || "",
-                        description: userDetails.description || "",
-                    });
-                    setLoading(false);
-                } catch (error) {
-                    console.error("Error fetching user data:", error);
-                    setMessage("Failed to load user data.");
-                    setLoading(false);
-                }
-            };
-            loadUserDetails();
+        if (userData) {
+            setFormData({
+                fullName: userData.fullName || "",
+                mobileNo: userData.mobileNo || "",
+                commissionPercentage: userData.commissionPercentage || "",
+                address: userData.address || "",
+                description: userData.description || "",
+            });
+            setLoading(false);
         }
-    }, [user, authLoading]);
+    }, [userData]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

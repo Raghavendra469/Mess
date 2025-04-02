@@ -7,8 +7,8 @@ const bcrypt = require('bcrypt');
 const { expect } = chai;
 
 chai.use(sinonChai);
-// chai.use(chaiAsPromised);
-before(async () => {
+// chai.use(chaiAsPromised); enables testing of promisses
+before(async () => {  
     const chaiAsPromised = await import('chai-as-promised');
     chai.use(chaiAsPromised.default);
   });

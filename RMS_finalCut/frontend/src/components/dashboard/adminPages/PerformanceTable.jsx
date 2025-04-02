@@ -6,8 +6,8 @@ const PerformanceTable = ({ users = [] }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
     // Filtering by search term
-    const filteredUsers = users.filter((users) =>
-        users.fullName?.toLowerCase().includes(searchTerm.toLowerCase())|| (!users.fullName && searchTerm === "")
+    const filteredUsers = users.filter((user) =>
+        user.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (

@@ -19,16 +19,17 @@ const CreateUserForm = () => {
   const validateForm = () => {
     let validationErrors = {};
     const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
-    const fullNameRegex = /^[a-zA-Z ]+$/;
+    const fullNameRegex = /^[a-zA-Z ]{3,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[0-9]).{6,}$/;
     const mobileRegex = /^[0-9]{10}$/;
+    const addressRegex = /^[a-zA-Z ]{5,}$/;
 
     if (!usernameRegex.test(formData.username)) {
       validationErrors.username = "Username must be at least 3 characters and contain no special characters.";
     }
     if (!fullNameRegex.test(formData.fullName)) {
-      validationErrors.fullName = "Full Name must contain only letters and spaces.";
+      validationErrors.fullName = "Full Name must be at least 3 characters and contain only letters and spaces.";
     }
     if (!emailRegex.test(formData.email)) {
       validationErrors.email = "Invalid email format.";
@@ -39,8 +40,8 @@ const CreateUserForm = () => {
     if (!mobileRegex.test(formData.mobileNo)) {
       validationErrors.mobileNo = "Mobile number must be exactly 10 digits.";
     }
-    if (formData.address.trim() === "") {
-      validationErrors.address = "Address cannot be empty.";
+    if (!addressRegex.test(formData.address)) {
+      validationErrors.address = "Address must be at least 5 characters and contain only letters and spaces.";
     }
 
     setErrors(validationErrors);
